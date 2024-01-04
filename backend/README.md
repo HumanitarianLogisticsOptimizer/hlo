@@ -9,6 +9,15 @@ backend of hlo project
 
 Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings.html).
 
+## Development Guideline
+
+### Running Locally with Docker
+    $ docker-compose -f local.yml build
+    $ docker-compose -f local.yml up
+    $ docker-compose -f local.yml run --rm django python manage.py migrate
+    $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
+    $ docker-compose -f local.yml run --rm django python manage.py shell_plus
+
 ## Basic Commands
 
 ### Setting Up Your Users
