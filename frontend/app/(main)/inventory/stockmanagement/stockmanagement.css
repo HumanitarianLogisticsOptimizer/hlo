@@ -1,0 +1,11 @@
+@import "primeicons/primeicons.css";
+
+.card {
+    margin-bottom: 20px;
+}
+
+.button-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+}
