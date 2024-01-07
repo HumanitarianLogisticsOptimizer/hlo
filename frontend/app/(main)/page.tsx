@@ -30,7 +30,7 @@ function Dashboard() {
         return (
             <div className="col-12">
                 <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                <img src={"/layout/images/ACC.png"} width="90px" height="90px" alt={accData.name} />
+                <img src={"/layout/images/ACC.svg"} width="90px" height="90px" alt={accData.name} />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                             <div className="text-2xl font-bold text-900">{accData.name}</div>
@@ -56,7 +56,7 @@ function Dashboard() {
         return (
             <div className="col-12">
                 <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img src={"/layout/images/ADC.png"} width="90px" height="90px" alt={adcData.name} />
+                    <img src={"/layout/images/ADC.svg"} width="90px" height="90px" alt={adcData.name} />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                             <div className="text-2xl font-bold text-900">{adcData.name}</div>
@@ -80,10 +80,10 @@ function Dashboard() {
 
     return (
         <>
-            <h2>All ACCs</h2>
+            <h2>Aid Collection Centers</h2>
             <DataView value={accData} itemTemplate={accItemTemplate} paginator rows={5} />
             <br />
-            <h2>All ADCs</h2>
+            <h2>Aid Distribution Centers</h2>
             <DataView value={adcData} itemTemplate={adcItemTemplate} paginator rows={5} />      
         </>
     );
