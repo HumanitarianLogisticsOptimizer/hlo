@@ -20,8 +20,13 @@ class ADCViewSet(viewsets.ModelViewSet):
 class ACCAidViewSet(viewsets.ModelViewSet):
     queryset = ACCAid.objects.all()
     serializer_class = ACCAidSerializer
+    filterset_fields = ['center']
 
 
 class ADCAidViewSet(viewsets.ModelViewSet):
     queryset = ADCAid.objects.all()
     serializer_class = ADCAidSerializer
+    filterset_fields = ['center']
+
+
+
