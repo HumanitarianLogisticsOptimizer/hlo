@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { DataTable } from 'primereact/datatable';
@@ -27,7 +26,7 @@ function App() {
   ]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/accaids/?center=1")
+    axios.get("http://localhost:8000/api/accaids?center=1")
       .then(response => {
         setData(response.data);
         const initialQuantityMap = {};
@@ -39,6 +38,7 @@ function App() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
+      
       axios.get("http://localhost:8000/api/acc/1/")
         .then(res => {
           setAcc(res.data);
@@ -49,33 +49,44 @@ function App() {
   }, []);
 
   const inputNumber = (rowData) => {
-    const onQuantityChange = (e, rowData) => {
-      const newData = [...data];
-      const updatedRow = { ...rowData, quantity: e.value };
-      const rowIndex = newData.findIndex((item) => item.id === rowData.id);
-  
-      if (rowIndex !== -1) {
-        newData[rowIndex] = updatedRow;
-        setData(newData);
-      }
-  
+    const updateQuantity = (newValue) => {
+      const updatedRow = { ...rowData, quantity: newValue };
       const newQuantityMap = { ...quantityMap };
-      newQuantityMap[rowData.id] = e.value;
+      newQuantityMap[rowData.id] = newValue;
       setQuantityMap(newQuantityMap);
+      return updatedRow;
     };
   
+    const onSaveClick = () => {
+      const updatedRowData = updateQuantity(quantityMap[rowData.id]);
+      
+      const apiUrl = `http://localhost:8000/api/accaids/${rowData.id}/`;
+      
+      axios.put(apiUrl, updatedRowData)
+        .then(response => {
+          console.log('Row Data saved:', response.data);
+        })
+        .catch(error => {
+          console.error('Error saving Row Data:', error);
+        });
+    };
+      
     return (
-      <InputNumber
-        value={quantityMap[rowData.id]}
-        onValueChange={(e) => onQuantityChange(e, rowData)}
-        showButtons
-        buttonLayout="horizontal"
-        step={10}
-        decrementButtonIcon="pi pi-minus"
-        incrementButtonIcon="pi pi-plus"
-      />
+      <>
+        <InputNumber
+          value={quantityMap[rowData.id]}
+          onValueChange={(e) => updateQuantity(e.value)}
+          showButtons
+          buttonLayout="horizontal"
+          step={10}
+          decrementButtonIcon="pi pi-minus"
+          incrementButtonIcon="pi pi-plus"
+        />
+        <Button className="btnCheck ml-3" onClick={onSaveClick} icon="pi pi-check"></Button>
+      </>
     );
-  };  
+  };
+  
 
   const getSeverity = (urgency) => {
     switch (urgency) {
@@ -112,18 +123,6 @@ function App() {
       />
     );
   };
-  
-  const onSaveClick = () => {
-    const apiUrl = 'https://your-backend-api-url.com/inventory';
-
-    axios.put(apiUrl, data)
-      .then(response => {
-        console.log('Data saved:', response.data);
-      })
-      .catch(error => {
-        console.error('Error saving data:', error);
-      });
-  };
 
   return (
     <>
@@ -134,9 +133,6 @@ function App() {
           <Column field="urgency" header="Urgency" filter showFilterMenu={false} filterMenuStyle={{ width: '14rem' }}
           style={{ minWidth: '12rem' }} body={urgencyBodyTemplate} filterElement={urgencyFilter} />
         </DataTable>
-      </div>
-      <div className="button-container">
-        <Button label="Save" className="" onClick={onSaveClick} />
       </div>
     </>
   );

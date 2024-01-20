@@ -21,7 +21,7 @@ const AppMenu = () => {
                 { label: 'Stock Management ', icon: 'pi pi-fw pi-id-card', to: '/inventory/stockmanagement' },
                 { label: 'Requests', icon: 'pi pi-fw pi-check-square', to: '/inventory/requests' }
             ]
-        },        
+        },   
         {
             label: 'Get Started',
             items: [
