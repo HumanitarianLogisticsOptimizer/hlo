@@ -1,14 +1,18 @@
 from django.urls import path
 
-from backend.users.views import (
-    user_detail_view,
-    user_redirect_view,
-    user_update_view,
-)
+from backend.users import views
 
 app_name = "users"
+
 urlpatterns = [
-    path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
-    path("<int:pk>/", view=user_detail_view, name="detail"),
+    path("me/", view=views.UserAPIView.as_view(), name="user-me"),
+    path("login/", view=views.UserLoginAPIView.as_view(), name="user-login"),
+    path("volunteer-courier-register/", view=views.VolunteerCourierRegisterAPIView.as_view(), name="volunteer-reg"),
+    path("enterprise-courier-register/", view=views.EnterpriseCourierRegisterAPIView.as_view(), name="enterprise-reg"),
+    path("acc-admin-register/", view=views.ACCAdminRegisterAPIView.as_view(), name="acc-admin-reg"),
+    path("adc-admin-register/", view=views.ADCAdminRegisterAPIView.as_view(), name="adc-admin-reg"),
+    path("logout/", view=views.UserLogoutAPIView.as_view(), name="user-logout"),
 ]
+
+
+

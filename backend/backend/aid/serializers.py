@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.aid.models import ACCAid, ADCAid, ACC, ADC
+from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA
 
 
 class ACCSerializer(serializers.ModelSerializer):
@@ -25,3 +25,11 @@ class ADCAidSerializer(serializers.ModelSerializer):
     class Meta:
         model = ADCAid
         fields = "__all__"
+        read_only_fields = ['demanded_stock']
+
+
+class EMASerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EMA
+        fields = "__all__"
+

@@ -1,35 +1,53 @@
-from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField, EmailField
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.db import models
 
 from backend.users.managers import UserManager
 
 
-class User(AbstractUser):
-    """
-    Default custom user model for Hlo Backend.
-    If adding fields that need to be filled at user signup,
-    check forms.SignupForm and forms.SocialSignupForms accordingly.
-    """
-
-    # First and last name do not cover name patterns around the globe
-    name = CharField(_("Name of User"), blank=True, max_length=255)
-    first_name = None  # type: ignore
-    last_name = None  # type: ignore
-    email = EmailField(_("email address"), unique=True)
-    username = None  # type: ignore
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     objects = UserManager()
 
-    def get_absolute_url(self) -> str:
-        """Get URL for user's detail view.
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-        Returns:
-            str: URL for user detail.
+    def __str__(self):
+        return self.email
 
-        """
-        return reverse("users:detail", kwargs={"pk": self.id})
+
+class VolunteerCourier(User):
+    full_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    car_plate_number = models.CharField(max_length=20)
+    national_id_number = models.CharField(max_length=50)
+    city = models.TextField()
+    country = models.TextField()
+    vehicle_size = models.TextField()
+    availability = models.TextField()
+
+
+class EnterpriseCourier(User):
+    company_name = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    company_address = models.TextField()
+    date_of_establishment = models.DateField()
+    number_of_light_duty = models.IntegerField()
+    number_of_medium_duty = models.IntegerField()
+    number_of_heavy_duty = models.IntegerField()
+    trade_registration_number = models.TextField()
+
+
+class ACCAdmin(User):
+    acc_name = models.CharField(max_length=255)
+
+
+class ADCAdmin(User):
+    adc_name = models.CharField(max_length=255)
+
+
+
+
+

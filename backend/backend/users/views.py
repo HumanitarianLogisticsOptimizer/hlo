@@ -1,43 +1,124 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.views.generic import DetailView, RedirectView, UpdateView
+from django.contrib.auth import logout
+from rest_framework import status
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, RetrieveAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-User = get_user_model()
-
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
-    slug_field = "id"
-    slug_url_kwarg = "id"
-
-
-user_detail_view = UserDetailView.as_view()
+from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
+from backend.users.serializers import UserLoginSerializer, \
+    VolunteerCourierSerializer, EnterpriseCourierSerializer, \
+    VolunteerCourierRegisterSerializer, EnterpriseCourierRegisterSerializer, ACCAdminRegisterSerializer, \
+    ADCAdminRegisterSerializer
+from backend.users.utils import get_user_model_and_serializer
 
 
-class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
-    model = User
-    fields = ["name"]
-    success_message = _("Information successfully updated")
-
-    def get_success_url(self):
-        assert self.request.user.is_authenticated  # for mypy to know that the user is authenticated
-        return self.request.user.get_absolute_url()
-
-    def get_object(self):
-        return self.request.user
+class UserAPIView(RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        user = self.request.user
+        instance, serializer = get_user_model_and_serializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-user_update_view = UserUpdateView.as_view()
+class VolunteerCourierRegisterAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        if VolunteerCourier.objects.filter(email=request.data["email"]).exists():
+            return Response(
+                data={"message": "User already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = VolunteerCourierRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        VolunteerCourier.objects.create_user(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
-class UserRedirectView(LoginRequiredMixin, RedirectView):
-    permanent = False
+class EnterpriseCourierRegisterAPIView(APIView):
+    permission_classes = (AllowAny,)
 
-    def get_redirect_url(self):
-        return reverse("users:detail", kwargs={"pk": self.request.user.pk})
+    def post(self, request, *args, **kwargs):
+        if EnterpriseCourier.objects.filter(email=request.data["email"]).exists():
+            return Response(
+                data={"message": "User already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = EnterpriseCourierRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        EnterpriseCourier.objects.create_user(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
-user_redirect_view = UserRedirectView.as_view()
+class ACCAdminRegisterAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        if ACCAdmin.objects.filter(email=request.data["email"]).exists():
+            return Response(
+                data={"message": "User already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = ACCAdminRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        ACCAdmin.objects.create_user(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
+class ADCAdminRegisterAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        if ADCAdmin.objects.filter(email=request.data["email"]).exists():
+            return Response(
+                data={"message": "User already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = ADCAdminRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        ADCAdmin.objects.create_user(**serializer.validated_data)
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
+class UserLoginAPIView(APIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = UserLoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            data = {"message": "Email address is not valid."}
+            return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=request.data["email"])
+            if user.check_password(request.data["password"]):
+                from rest_framework.authtoken.models import Token
+
+                token, created = Token.objects.get_or_create(user=user)
+                return Response(data={"token": token.key}, status=status.HTTP_200_OK)
+            return Response(
+                data={"message": "Password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except User.DoesNotExist:
+            return Response(
+                data={"message": "User does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class UserLogoutAPIView(APIView):
+    def post(self, request, *args, **kwargs):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(data={"message": "User logged out."}, status=status.HTTP_200_OK)
