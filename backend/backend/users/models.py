@@ -28,6 +28,9 @@ class VolunteerCourier(User):
     vehicle_size = models.TextField()
     availability = models.TextField()
 
+    class Meta:
+        verbose_name = "Volunteer Courier"
+
 
 class EnterpriseCourier(User):
     company_name = models.CharField(max_length=255)
@@ -39,15 +42,29 @@ class EnterpriseCourier(User):
     number_of_heavy_duty = models.IntegerField()
     trade_registration_number = models.TextField()
 
+    class Meta:
+        verbose_name = "Enterprise Courier"
+
 
 class ACCAdmin(User):
     acc_name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "ACC Admin"
 
 
 class ADCAdmin(User):
     adc_name = models.CharField(max_length=255)
 
+    class Meta:
+        verbose_name = "ADC Admin"
 
+
+class EMAAdmin(User):
+    ema_name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "EMA Admin"
 
 
 

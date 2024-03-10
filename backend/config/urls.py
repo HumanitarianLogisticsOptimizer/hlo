@@ -51,3 +51,7 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
+admin.site.site_header = "HLO Admin Panel"
+admin.site.site_title = "HLO"
+admin.site.index_title = "Humanitarian Logistics Optimizer"

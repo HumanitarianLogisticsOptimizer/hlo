@@ -60,6 +60,9 @@ class ACCAid(models.Model):
         related_name="aids"
     )
 
+    class Meta:
+        verbose_name = "ACC Aid"
+
     def __str__(self):
         return f"{self.type} - {self.quantity} units at {self.center}"
 
@@ -75,6 +78,9 @@ class ADCAid(models.Model):
         on_delete=models.CASCADE,
         related_name="aids"
     )
+
+    class Meta:
+        verbose_name = "ADC Aid"
 
     def save(self, *args, **kwargs):
         # If quantity is less than or equal to half of standard_stock, set demanded_stock accordingly
