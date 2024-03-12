@@ -1,24 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Installation
 
-## Getting Started
+You'll need to install Node.js >=v14.16+ (Recommended Version) (NPM comes along with it) and TailAdmin uses **Vite** for frontend tooling, to peform installation and building production version, please follow these steps from below:
 
-First, run the development server:
+- Use terminal and navigate to the project (tailadmin-react) root.
+- Then run : `<code>`npm install `</code>`
+- Then run : `<code>`npm run dev `</code>`
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Now, in the browser go to `<code>`localhost:5173 `</code>`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**For Production Build**
+Run : `<code>`npm run build `</code>`
 
-## Learn More
+Default build output directory: /dist
 
-To learn more about Next.js, take a look at the following resources:
-
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This command will generate a dist as build folder in the root of your template that you can upload to your server.
