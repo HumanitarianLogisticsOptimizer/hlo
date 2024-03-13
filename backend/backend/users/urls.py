@@ -11,6 +11,7 @@ urlpatterns = [
     path("enterprise-courier-register/", view=views.EnterpriseCourierRegisterAPIView.as_view(), name="enterprise-reg"),
     path("acc-admin-register/", view=views.ACCAdminRegisterAPIView.as_view(), name="acc-admin-reg"),
     path("adc-admin-register/", view=views.ADCAdminRegisterAPIView.as_view(), name="adc-admin-reg"),
+    path("activate-user/", view=views.UserIsActiveAPIView.as_view(), name="activate-user"),
     path("logout/", view=views.UserLogoutAPIView.as_view(), name="user-logout"),
 ]
 

@@ -2,6 +2,12 @@ from rest_framework import serializers
 from backend.users.models import VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VolunteerCourier
+        fields = ("email",)
+
+
 class VolunteerCourierSerializer(serializers.ModelSerializer):
     class Meta:
         model = VolunteerCourier
