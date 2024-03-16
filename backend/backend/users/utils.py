@@ -8,25 +8,25 @@ from backend.users.serializers import VolunteerCourierSerializer, EnterpriseCour
 def get_user_model_and_serializer(user):
     # Try to find the user in each model
     try:
-        instance = VolunteerCourier.objects.get(user=user)
+        instance = VolunteerCourier.objects.get(id=user.id)
         return instance, VolunteerCourierSerializer(instance)
     except VolunteerCourier.DoesNotExist:
         pass
 
     try:
-        instance = EnterpriseCourier.objects.get(user=user)
+        instance = EnterpriseCourier.objects.get(id=user.id)
         return instance, EnterpriseCourierSerializer(instance)
     except EnterpriseCourier.DoesNotExist:
         pass
 
     try:
-        instance = ACCAdmin.objects.get(user=user)
+        instance = ACCAdmin.objects.get(id=user.id)
         return instance, ACCAdminSerializer(instance)
     except ACCAdmin.DoesNotExist:
         pass
 
     try:
-        instance = ADCAdmin.objects.get(user=user)
+        instance = ADCAdmin.objects.get(id=user.id)
         return instance, ADCAdminSerializer(instance)
     except ADCAdmin.DoesNotExist:
         pass

@@ -14,6 +14,8 @@ from backend.users.utils import get_user_model_and_serializer
 
 
 class UserAPIView(RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         user = self.request.user
         instance, serializer = get_user_model_and_serializer(user)
@@ -21,7 +23,7 @@ class UserAPIView(RetrieveAPIView):
 
 
 class VolunteerCourierRegisterAPIView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         if VolunteerCourier.objects.filter(email=request.data["email"]).exists():
@@ -38,7 +40,7 @@ class VolunteerCourierRegisterAPIView(APIView):
 
 
 class EnterpriseCourierRegisterAPIView(APIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         if EnterpriseCourier.objects.filter(email=request.data["email"]).exists():
