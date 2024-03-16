@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
 
-const PasswordWithPopover: React.FC = () => {
+interface PasswordWithPopoverProps {
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ onChange }) => {
   const [popoversOpen, setPopoversOpen] = useState(false);
 
   const trigger = useRef<any>(null);
@@ -36,13 +40,15 @@ const PasswordWithPopover: React.FC = () => {
       <div
         onMouseEnter={() => setPopoversOpen(true)}
         onMouseLeave={() => setPopoversOpen(false)}
-        className=''>
+      >
         <label className="mb-3 block text-md font-medium text-black dark:text-white">
           Password
         </label>
         <div className="relative">
           <input
             type="password"
+            id="password"
+            onChange={onChange}
             pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$"
             placeholder="Enter your password"
             className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-4 pl-6 pr-10 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

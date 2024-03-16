@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import PasswordWithPopover_Bigger from '../../components/HLO/PasswordWithPopover_Bigger';
+import axios from 'axios';
+import { AuthContext } from '../../components/HLO/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
+  const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8000/api/login/', {
+        email,
+        password
+      });
+
+      setAuth(response.data.token); // Use setAuth instead of localStorage.setItem
+
+      console.log(response.data);
+
+      // Navigate to the dashboard page
+      navigate('/');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Sign In" />
@@ -23,7 +54,9 @@ const SignIn: React.FC = () => {
                 <div className="relative">
                   <input
                     type="email"
+                    id="email"
                     placeholder="Enter your email"
+                    onChange={(event) => setEmail(event.target.value)}
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
 
@@ -47,12 +80,13 @@ const SignIn: React.FC = () => {
                 </div>
               </div>
 
-              <PasswordWithPopover_Bigger />
+              <PasswordWithPopover_Bigger onChange={handlePasswordChange} />
 
               <div className="mb-5">
                 <input
                   type="submit"
                   value="Sign In"
+                  onClick={handleSubmit}
                   className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>

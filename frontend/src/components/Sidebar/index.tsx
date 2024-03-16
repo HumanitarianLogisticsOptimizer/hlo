@@ -1,9 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import HLODashLogo from '../../images/HLO/hlo-dash.svg';
 import HLOStockLogo from '../../images/HLO/hlo-stock.svg';
 import HLORequest from '../../images/HLO/hlo-request.svg';
+import { AuthContext } from '../HLO/AuthProvider';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -11,6 +12,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const { auth, setAuth } = useContext(AuthContext)
   const location = useLocation();
   const { pathname } = location;
 
@@ -21,6 +23,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
+
+  const handleLogout = () => {
+    // Comment out the fetch request
+    /*
+    fetch('http://localhost:8000/api/logout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${auth}`,
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+      setAuth(null);
+      localStorage.removeItem('auth');
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+    */
+
+    setAuth(null);
+    localStorage.removeItem('auth');
+  };
 
   // close on click outside
   useEffect(() => {
@@ -211,28 +239,42 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         }`}
                     >
                       <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                        <li>
-                          <NavLink
-                            to="/auth/signin"
-                            className={({ isActive }) =>
-                              'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                              (isActive && '!text-white')
-                            }
-                          >
-                            Sign In
-                          </NavLink>
-                        </li>
-                        <li>
-                          <NavLink
-                            to="/auth/signup"
-                            className={({ isActive }) =>
-                              'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                              (isActive && '!text-white')
-                            }
-                          >
-                            Sign Up
-                          </NavLink>
-                        </li>
+                        {!auth && (
+                          <>
+                            <li>
+                              <NavLink
+                                to="/auth/signin"
+                                className={({ isActive }) =>
+                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                  (isActive && '!text-white')
+                                }
+                              >
+                                Sign In
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to="/auth/signup"
+                                className={({ isActive }) =>
+                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                  (isActive && '!text-white')
+                                }
+                              >
+                                Sign Up
+                              </NavLink>
+                            </li>
+                          </>
+                        )}
+                        {auth && (
+                          <li>
+                            <button
+                              onClick={handleLogout}
+                              className="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                            >
+                              Logout
+                            </button>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     {/* <!-- Dropdown Menu End --> */}
@@ -243,7 +285,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             {/* <!-- Menu Item Auth Pages --> */}
           </ul>
 
-          <ul>
+          {/* <ul>
             <li>
               <NavLink
                 to="/pages/terms-conditions"
@@ -269,7 +311,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 Terms & Conditions
               </NavLink>
             </li>
-          </ul>
+          </ul> */}
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

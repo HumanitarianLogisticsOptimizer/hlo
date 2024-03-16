@@ -1,18 +1,21 @@
 import flatpickr from 'flatpickr';
 import { useEffect, useState } from 'react';
 
-
-interface props {
-  onSendData: (value: Date) => void;
+interface DatePickerOneProps {
+  selected: Date;
+  onChange: (date: Date) => void;
 }
 
-
-const DatePickerOne: React.FC<props> = ({ onSendData }) => {
-  const [inputValue, setInputValue] = useState<string>('');
+const DatePickerOne: React.FC<DatePickerOneProps> = ({ selected, onChange }) => {
+  const [inputValue, setInputValue] = useState<string>(selected.toISOString().split('T')[0]);
 
   const sendDataToParent = (value: Date) => {
-    onSendData(value);
+    onChange(value);
   };
+
+  useEffect(() => {
+    setInputValue(selected.toISOString().split('T')[0]);
+  }, [selected]);
 
   useEffect(() => {
     // Init flatpickr

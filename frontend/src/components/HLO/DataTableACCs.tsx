@@ -20,7 +20,7 @@ const DataTableACCs = () => {
   const [accData, setAccData] = useState<ACC[]>([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/acc/')
+    axios.get('http://localhost:8000/api/acc')
       .then((res) => {
         setAccData(res.data);
       })

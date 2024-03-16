@@ -10,23 +10,23 @@ interface TableData {
   urgency: string;
 }
 
-const ACC_StockManagementTable: React.FC = () => {
+const StockManagementTable: React.FC = () => {
   const [accName, setAccName] = useState('');
   const [data, setData] = useState<TableData[]>([]);
 
-  const accId = 1; // Center bilgisini profilden alıp id'e göre data'yı çek
+  const centerId = 1; // Center bilgisini profilden alıp id'e göre data'yı çek
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/accaids?center=' + accId);
+        const response = await axios.get('http://localhost:8000/api/accaids/?center=' + centerId);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
 
       try {
-        const response = await axios.get("http://localhost:8000/api/acc/" + accId + "/");
+        const response = await axios.get("http://localhost:8000/api/acc/" + centerId + "/");
         setAccName(response.data.name);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -107,6 +107,9 @@ const ACC_StockManagementTable: React.FC = () => {
 
   return (
     <div className="w-full overflow-x-auto">
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-2xl font-bold text-black dark:text-white">{accName}</h2>
+      </div>
       <div className="min-w-[900px]">
         {/* table header start */}
         <div className="grid grid-cols-12 rounded-t-[10px] bg-primary px-5 py-4 lg:px-7.5 2xl:px-11">
@@ -167,4 +170,4 @@ const ACC_StockManagementTable: React.FC = () => {
   );
 };
 
-export default ACC_StockManagementTable;
+export default StockManagementTable;
