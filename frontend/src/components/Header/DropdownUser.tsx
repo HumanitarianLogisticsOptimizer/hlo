@@ -37,8 +37,6 @@ const DropdownUser = () => {
   });
 
   const handleLogout = () => {
-    // Comment out the fetch request
-    /*
     fetch('http://localhost:8000/api/logout/', {
       method: 'POST',
       headers: {
@@ -46,20 +44,16 @@ const DropdownUser = () => {
         'Authorization': `Token ${auth}`,
       },
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-      setAuth(null);
-      localStorage.removeItem('auth');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-    */
-
-    setAuth(null);
-    localStorage.removeItem('auth');
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Logout failed');
+        }
+        setAuth(null);
+        localStorage.removeItem('auth');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
 
   return (

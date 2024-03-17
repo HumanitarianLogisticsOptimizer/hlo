@@ -7,28 +7,19 @@ import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import { AuthContext } from "./AuthProvider";
 
 const HLO_EditProfile_VC = () => {
-  const { user } = useContext(AuthContext);
   const { auth } = useContext(AuthContext);
-  const [nationalId, setNationalId] = useState(0);
-  const [vehicleType, setVehicleType] = useState('');
-  const [address, setAddress] = useState('');
-  const [carPlate, setCarPlate] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [password, setPassword] = useState('');
+  const { user } = useContext(AuthContext);
 
-  // Uncomment the following lines when api is ready
-  {
-    // const [nationalId, setNationalId] = useState(user.national_id_number);
-    // const [vehicleType, setVehicleType] = useState(user.vehicle_size);
-    // const [address, setAddress] = useState(`${user.city}, ${user.country}`);
-    // const [carPlate, setCarPlate] = useState(user.car_plate_number);
-    // const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
-    // const [email, setEmail] = useState(user.email);
-    // const [fullName, setFullName] = useState(user.full_name);
-    // const [password, setPassword] = useState(user.password);
-  }
+  const [nationalId, setNationalId] = useState(user.national_id_number);
+  const [vehicleType, setVehicleType] = useState(user.vehicle_size);
+  const [city, setCity] = useState(user.city);
+  const [country, setCountry] = useState(user.country);
+  const [carPlate, setCarPlate] = useState(user.car_plate_number);
+  const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
+  const [email, setEmail] = useState(user.email);
+  const [fullName, setFullName] = useState(user.full_name);
+  const [password, setPassword] = useState(user.password);
+
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
@@ -42,39 +33,44 @@ const HLO_EditProfile_VC = () => {
     setNationalId(event.target.value.slice(0, limit));
   };
 
-useEffect(() => {
-  if (formSubmitted) {
-    fetch('http://localhost:8000/api/volunteer-courier-register/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Token ${auth}`,
-      },
-      body: JSON.stringify({
-        email,
-        full_name: fullName,
-        password,
-        phone_number: phoneNumber,
-        car_plate_number: carPlate,
-        national_id_number: nationalId,
-        city: address.split(', ')[0],
-        country: address.split(', ')[1],
-        vehicle_size: vehicleType,
-      }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
+  useEffect(() => {
+    if (formSubmitted) {
+      fetch('http://localhost:8000/api/volunteer-courier-register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          full_name: fullName,
+          password,
+          phone_number: phoneNumber,
+          car_plate_number: carPlate,
+          national_id_number: nationalId,
+          city: city,
+          country: country,
+          vehicle_size: vehicleType,
+        }),
       })
-      .catch(error => {
-        console.error('Error:', error);
-      })
-      .finally(() => {
-        // Reset the formSubmitted state
-        formSubmitRef.current(false);
-      });
-  }
-}, [formSubmitted]);
+        .then(response => {
+          if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+            return response.json();
+          } else {
+            throw new Error('Server response was not ok or not JSON.');
+          }
+        })
+        .then(data => {
+          console.log(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        })
+        .finally(() => {
+          // Reset the formSubmitted state
+          formSubmitRef.current(false);
+        });
+    }
+  }, [formSubmitted]);
 
   return (
     <DefaultLayout>
@@ -116,9 +112,8 @@ useEffect(() => {
             </div>
 
             <div className="mb-5.5 flex flex-col gap-6 xl:flex-row">
-              <PasswordWithPopover password={password} onPasswordChange={(password) => {
-                setPassword(password);
-              }} />
+              <PasswordWithPopover password={password} onPasswordChange={setPassword} />
+
               <div className="w-full xl:w-1/2">
                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                   Phone Number
@@ -134,9 +129,7 @@ useEffect(() => {
             </div>
 
             <div className="mb-5 flex flex-col gap-6 xl:flex-row">
-              <HLO_VehicleOption vehicleType={vehicleType} onOptionSelected={(selectedOptionId) => {
-                setVehicleType(selectedOptionId);
-              }} />
+              <HLO_VehicleOption vehicleType={user.vehicleType} onOptionSelected={setVehicleType} />
               <div className="w-full xl:w-1/2">
                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                   Car Plate Number
@@ -168,17 +161,32 @@ useEffect(() => {
                 />
               </div>
 
-              <div className="w-full xl:w-1/2">
-                <label className="block text-black dark:text-white">
-                  Address
-                </label>
-                <textarea
-                  rows={2}
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  placeholder="(Country, city, state, street, apartment number, postal code)"
-                  className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                ></textarea>
+              <div className="mb-5 flex flex-col gap-6 xl:flex-row">
+                <div className="w-full xl:w-1/2">
+                  <label className="block text-black dark:text-white">
+                    City
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="City"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+
+                <div className="w-full xl:w-1/2">
+                  <label className="block text-black dark:text-white">
+                    Country
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Country"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
               </div>
             </div>
 

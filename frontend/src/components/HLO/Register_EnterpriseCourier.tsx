@@ -1,10 +1,12 @@
 import PhoneInput from "react-phone-number-input/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 
 const Register_EnterpriseCourier: React.FC = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +20,17 @@ const Register_EnterpriseCourier: React.FC = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
 
+  const [emailError, setEmailError] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [companyAddressError, setCompanyAddressError] = useState("");
+  const [tradeRegistrationNumberError, setTradeRegistrationNumberError] = useState("");
+  const [numberOfLightDutyError, setNumberOfLightDutyError] = useState("");
+  const [numberOfMediumDutyError, setNumberOfMediumDutyError] = useState("");
+  const [numberOfHeavyDutyError, setNumberOfHeavyDutyError] = useState("");
+
+
   useEffect(() => {
     formSubmitRef.current = setFormSubmitted;
   }, [setFormSubmitted]);
@@ -29,47 +42,97 @@ const Register_EnterpriseCourier: React.FC = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
-  };
 
-  useEffect(() => {
-    if (formSubmitted) {
-      fetch('http://localhost:8000/api/enterprise-courier-register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          company_name: companyName,
-          password,
-          phone_number: phoneNumber,
-          company_address: companyAddress,
-          date_of_establishment: dateOfEstablishment.toISOString().split('T')[0],
-          number_of_light_duty: numberOfLightDuty,
-          number_of_medium_duty: numberOfMediumDuty,
-          number_of_heavy_duty: numberOfHeavyDuty,
-          trade_registration_number: tradeRegistrationNumber,
-        }),
-      })
-        .then(response => {
-          if (response.headers.get('content-type')?.includes('application/json')) {
-            return response.json();
-          } else {
-            throw new Error('Received unexpected content-type');
-          }
-        })
-        .then(data => {
-          console.log(data);
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        })
-        .finally(() => {
-          formSubmitRef.current(false);
-        });
+    // Reset the error messages
+    setEmailError("");
+    setCompanyNameError("");
+    setPasswordError("");
+    setPhoneNumberError("");
+    setCompanyAddressError("");
+    setTradeRegistrationNumberError("");
+    setNumberOfLightDutyError("");
+    setNumberOfMediumDutyError("");
+    setNumberOfHeavyDutyError("");
+
+    // Validate the input fields
+    if (!email) {
+      setEmailError('Email must not be empty');
     }
-  }, [formSubmitted]);
+
+    if (!companyName) {
+      setCompanyNameError('Company name must not be empty');
+    }
+
+    if (!password) {
+      setPasswordError('Password must not be empty');
+    }
+
+    if (!phoneNumber) {
+      setPhoneNumberError('Phone number must not be empty');
+    }
+
+    if (!companyAddress) {
+      setCompanyAddressError('Company address must not be empty');
+    }
+
+    if (!tradeRegistrationNumber) {
+      setTradeRegistrationNumberError('Trade registration number must not be empty');
+    }
+
+    if (!numberOfLightDuty) {
+      setNumberOfLightDutyError('Number of light-duty vehicles must not be empty');
+    }
+
+    if (!numberOfMediumDuty) {
+      setNumberOfMediumDutyError('Number of medium-duty vehicles must not be empty');
+    }
+
+    if (!numberOfHeavyDuty) {
+      setNumberOfHeavyDutyError('Number of heavy-duty vehicles must not be empty');
+    }
+
+    // Check if any errors were found
+    if (emailError || companyNameError || passwordError || phoneNumberError || companyAddressError || tradeRegistrationNumberError || numberOfLightDutyError || numberOfMediumDutyError || numberOfHeavyDutyError) {
+      return;
+    }
+
+    setFormSubmitted(true);
+
+    fetch('http://localhost:8000/api/enterprise-courier-register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        company_name: companyName,
+        password,
+        phone_number: phoneNumber,
+        company_address: companyAddress,
+        date_of_establishment: dateOfEstablishment.toISOString().split('T')[0],
+        number_of_light_duty: numberOfLightDuty,
+        number_of_medium_duty: numberOfMediumDuty,
+        number_of_heavy_duty: numberOfHeavyDuty,
+        trade_registration_number: tradeRegistrationNumber,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        navigate('/');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
+  };
 
   return (
     <div>
@@ -92,6 +155,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 onChange={(e) => setCompanyName(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{companyNameError}</span>
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -105,13 +169,17 @@ const Register_EnterpriseCourier: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{emailError}</span>
             </div>
           </div>
 
           <div className="mb-5.5 flex flex-col gap-6 xl:flex-row">
-            <PasswordWithPopover password={password} onPasswordChange={(password) => {
-              setPassword(password);
-            }} />
+            <div className="w-full xl:w-1/2 flex flex-col">
+              <PasswordWithPopover password={password} onPasswordChange={(password) => {
+                setPassword(password);
+              }} />
+              <span className="text-danger font-bold">{passwordError}</span>
+            </div>
             <div className="w-full xl:w-1/2">
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Phone Number
@@ -123,6 +191,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 onChange={setPhoneNumber}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{phoneNumberError}</span>
             </div>
           </div>
 
@@ -139,6 +208,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 onChange={(e) => setCompanyAddress(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               ></textarea>
+              <span className="text-danger font-bold">{companyAddressError}</span>
             </div>
           </div>
 
@@ -156,6 +226,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 min={1000000000000000}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{tradeRegistrationNumberError}</span>
             </div>
 
             <DatePickerOne selected={dateOfEstablishment} onChange={(date: Date) => setDateOfEstablishment(date)} />
@@ -174,6 +245,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{numberOfLightDutyError}</span>
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -188,6 +260,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{numberOfMediumDutyError}</span>
             </div>
           </div>
 
@@ -204,6 +277,7 @@ const Register_EnterpriseCourier: React.FC = () => {
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{numberOfHeavyDutyError}</span>
             </div>
             <div className="lg:w-1/2 xl:w-1/2"></div>
           </div>
@@ -214,6 +288,7 @@ const Register_EnterpriseCourier: React.FC = () => {
               value="Send Registration Request"
               className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
             />
+
           </div>
 
           <div className="mt-5 text-center">

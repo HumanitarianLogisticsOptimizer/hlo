@@ -1,10 +1,12 @@
 import PhoneInput from "react-phone-number-input/input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import HLO_VehicleOption from "./HLO_VehicleOption";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 
 const Register_VolunteerCourier: React.FC = () => {
+  const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +16,17 @@ const Register_VolunteerCourier: React.FC = () => {
   const [nationalId, setNationalId] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+
+  const [fullNameError, setFullNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [vehicleTypeError, setVehicleTypeError] = useState("");
+  const [carPlateError, setCarPlateError] = useState("");
+  const [nationalIdError, setNationalIdError] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [countryError, setCountryError] = useState("");
+
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
 
@@ -23,43 +36,96 @@ const Register_VolunteerCourier: React.FC = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
-  };
 
-  useEffect(() => {
-    if (formSubmitted) {
-      fetch('http://localhost:8000/api/volunteer-courier-register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          full_name: fullName,
-          password,
-          phone_number: phoneNumber,
-          car_plate_number: carPlate,
-          national_id_number: nationalId,
-          city,
-          country,
-          vehicle_size: vehicleType,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Handle the response data
-          console.log(data);
-        })
-        .catch(error => {
-          // Handle the error
-          console.error('Error:', error);
-        })
-        .finally(() => {
-          // Reset the formSubmitted state
-          formSubmitRef.current(false);
-        });
+    // Reset the error messages
+    setFullNameError("");
+    setEmailError("");
+    setPasswordError("");
+    setPhoneNumberError("");
+    setVehicleTypeError("");
+    setCarPlateError("");
+    setNationalIdError("");
+    setCityError("");
+    setCountryError("");
+
+    // Validate the input fields
+    if (!fullName) {
+      setFullNameError('Full name must not be empty');
     }
-  }, [formSubmitted]);
+
+    if (!email) {
+      setEmailError('Email must not be empty');
+    }
+
+    if (!password) {
+      setPasswordError('Password must not be empty');
+    }
+
+    if (!phoneNumber) {
+      setPhoneNumberError('Phone number must not be empty');
+    }
+
+    if (!vehicleType) {
+      setVehicleTypeError('Vehicle type must not be empty');
+    }
+
+    if (!carPlate) {
+      setCarPlateError('Car plate number must not be empty');
+    }
+
+    if (!nationalId) {
+      setNationalIdError('National ID number must not be empty');
+    }
+
+    if (!city) {
+      setCityError('City must not be empty');
+    }
+
+    if (!country) {
+      setCountryError('Country must not be empty');
+    }
+
+    // Check if any errors were found
+    if (fullNameError || emailError || passwordError || phoneNumberError || vehicleTypeError || carPlateError || nationalIdError || cityError || countryError) {
+      return;
+    }
+
+    setFormSubmitted(true);
+
+    fetch('http://localhost:8000/api/volunteer-courier-register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        full_name: fullName,
+        password,
+        phone_number: phoneNumber,
+        car_plate_number: carPlate,
+        national_id_number: nationalId,
+        city,
+        country,
+        vehicle_size: vehicleType,
+      }),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+        navigate('/');
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      })
+      .finally(() => {
+        setFormSubmitted(false);
+      });
+  };
 
   const handleNationalIdChange = event => {
     const limit = 11;
@@ -88,6 +154,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={(e) => setFullName(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{fullNameError}</span>
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -101,13 +168,17 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{emailError}</span>
             </div>
           </div>
 
           <div className="mb-5.5 flex flex-col gap-6 xl:flex-row">
-            <PasswordWithPopover password={password} onPasswordChange={(password) => {
-              setPassword(password);
-            }} />
+            <div className="w-full xl:w-1/2 flex flex-col">
+              <PasswordWithPopover password={password} onPasswordChange={(password) => {
+                setPassword(password);
+              }} />
+              <span className="text-danger font-bold">{passwordError}</span>
+            </div>
             <div className="w-full xl:w-1/2">
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Phone Number
@@ -119,13 +190,17 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={setPhoneNumber}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{phoneNumberError}</span>
             </div>
           </div>
 
           <div className="mb-5 flex flex-col gap-6 xl:flex-row">
-            <HLO_VehicleOption vehicleType={vehicleType} onOptionSelected={(selectedOptionId) => {
-              setVehicleType(selectedOptionId);
-            }} />
+            <div className="w-full xl:w-1/2 flex flex-col">
+              <HLO_VehicleOption vehicleType={vehicleType} onOptionSelected={(selectedOptionId) => {
+                setVehicleType(selectedOptionId);
+              }} />
+              <span className="text-danger font-bold">{vehicleTypeError}</span>
+            </div>
             <div className="w-full xl:w-1/2">
               <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                 Car Plate Number
@@ -139,6 +214,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={(e) => setCarPlate(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{carPlateError}</span>
             </div>
           </div>
 
@@ -154,6 +230,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={(e) => setCity(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{cityError}</span>
             </div>
 
             <div className="w-full xl:w-1/2">
@@ -167,6 +244,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 onChange={(e) => setCountry(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{countryError}</span>
             </div>
           </div>
 
@@ -183,6 +261,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 placeholder="National ID"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
+              <span className="text-danger font-bold">{nationalIdError}</span>
             </div>
           </div>
 

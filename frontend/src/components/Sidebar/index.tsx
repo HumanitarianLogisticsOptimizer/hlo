@@ -25,8 +25,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   );
 
   const handleLogout = () => {
-    // Comment out the fetch request
-    /*
     fetch('http://localhost:8000/api/logout/', {
       method: 'POST',
       headers: {
@@ -44,10 +42,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     .catch(error => {
       console.error('Error:', error);
     });
-    */
-
-    setAuth(null);
-    localStorage.removeItem('auth');
   };
 
   // close on click outside

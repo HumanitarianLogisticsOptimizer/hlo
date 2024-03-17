@@ -7,13 +7,21 @@ interface PasswordWithPopoverProps {
 
 const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ password, onPasswordChange }) => {
   const [popoversOpen, setPopoversOpen] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
   const trigger = useRef<any>(null);
   const popovers = useRef<any>(null);
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (onPasswordChange) {
-      onPasswordChange(event.target.value);
+    onPasswordChange(event.target.value);
+
+    // Validate the password
+    const password = event.target.value;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
+    if (!passwordPattern.test(password)) {
+      setPasswordError('Password must match the requested format');
+    } else {
+      setPasswordError('');
     }
   };
 
@@ -43,24 +51,25 @@ const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ password, onP
     return () => document.removeEventListener('keydown', keyHandler);
   });
   return (
-    <div className="relative inline-block w-full xl:w-1/2">
+    <div className="relative inline-block w-full">
       <div
         onMouseEnter={() => setPopoversOpen(true)}
         onMouseLeave={() => setPopoversOpen(false)}
-        className=''>
+        >
         <label className="mb-3 block text-sm font-medium text-black dark:text-white">
           Password
         </label>
         <div className="relative">
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$"
-            placeholder="Enter your password"
-            className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-          />
-
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={handlePasswordChange}
+              pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$"
+              placeholder="Enter your password"
+              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-4 pl-6 pr-10 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            />
+            <span className="text-danger font-bold">{passwordError}</span>
           <span className="absolute right-4 top-4">
             <svg
               className="fill-current"

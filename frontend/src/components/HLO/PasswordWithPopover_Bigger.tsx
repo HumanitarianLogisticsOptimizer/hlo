@@ -6,6 +6,7 @@ interface PasswordWithPopoverProps {
 
 const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ onChange }) => {
   const [popoversOpen, setPopoversOpen] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
   const trigger = useRef<any>(null);
   const popovers = useRef<any>(null);
@@ -35,8 +36,22 @@ const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ onChange }) =
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   });
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(event);
+
+    // Validate the password
+    const password = event.target.value;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/;
+    if (!passwordPattern.test(password)) {
+      setPasswordError('Password must match the requested format');
+    } else {
+      setPasswordError('');
+    }
+  };
+
   return (
-    <div className="relative inline-block w-full mb-6">
+    <div className="relative inline-block w-full">
       <div
         onMouseEnter={() => setPopoversOpen(true)}
         onMouseLeave={() => setPopoversOpen(false)}
@@ -48,7 +63,7 @@ const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ onChange }) =
           <input
             type="password"
             id="password"
-            onChange={onChange}
+            onChange={handlePasswordChange}
             pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$"
             placeholder="Enter your password"
             className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-4 pl-6 pr-10 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -75,6 +90,7 @@ const PasswordWithPopover: React.FC<PasswordWithPopoverProps> = ({ onChange }) =
               </g>
             </svg>
           </span>
+          <span className=" text-danger font-bold">{passwordError}</span>
         </div>
       </div>
       <div

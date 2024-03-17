@@ -12,6 +12,8 @@ const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -19,20 +21,40 @@ const SignIn: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    // Reset the error messages
+    setEmailError('');
+    setPasswordError('');
+
+    // Validate the email and password
+    if (!email) {
+      setEmailError('Email must not be empty');
+      return;
+    }
+    if (!password) {
+      setPasswordError('Password must not be empty');
+      return;
+    }
+
+    // Add your password format validation here
+    // if (!passwordMatchesFormat(password)) {
+    //   setPasswordError('Password must match the requested format');
+    //   return;
+    // }
+
     try {
       const response = await axios.post('http://localhost:8000/api/login/', {
         email,
         password
       });
 
-      setAuth(response.data.token); // Use setAuth instead of localStorage.setItem
-
       console.log(response.data);
-
-      // Navigate to the dashboard page
+      // Store the token
+      setAuth(response.data.token);
       navigate('/');
     } catch (error) {
       console.error('Error:', error);
+      setEmailError('Email or password does not match');
+      setPasswordError('Email or password does not match');
     }
   };
 
@@ -77,11 +99,14 @@ const SignIn: React.FC = () => {
                       </g>
                     </svg>
                   </span>
+                  <span className="text-danger underline">{emailError}</span>
                 </div>
               </div>
 
-              <PasswordWithPopover_Bigger onChange={handlePasswordChange} />
-
+              <div className="mb-6">
+                <PasswordWithPopover_Bigger onChange={handlePasswordChange} />
+                <span className="text-danger underline">{passwordError}</span>
+              </div>
               <div className="mb-5">
                 <input
                   type="submit"
