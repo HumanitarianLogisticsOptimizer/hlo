@@ -14,6 +14,8 @@
     "url": "https://tailadmin.com"
   },
   "dependencies": {
+    "@googlemaps/adv-markers-utils": "^1.2.4",
+    "@react-google-maps/api": "^2.19.3",
     "apexcharts": "^3.37.0",
     "axios": "^1.6.7",
     "dropzone": "^6.0.0-beta.2",

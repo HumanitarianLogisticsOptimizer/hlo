@@ -13,6 +13,7 @@ import HLO_EditProfile_VC from './components/HLO/HLO_EditProfile_VC';
 import HLO_EditProfile_EC from './components/HLO/HLO_EditProfile_EC';
 import ConfirmDeny_Page from './components/HLO/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
+import CenterMap from './components/HLO/CenterMap';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -75,6 +76,15 @@ function App() {
               <>
                 <PageTitle title="Confirm Deny" />
                 <ConfirmDeny_Page />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/centermap"
+            element={
+              <>
+                <PageTitle title="map" />
+                <CenterMap selectedLocation={undefined} />
               </>
             }
           />
