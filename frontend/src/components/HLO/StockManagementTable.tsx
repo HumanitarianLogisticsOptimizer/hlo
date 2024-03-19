@@ -22,15 +22,16 @@ const StockManagementTable: React.FC = () => {
     if (!user) {
       navigate('/auth/signin');
     }
+    if (user?.user_type !== 'acc_admin' && user?.user_type !== 'adc_admin') {
+      navigate('/');
+    }
   }, [user, navigate]);
 
   const userType = user?.user_type;
   const centerType = userType === 'acc_admin' ? 'acc' : userType === 'adc_admin' ? 'adc' : 'acc';
   const [centerName, setCenterName] = useState('');
   const [data, setData] = useState<TableData[]>([]);
-  // const centerId = user?.center;
-
-  const centerId = 1; // Center bilgisini profilden alıp id'e göre data'yı çek
+  const centerId = user?.center;
 
   const isDarkMode = useDarkMode();
 

@@ -19,6 +19,29 @@ interface ACC {
 const DataTableACCs = () => {
   const [accData, setAccData] = useState<ACC[]>([]);
 
+  const isDarkMode = useDarkMode();
+
+  function useDarkMode() {
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach(({ target }) => {
+          const { className } = target as HTMLBodyElement;
+          setIsDarkMode(className.includes('dark'));
+        });
+      });
+
+      observer.observe(document.body, { attributes: true });
+
+      return () => {
+        observer.disconnect();
+      };
+    }, []);
+
+    return isDarkMode;
+  }
+
   useEffect(() => {
     axios.get('http://localhost:8000/api/acc')
       .then((res) => {
@@ -84,11 +107,8 @@ const DataTableACCs = () => {
 
   return (
     <>
-      <h2 className="mb-6 text-title-lg font-semibold text-black dark:text-white">
-        Aid Collection Centers
-      </h2>
-      <section className="data-table-common data-table-two rounded-sm border border-stroke bg-white py-4 shadow-default dark:border-strokedark  dark:bg-boxdark">
-        <div className="flex justify-between border-b border-stroke px-8 pb-4 dark:border-strokedark">
+      <section className="data-table-common data-table-two">
+        <div className="flex justify-between border-b border-stroke pb-4 dark:border-strokedark">
           <div className="w-100">
             <input
               type="text"
@@ -164,25 +184,25 @@ const DataTableACCs = () => {
               </tr>
             ))}
           </thead>
-            <tbody {...getTableBodyProps()}>
-              {page.map((row, key) => {
-                prepareRow(row);
-                return (
-                  <tr {...row.getRowProps()} key={key}>
-                    <td {...row.cells[0].getCellProps()}>
-                      <img width={100} src="src/images/HLO/hlo-acc.svg" alt="ACC Image" />
-                    </td>
-                    {row.cells.slice(1).map((cell, key) => {
-                      return (
-                        <td {...cell.getCellProps()} key={key}>
-                          {cell.render('Cell')}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row, key) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()} key={key}>
+                  <td {...row.cells[0].getCellProps()}>
+                    <img width={100} src={ isDarkMode ? "src/images/HLO/hlo-acc-light.svg" : "src/images/HLO/hlo-acc.svg" } alt="ACC Image" />
+                  </td>
+                  {row.cells.slice(1).map((cell, key) => {
+                    return (
+                      <td {...cell.getCellProps()} key={key}>
+                        {cell.render('Cell')}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
         </table>
 
         <div className="flex justify-between border-t border-stroke px-8 pt-5 dark:border-strokedark">

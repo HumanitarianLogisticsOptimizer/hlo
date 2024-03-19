@@ -14,6 +14,7 @@ interface SidebarProps {
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const { auth, setAuth } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const { pathname } = location;
   const navigate = useNavigate();
@@ -153,7 +154,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
 
-          {auth && (
+          {(user?.user_type == 'acc_admin' || user?.user_type == 'adc_admin' || user?.user_type == 'ema_admin') && (
             <>
               <ul className="mb-6 flex flex-col">
                 {/* <!-- Menu Item Auth Pages --> */}
@@ -201,16 +202,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             }`}
                         >
                           <ul className='ml-4'>
-                            <li>
-                              <NavLink
-                                to="/hlo/admin/stockmanagement/"
-                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
-                                  }`}
-                              >
-                                <img src={HLOStockLogo} height={20} width={20} />
-                                Stock Management
-                              </NavLink>
-                            </li>
+                            {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin') && (
+                              <li>
+                                <NavLink
+                                  to="/hlo/admin/stockmanagement/"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
+                                    }`}
+                                >
+                                  <img src={HLOStockLogo} height={20} width={20} />
+                                  Stock Management
+                                </NavLink>
+                              </li>
+                            )}
+                            {/* {(user?.user_type === 'ema_admin') && ( */}
                             <li>
                               <NavLink
                                 to="/hlo/admin/confirmdeny_page"
@@ -221,6 +225,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 Confirm/Deny Registration
                               </NavLink>
                             </li>
+                            {/* )} */}
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

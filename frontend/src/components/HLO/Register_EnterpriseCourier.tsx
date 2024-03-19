@@ -1,11 +1,12 @@
 import PhoneInput from "react-phone-number-input/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
+import closeImg from "../../images/HLO/close-circle.svg";
 
 const Register_EnterpriseCourier: React.FC = () => {
-  const navigate = useNavigate();
+  const [message, setMessage] = useState(null);
 
   const [email, setEmail] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -57,37 +58,21 @@ const Register_EnterpriseCourier: React.FC = () => {
     // Validate the input fields
     if (!email) {
       setEmailError('Email must not be empty');
-    }
-
-    if (!companyName) {
+    } if (!companyName) {
       setCompanyNameError('Company name must not be empty');
-    }
-
-    if (!password) {
+    } if (!password) {
       setPasswordError('Password must not be empty');
-    }
-
-    if (!phoneNumber) {
+    } if (!phoneNumber) {
       setPhoneNumberError('Phone number must not be empty');
-    }
-
-    if (!companyAddress) {
+    } if (!companyAddress) {
       setCompanyAddressError('Company address must not be empty');
-    }
-
-    if (!tradeRegistrationNumber) {
+    } if (!tradeRegistrationNumber) {
       setTradeRegistrationNumberError('Trade registration number must not be empty');
-    }
-
-    if (!numberOfLightDuty) {
+    } if (!numberOfLightDuty) {
       setNumberOfLightDutyError('Number of light-duty vehicles must not be empty');
-    }
-
-    if (!numberOfMediumDuty) {
+    } if (!numberOfMediumDuty) {
       setNumberOfMediumDutyError('Number of medium-duty vehicles must not be empty');
-    }
-
-    if (!numberOfHeavyDuty) {
+    } if (!numberOfHeavyDuty) {
       setNumberOfHeavyDutyError('Number of heavy-duty vehicles must not be empty');
     }
 
@@ -120,11 +105,22 @@ const Register_EnterpriseCourier: React.FC = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
+        return response.text().then(text => text ? JSON.parse(text) : {});
       })
       .then(data => {
         console.log(data);
-        navigate('/');
+        setMessage('Registration request sent! Please wait for the admin to approve your request.');
+
+        setEmail("");
+        setCompanyName("");
+        setPassword("");
+        setPhoneNumber("");
+        setCompanyAddress("");
+        setDateOfEstablishment(new Date());
+        setNumberOfLightDuty("");
+        setNumberOfMediumDuty("");
+        setNumberOfHeavyDuty("");
+        setTradeRegistrationNumber("");
       })
       .catch(error => {
         console.error('Error:', error);
@@ -136,6 +132,36 @@ const Register_EnterpriseCourier: React.FC = () => {
 
   return (
     <div>
+      {message && (
+        <div className="mb-4 flex w-full border-l-6 border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-black dark:text-[#34D399] ">
+              {message}
+            </h3>
+          </div>
+          <button
+            className="ml-auto"
+            onClick={() => setMessage(null)}
+          >
+            <img src={closeImg} width={35} height={35} alt="" />
+          </button>
+        </div>
+      )}
       <div className="dark:border-strokedark">
         <h2 className="text-lg font-bold text-black dark:text-white sm:text-title-lg">
           Register as an Enterprise Courier

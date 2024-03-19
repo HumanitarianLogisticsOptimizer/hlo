@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import Register_VolunteerCourier from '../../components/HLO/Register_VolunteerCourier';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Register_EnterpriseCourier from '../../components/HLO/Register_EnterpriseCourier';
+import { AuthContext } from '../../components/HLO/AuthProvider';
 
 const SignUp: React.FC = () => {
+  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [openTab, setOpenTab] = useState(1);
 
   const activeClasses = 'text-primary border-primary';
   const inactiveClasses = 'border-transparent';
+
+  useEffect(() => {
+    if (auth) {
+      navigate('/');
+    }
+  }, [auth, navigate]);
 
   return (
     <DefaultLayout>

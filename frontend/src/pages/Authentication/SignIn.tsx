@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
@@ -8,12 +8,18 @@ import { AuthContext } from '../../components/HLO/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  useEffect(() => {
+    if (auth) {
+      navigate('/');
+    }
+  }, [auth, navigate]);
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -34,12 +40,6 @@ const SignIn: React.FC = () => {
       setPasswordError('Password must not be empty');
       return;
     }
-
-    // Add your password format validation here
-    // if (!passwordMatchesFormat(password)) {
-    //   setPasswordError('Password must match the requested format');
-    //   return;
-    // }
 
     try {
       const response = await axios.post('http://localhost:8000/api/login/', {

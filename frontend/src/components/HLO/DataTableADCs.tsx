@@ -19,6 +19,29 @@ interface ADC {
 const DataTablesADCs = () => {
   const [adcData, setAdcData] = useState<ADC[]>([]);
 
+  const isDarkMode = useDarkMode();
+
+  function useDarkMode() {
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach(({ target }) => {
+          const { className } = target as HTMLBodyElement;
+          setIsDarkMode(className.includes('dark'));
+        });
+      });
+
+      observer.observe(document.body, { attributes: true });
+
+      return () => {
+        observer.disconnect();
+      };
+    }, []);
+
+    return isDarkMode;
+  }
+
   useEffect(() => {
     axios
       .get("http://localhost:8000/api/adc/")
@@ -86,11 +109,8 @@ const DataTablesADCs = () => {
 
   return (
     <>
-      <h2 className="mb-6 text-title-lg font-semibold text-black dark:text-white">
-        Aid Distribution Centers
-      </h2>
-      <section className="data-table-common data-table-two rounded-sm border border-stroke bg-white py-4 shadow-default dark:border-strokedark  dark:bg-boxdark">
-        <div className="flex justify-between border-b border-stroke px-8 pb-4 dark:border-strokedark">
+      <section className="data-table-common data-table-two">
+        <div className="flex justify-between border-b border-stroke pb-4 dark:border-strokedark">
           <div className="w-100">
             <input
               type="text"
@@ -173,7 +193,7 @@ const DataTablesADCs = () => {
               return (
                 <tr {...row.getRowProps()} key={key}>
                   <td {...row.cells[0].getCellProps()}>
-                    <img width={100} src="src/images/HLO/hlo-adc.svg" alt="ACC Image" />
+                    <img width={100} src={ isDarkMode ? "src/images/HLO/hlo-adc-light.svg" : "src/images/HLO/hlo-adc.svg" }alt="ACC Image" />
                   </td>
                   {row.cells.slice(1).map((cell, key) => {
                     return (

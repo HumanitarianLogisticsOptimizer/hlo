@@ -1,12 +1,41 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
 import closeImg from "../../images/HLO/close-circle.svg"
+import { AuthContext } from './AuthProvider';
+import { useNavigate } from 'react-router-dom';
 interface User {
   email: string;
+  user_type: string;
+  national_id_number: string;
+  trade_registration_number: string;
 }
 
 const ConfirmDeny_Page: React.FC = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const getUserType = (userType: string) => {
+    switch (userType) {
+      case 'enterprise_courier':
+        return 'Enterprise Courier';
+      case 'volunteer_courier':
+        return 'Volunteer Courier';
+      case 'acc_admin':
+        return 'ACC Admin';
+      case 'adc_admin':
+        return 'ADC Admin';
+      default:
+        return 'Guest';
+    }
+  }
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth/signin');
+    }
+  }, [user, navigate]);
+
   const [users, setUsers] = useState<User[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -73,9 +102,19 @@ const ConfirmDeny_Page: React.FC = () => {
           <div className="min-w-[1170px]">
             {/* table header start */}
             <div className="grid grid-cols-4 px-5 py-4 dark:bg-meta-4 lg:px-7.5 2xl:px-11 bg-primary">
-              <div className="col-span-3">
+              <div className="">
                 <h5 className=" text-white font-bold">
-                  EMAIL
+                  User Type
+                </h5>
+              </div>
+              <div className="">
+                <h5 className=" text-white font-bold">
+                  Email
+                </h5>
+              </div>
+              <div className="">
+                <h5 className=" text-white font-bold">
+                  TRN / TCKN
                 </h5>
               </div>
             </div>
@@ -88,12 +127,23 @@ const ConfirmDeny_Page: React.FC = () => {
                   key={index}
                   className="grid grid-cols-4 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11"
                 >
-                  <div className="col-span-3">
+                  <div className="">
+                    <p className="text-[#637381] dark:text-bodydark">
+                      {getUserType(user.user_type)}
+                    </p>
+                  </div>
+                  <div className="">
                     <p className="text-[#637381] dark:text-bodydark">
                       {user.email}
                     </p>
                   </div>
-
+                  <div className="">
+                    <p className="text-[#637381] dark:text-bodydark">
+                      {user.user_type === 'enterprise_courier' ? user.trade_registration_number :
+                        user.user_type === 'volunteer_courier' ? user.national_id_number :
+                          "N/A"}
+                    </p>
+                  </div>
                   <div className="col-span-1 flex justify-end">
                     <button
                       className="inline-flex items-center justify-center gap-2.5 rounded-md border border-primary py-2 px-4 text-center font-medium text-primary dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"

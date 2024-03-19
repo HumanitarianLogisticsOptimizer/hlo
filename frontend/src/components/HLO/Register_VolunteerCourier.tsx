@@ -1,11 +1,12 @@
 import PhoneInput from "react-phone-number-input/input";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import HLO_VehicleOption from "./HLO_VehicleOption";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
+import closeImg from "../../images/HLO/close-circle.svg";
 
 const Register_VolunteerCourier: React.FC = () => {
-  const navigate = useNavigate();
+  const [message, setMessage] = useState(null);
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -51,37 +52,21 @@ const Register_VolunteerCourier: React.FC = () => {
     // Validate the input fields
     if (!fullName) {
       setFullNameError('Full name must not be empty');
-    }
-
-    if (!email) {
+    } if (!email) {
       setEmailError('Email must not be empty');
-    }
-
-    if (!password) {
+    } if (!password) {
       setPasswordError('Password must not be empty');
-    }
-
-    if (!phoneNumber) {
+    } if (!phoneNumber) {
       setPhoneNumberError('Phone number must not be empty');
-    }
-
-    if (!vehicleType) {
+    } if (!vehicleType) {
       setVehicleTypeError('Vehicle type must not be empty');
-    }
-
-    if (!carPlate) {
+    } if (!carPlate) {
       setCarPlateError('Car plate number must not be empty');
-    }
-
-    if (!nationalId) {
+    } if (!nationalId) {
       setNationalIdError('National ID number must not be empty');
-    }
-
-    if (!city) {
+    } if (!city) {
       setCityError('City must not be empty');
-    }
-
-    if (!country) {
+    } if (!country) {
       setCountryError('Country must not be empty');
     }
 
@@ -113,11 +98,22 @@ const Register_VolunteerCourier: React.FC = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        return response.json();
+        // Only parse the response as JSON if there's a response body
+        return response.text().then(text => text ? JSON.parse(text) : {});
       })
       .then(data => {
         console.log(data);
-        navigate('/');
+        setMessage('Registration request sent! Please wait for the admin to approve your request.');
+
+        setFullName("");
+        setEmail("");
+        setPassword("");
+        setPhoneNumber("");
+        setVehicleType("");
+        setCarPlate("");
+        setNationalId("");
+        setCity("");
+        setCountry("");
       })
       .catch(error => {
         console.error('Error:', error);
@@ -134,6 +130,37 @@ const Register_VolunteerCourier: React.FC = () => {
 
   return (
     <div>
+      {message && (
+        <div className="mb-4 flex w-full border-l-6 border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-black dark:text-[#34D399] ">
+              {message}
+            </h3>
+          </div>
+          <button
+            className="ml-auto"
+            onClick={() => setMessage(null)}
+          >
+            <img src={closeImg} width={35} height={35} alt="" />
+          </button>
+        </div>
+      )}
+
       <div className="dark:border-strokedark">
         <h2 className="text-lg font-bold text-black dark:text-white sm:text-title-lg">
           Register as a Volunteer Courier
@@ -209,7 +236,7 @@ const Register_VolunteerCourier: React.FC = () => {
                 type="text"
                 maxLength={8}
                 minLength={6}
-                placeholder="Car Plate Number"
+                placeholder="Without spaces or dashes"
                 value={carPlate}
                 onChange={(e) => setCarPlate(e.target.value)}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
