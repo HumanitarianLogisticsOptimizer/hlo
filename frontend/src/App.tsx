@@ -13,7 +13,7 @@ import HLO_EditProfile_VC from './components/HLO/HLO_EditProfile_VC';
 import HLO_EditProfile_EC from './components/HLO/HLO_EditProfile_EC';
 import ConfirmDeny_Page from './components/HLO/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
-import CenterMap from './components/HLO/CenterMap';
+import MapDashboard from './components/HLO/MapDashboard';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -44,7 +44,7 @@ function App() {
             }
           />
           <Route
-            path="/hlo/stockmanagement"
+            path="/hlo/admin/stockmanagement"
             element={
               <>
                 <PageTitle title="Stock Management" />
@@ -71,7 +71,7 @@ function App() {
             }
           />
           <Route
-            path="/hlo/confirmdeny_page"
+            path="/hlo/admin/confirmdeny_page"
             element={
               <>
                 <PageTitle title="Confirm Deny" />
@@ -80,11 +80,11 @@ function App() {
             }
           />
           <Route
-            path="/hlo/centermap"
+            path="/hlo/mapDashboard"
             element={
               <>
-                <PageTitle title="map" />
-                <CenterMap selectedLocation={undefined} />
+                <PageTitle title="Map Dashboard" />
+                <MapDashboard />
               </>
             }
           />

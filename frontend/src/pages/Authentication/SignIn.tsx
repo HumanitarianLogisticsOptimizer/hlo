@@ -120,7 +120,13 @@ const SignIn: React.FC = () => {
                 <p>
                   Don't have an account?{' '}
                   <Link to="/auth/signup" className="text-primary">
-                    Sign Up
+                    Register
+                  </Link>
+                </p>
+                <p className='mt-1'>
+                  Are you an HLO Admin?{' '}
+                  <Link to="http://0.0.0.0:8000/admin/login/" target="_blank" className="text-primary">
+                    HLO Admin Log in
                   </Link>
                 </p>
               </div>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import HLOUpdate from "../../images/HLO/hlo-update.svg"
+import { useContext } from 'react'; // replace with the actual path to the AuthContext
+import updateImg from "../../images/HLO/update.svg"
+import updateImgLight from "../../images/HLO/update-light.svg"
+import { AuthContext } from './AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface TableData {
   id: number;
@@ -11,23 +15,58 @@ interface TableData {
 }
 
 const StockManagementTable: React.FC = () => {
-  const [accName, setAccName] = useState('');
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth/signin');
+    }
+  }, [user, navigate]);
+
+  const userType = user?.user_type;
+  const centerType = userType === 'acc_admin' ? 'acc' : userType === 'adc_admin' ? 'adc' : 'acc';
+  const [centerName, setCenterName] = useState('');
   const [data, setData] = useState<TableData[]>([]);
+  // const centerId = user?.center;
 
   const centerId = 1; // Center bilgisini profilden alıp id'e göre data'yı çek
+
+  const isDarkMode = useDarkMode();
+
+  function useDarkMode() {
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach(({ target }) => {
+          const { className } = target as HTMLBodyElement;
+          setIsDarkMode(className.includes('dark'));
+        });
+      });
+
+      observer.observe(document.body, { attributes: true });
+
+      return () => {
+        observer.disconnect();
+      };
+    }, []);
+
+    return isDarkMode;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/accaids/?center=' + centerId);
+        const response = await axios.get("http://localhost:8000/api/" + centerType + "aids/?center=" + centerId);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
 
       try {
-        const response = await axios.get("http://localhost:8000/api/acc/" + centerId + "/");
-        setAccName(response.data.name);
+        const response = await axios.get("http://localhost:8000/api/" + centerType + "/" + centerId + "/");
+        setCenterName(response.data.name);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -89,7 +128,7 @@ const StockManagementTable: React.FC = () => {
   };
 
   const handleQuantityChange = (index: number, newQuantity: string) => {
-    const updatedData = data.map((item, i) => i === index ? {...item, quantity: Number(newQuantity)} : item);
+    const updatedData = data.map((item, i) => i === index ? { ...item, quantity: Number(newQuantity) } : item);
     setData(updatedData);
   };
 
@@ -108,11 +147,11 @@ const StockManagementTable: React.FC = () => {
   return (
     <div className="w-full overflow-x-auto">
       <div className="flex justify-between items-center mb-5">
-        <h2 className="text-2xl font-bold text-black dark:text-white">{accName}</h2>
+        <h2 className="text-2xl font-bold text-black dark:text-white">{centerName}</h2>
       </div>
       <div className="min-w-[900px]">
         {/* table header start */}
-        <div className="grid grid-cols-12 rounded-t-[10px] bg-primary px-5 py-4 lg:px-7.5 2xl:px-11">
+        <div className="grid grid-cols-12 rounded-t-[10px] bg-primary dark:bg-meta-4 px-5 py-4 lg:px-7.5 2xl:px-11">
           <div className="col-span-3 pl-3">
             <h5 className="font-medium text-white">Name</h5>
           </div>
@@ -151,13 +190,11 @@ const StockManagementTable: React.FC = () => {
                 {renderButton(item.urgency)}
               </div>
               <div className="relative col-span-1">
-              <button
+                <button
                   onClick={() => handleUpdateClick(item.id)}
-                  className="inline-flex items-center justify-center gap-2.5 rounded-md border border-primary py-2 px-4 text-center font-medium text-primary dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-md border border-primary py-2 px-4 text-center font-medium text-boxdark dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"
                 >
-                  <span>
-                    <img src={HLOUpdate} width={20} height={20} className="fill-current dark:fill-white" />
-                  </span>
+                  <img src={isDarkMode ? updateImgLight : updateImg} height={20} width={20} />
                   Update
                 </button>
               </div>

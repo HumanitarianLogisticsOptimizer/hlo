@@ -9,41 +9,83 @@ import { AuthContext } from "./AuthProvider";
 const HLO_EditProfile_EC = () => {
   const { user } = useContext(AuthContext);
   const { auth } = useContext(AuthContext);
-  const [tradeRegistrationNumber, setTradeRegistrationNumber] = useState(0);
-  const [dateOfEstablishment, setDateOfEstablishment] = useState(new Date());
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [companyAddress, setCompanyAddress] = useState('');
-  const [numberOfLightDuty, setNumberOfLightDuty] = useState(0);
-  const [numberOfMediumDuty, setNumberOfMediumDuty] = useState(0);
-  const [numberOfHeavyDuty, setNumberOfHeavyDuty] = useState(0);
 
-  // Uncomment the following lines when api is ready
-  {
-    // const [email, setEmail] = useState(user.email);
-    // const [companyName, setCompanyName] = useState(user.company_name);
-    // const [password, setPassword] = useState(user.password);
-    // const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
-    // const [companyAddress, setCompanyAddress] = useState(user.company_address);
-    // const [dateOfEstablishment, setDateOfEstablishment] = useState(new Date(user.date_of_establishment));
-    // const [numberOfLightDuty, setNumberOfLightDuty] = useState(user.number_of_light_duty);
-    // const [numberOfMediumDuty, setNumberOfMediumDuty] = useState(user.number_of_medium_duty);
-    // const [numberOfHeavyDuty, setNumberOfHeavyDuty] = useState(user.number_of_heavy_duty);
-    // const [tradeRegistrationNumber, setTradeRegistrationNumber] = useState(user.trade_registration_number);
-  }
+  const [email, setEmail] = useState(user.email);
+  const [companyName, setCompanyName] = useState(user.company_name);
+  const [password, setPassword] = useState(user.password);
+  const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
+  const [companyAddress, setCompanyAddress] = useState(user.company_address);
+  const [dateOfEstablishment, setDateOfEstablishment] = useState(new Date(user.date_of_establishment));
+  const [numberOfLightDuty, setNumberOfLightDuty] = useState(user.number_of_light_duty);
+  const [numberOfMediumDuty, setNumberOfMediumDuty] = useState(user.number_of_medium_duty);
+  const [numberOfHeavyDuty, setNumberOfHeavyDuty] = useState(user.number_of_heavy_duty);
+  const [tradeRegistrationNumber, setTradeRegistrationNumber] = useState(user.trade_registration_number);
+
+  const [emailError, setEmailError] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [companyAddressError, setCompanyAddressError] = useState("");
+  const [dateOfEstablishmentError, setDateOfEstablishmentError] = useState("");
+  const [numberOfLightDutyError, setNumberOfLightDutyError] = useState("");
+  const [numberOfMediumDutyError, setNumberOfMediumDutyError] = useState("");
+  const [numberOfHeavyDutyError, setNumberOfHeavyDutyError] = useState("");
+  const [tradeRegistrationNumberError, setTradeRegistrationNumberError] = useState("");
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
+
+  const handleTradeRegistrationNumberChange = event => {
+    const limit = 16;
+    setTradeRegistrationNumber(event.target.value.slice(0, limit));
+  };
 
   useEffect(() => {
     formSubmitRef.current = setFormSubmitted;
   }, [setFormSubmitted]);
 
-  const handleTradeRegistrationNumberChange = event => {
-    const limit = 16;
-    setTradeRegistrationNumber(event.target.value.slice(0, limit));
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    setEmailError("");
+    setCompanyNameError("");
+    setPasswordError("");
+    setPhoneNumberError("");
+    setCompanyAddressError("");
+    setDateOfEstablishmentError("");
+    setNumberOfLightDutyError("");
+    setNumberOfMediumDutyError("");
+    setNumberOfHeavyDutyError("");
+    setTradeRegistrationNumberError("");
+
+    // Validate the input fields
+    if (!email) {
+      setEmailError('Email must not be empty');
+    } if (!companyName) {
+      setCompanyNameError('Company name must not be empty');
+    } if (!password) {
+      setPasswordError('Password must not be empty');
+    } if (!phoneNumber) {
+      setPhoneNumberError('Phone number must not be empty');
+    } if (!companyAddress) {
+      setCompanyAddressError('Company address must not be empty');
+    } if (!dateOfEstablishment) {
+      setDateOfEstablishmentError('Date of establishment must not be empty');
+    } if (!numberOfLightDuty) {
+      setNumberOfLightDutyError('Number of light-duty vehicles must not be empty');
+    } if (!numberOfMediumDuty) {
+      setNumberOfMediumDutyError('Number of medium-duty vehicles must not be empty');
+    } if (!numberOfHeavyDuty) {
+      setNumberOfHeavyDutyError('Number of heavy-duty vehicles must not be empty');
+    } if (!tradeRegistrationNumber) {
+      setTradeRegistrationNumberError('Trade registration number must not be empty');
+    }
+
+    if (emailError || companyNameError || passwordError || phoneNumberError || companyAddressError || dateOfEstablishmentError || numberOfLightDutyError || numberOfMediumDutyError || numberOfHeavyDutyError || tradeRegistrationNumberError) {
+      return;
+    }
+
+    setFormSubmitted(true);
   };
 
   useEffect(() => {
@@ -86,10 +128,7 @@ const HLO_EditProfile_EC = () => {
       <Breadcrumb pageName="Edit your profile" />
       <div className="px-5 py-3 rounded-lg-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <form action="#"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setFormSubmitted(true);
-          }} >
+          onSubmit={handleFormSubmit} >
           <div className="p-6.5">
             <div className="mb-5 flex flex-col gap-6 xl:flex-row">
               <div className="w-full xl:w-1/2">
@@ -103,6 +142,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setCompanyName(e.target.value)}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{companyNameError}</span>
               </div>
 
               <div className="w-full xl:w-1/2">
@@ -116,13 +156,17 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{emailError}</span>
               </div>
             </div>
 
             <div className="mb-5.5 flex flex-col gap-6 xl:flex-row">
-              <PasswordWithPopover password={password} onPasswordChange={(password) => {
-                setPassword(password);
-              }} />
+              <div className="w-full xl:w-1/2 flex flex-col">
+                <PasswordWithPopover password={password} onPasswordChange={(password) => {
+                  setPassword(password);
+                }} />
+                <span className="text-danger font-bold">{passwordError}</span>
+              </div>
 
               <div className="w-full xl:w-1/2">
                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
@@ -135,7 +179,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={setPhoneNumber}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
-
+                <span className="text-danger font-bold">{phoneNumberError}</span>
               </div>
             </div>
 
@@ -151,6 +195,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setCompanyAddress(e.target.value)}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{companyAddressError}</span>
               </div>
             </div>
 
@@ -168,9 +213,11 @@ const HLO_EditProfile_EC = () => {
                   min={1000000000000000}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{tradeRegistrationNumberError}</span>
               </div>
 
-            <DatePickerOne selected={dateOfEstablishment} onChange={(date: Date) => setDateOfEstablishment(date)} />
+              <DatePickerOne selected={dateOfEstablishment} onChange={(date: Date) => setDateOfEstablishment(date)} />
+              <span className="text-danger font-bold">{dateOfEstablishmentError}</span>
             </div>
 
             <div className="mb-5 flex flex-col gap-6 xl:flex-row">
@@ -186,6 +233,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setNumberOfLightDuty(Number(e.target.value))}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{numberOfLightDutyError}</span>
               </div>
 
               <div className="w-full xl:w-1/2">
@@ -200,6 +248,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setNumberOfMediumDuty(Number(e.target.value))}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{numberOfMediumDutyError}</span>
               </div>
             </div>
 
@@ -216,6 +265,7 @@ const HLO_EditProfile_EC = () => {
                   onChange={(e) => setNumberOfHeavyDuty(Number(e.target.value))}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
+                <span className="text-danger font-bold">{numberOfHeavyDutyError}</span>
               </div>
               <div className="lg:w-1/2 xl:w-1/2"></div>
             </div>
