@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
+from backend.users.models import User, ACC, ADC, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -80,15 +80,31 @@ class EnterpriseCourierRegisterSerializer(serializers.ModelSerializer):
 
 
 class ACCAdminRegisterSerializer(serializers.ModelSerializer):
+    center_id = serializers.IntegerField()
+
     class Meta:
         model = ACCAdmin
-        fields = ("email", "acc_name", "password")
+        fields = ('email', 'password', 'center_id')
+
+    def create(self, validated_data):
+        center_id = validated_data.pop('center_id')
+        center = ACC.objects.get(id=center_id)
+        user = ACCAdmin.objects.create_user(center=center, **validated_data)
+        return user
 
 
 class ADCAdminRegisterSerializer(serializers.ModelSerializer):
+    center_id = serializers.IntegerField()
+
     class Meta:
         model = ADCAdmin
-        fields = ("email", "adc_name", "password")
+        fields = ('email', 'password', 'center_id')
+
+    def create(self, validated_data):
+        center_id = validated_data.pop('center_id')
+        center = ADC.objects.get(id=center_id)
+        user = ADCAdmin.objects.create_user(center=center, **validated_data)
+        return user
 
 
 

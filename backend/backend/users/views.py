@@ -102,6 +102,9 @@ class UserLoginAPIView(APIView):
 
         try:
             user = User.objects.get(email=request.data["email"])
+            if not user.is_active:
+                return Response({"message": "This account is not active."}, status=status.HTTP_403_FORBIDDEN)
+
             if user.check_password(request.data["password"]):
                 from rest_framework.authtoken.models import Token
 
