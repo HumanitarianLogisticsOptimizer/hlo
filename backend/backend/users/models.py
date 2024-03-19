@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 
 from backend.users.managers import UserManager
+from backend.aid.models import ACC, ADC
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -47,14 +48,24 @@ class EnterpriseCourier(User):
 
 
 class ACCAdmin(User):
-    acc_name = models.CharField(max_length=255)
+    center = models.ForeignKey(
+        ACC,
+        verbose_name="Collection Center",
+        on_delete=models.CASCADE,
+        related_name="admins"
+    )
 
     class Meta:
         verbose_name = "ACC Admin"
 
 
 class ADCAdmin(User):
-    adc_name = models.CharField(max_length=255)
+    center = models.ForeignKey(
+        ADC,
+        verbose_name="Distribution Center",
+        on_delete=models.CASCADE,
+        related_name="admins"
+    )
 
     class Meta:
         verbose_name = "ADC Admin"
