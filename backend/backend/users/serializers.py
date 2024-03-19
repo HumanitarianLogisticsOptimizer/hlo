@@ -29,7 +29,7 @@ class ACCAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ACCAdmin
-        fields = ("user_type", "email", "acc_name")
+        fields = ("user_type", "email", "center")
 
 
 class ADCAdminSerializer(serializers.ModelSerializer):
@@ -40,7 +40,7 @@ class ADCAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ADCAdmin
-        fields = ("user_type", "email", "adc_name")
+        fields = ("user_type", "email", "center")
 
 
 class EnterpriseCourierSerializer(serializers.ModelSerializer):

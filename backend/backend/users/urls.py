@@ -13,6 +13,8 @@ urlpatterns = [
     path("adc-admin-register/", view=views.ADCAdminRegisterAPIView.as_view(), name="adc-admin-reg"),
     path("activate-user/", view=views.UserIsActiveAPIView.as_view(), name="activate-user"),
     path("logout/", view=views.UserLogoutAPIView.as_view(), name="user-logout"),
+    path("profile/volunteer/", view=views.VolunteerCourierProfileAPIView.as_view(), name="volunteer-profile"),
+    path("profile/enterprise/", view=views.EnterpriseCourierProfileAPIView.as_view(), name="enterprise-profile"),
 ]
 
 

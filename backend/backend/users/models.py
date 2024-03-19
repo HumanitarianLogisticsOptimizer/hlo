@@ -15,6 +15,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def save(self, *args, **kwargs):
+        self.full_clean(exclude=["password"])
+        self.set_password(self.password)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.email
 

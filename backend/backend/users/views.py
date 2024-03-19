@@ -1,6 +1,7 @@
 from django.contrib.auth import logout
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
+    RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +24,7 @@ class UserAPIView(RetrieveAPIView):
 
 
 class VolunteerCourierRegisterAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         if VolunteerCourier.objects.filter(email=request.data["email"]).exists():
@@ -40,7 +41,7 @@ class VolunteerCourierRegisterAPIView(APIView):
 
 
 class EnterpriseCourierRegisterAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         if EnterpriseCourier.objects.filter(email=request.data["email"]).exists():
@@ -137,6 +138,16 @@ class UserIsActiveAPIView(ListCreateAPIView):
     def get_queryset(self):
         return User.objects.filter(is_active=False)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        response = []
+
+        for user in queryset:
+            instance, serializer = get_user_model_and_serializer(user)
+            response.append(serializer.data)
+
+        return Response(response)
+
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')  # Retrieve email from the request data
 
@@ -157,3 +168,27 @@ class UserIsActiveAPIView(ListCreateAPIView):
 
         # Return a success response
         return Response({"message": f"User {user.email} has been activated."}, status=status.HTTP_200_OK)
+
+
+class VolunteerCourierProfileAPIView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = VolunteerCourierSerializer
+
+    def get_object(self):
+        """
+        Override the default `get_object` method to return the profile
+        of the currently authenticated volunteer courier.
+        """
+        return VolunteerCourier.objects.get(id=self.request.user.id)
+
+
+class EnterpriseCourierProfileAPIView(UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = EnterpriseCourierSerializer
+
+    def get_object(self):
+        """
+        Override the default `get_object` method to return the profile
+        of the currently authenticated enterprise courier.
+        """
+        return EnterpriseCourier.objects.get(id=self.request.user.id)
