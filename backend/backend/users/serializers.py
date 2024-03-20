@@ -18,7 +18,7 @@ class VolunteerCourierSerializer(serializers.ModelSerializer):
         model = VolunteerCourier
         fields = ("user_type", "email", "full_name", "phone_number",
                   "car_plate_number", "national_id_number", "city",
-                  "country", "vehicle_size", "availability")
+                  "country", "vehicle_size")
 
 
 class ACCAdminSerializer(serializers.ModelSerializer):
