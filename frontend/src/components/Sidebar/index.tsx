@@ -222,7 +222,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                     }`}
                                 >
                                   <img src={HLORequest} height={25} width={25} />
-                                  Confirm/Deny Registration
+                                  Account Activation
                                 </NavLink>
                               </li>
                             )}
