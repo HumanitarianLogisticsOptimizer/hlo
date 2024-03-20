@@ -12,7 +12,7 @@ interface User {
 }
 
 const ConfirmDeny_Page: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const getUserType = (userType: string) => {
@@ -31,7 +31,7 @@ const ConfirmDeny_Page: React.FC = () => {
   }
 
   useEffect(() => {
-    if (!user) {
+    if (!(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type))) {
       navigate('/auth/signin');
     }
   }, [user, navigate]);

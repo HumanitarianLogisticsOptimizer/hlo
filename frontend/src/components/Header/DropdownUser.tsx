@@ -7,7 +7,7 @@ const DropdownUser = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useContext(AuthContext);
 
-  const { user } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const userType = user?.user_type;
   const userTypeRoutes = {
     'enterprise_courier': '/hlo/profile_ec',
@@ -104,6 +104,7 @@ const DropdownUser = () => {
           throw new Error('Logout failed');
         }
         setAuth(null);
+        setUser(null);
         localStorage.removeItem('auth');
       })
       .catch(error => {

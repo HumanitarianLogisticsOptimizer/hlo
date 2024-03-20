@@ -154,7 +154,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
 
-          {(user?.user_type == 'acc_admin' || user?.user_type == 'adc_admin' || user?.user_type == 'ema_admin') && (
+          {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin' || (auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type))) && (
             <>
               <ul className="mb-6 flex flex-col">
                 {/* <!-- Menu Item Auth Pages --> */}
@@ -214,18 +214,18 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 </NavLink>
                               </li>
                             )}
-                            {/* {(user?.user_type === 'ema_admin') && ( */}
-                            <li>
-                              <NavLink
-                                to="/hlo/admin/confirmdeny_page"
-                                className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
-                                  }`}
-                              >
-                                <img src={HLORequest} height={25} width={25} />
-                                Confirm/Deny Registration
-                              </NavLink>
-                            </li>
-                            {/* )} */}
+                            {(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) && (
+                              <li>
+                                <NavLink
+                                  to="/hlo/admin/confirmdeny_page"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
+                                    }`}
+                                >
+                                  <img src={HLORequest} height={25} width={25} />
+                                  Confirm/Deny Registration
+                                </NavLink>
+                              </li>
+                            )}
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

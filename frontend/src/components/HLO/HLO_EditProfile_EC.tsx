@@ -5,10 +5,21 @@ import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "./AuthProvider";
+import { useNavigate } from "react-router-dom";
+import closeImg from "../../images/HLO/close-circle.svg";
+import axios from "axios";
 
 const HLO_EditProfile_EC = () => {
-  const { user } = useContext(AuthContext);
-  const { auth } = useContext(AuthContext);
+  const { auth, user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth/signin');
+    }
+  }, [user, navigate]);
+
 
   const [email, setEmail] = useState(user.email);
   const [companyName, setCompanyName] = useState(user.company_name);
@@ -81,50 +92,96 @@ const HLO_EditProfile_EC = () => {
       setTradeRegistrationNumberError('Trade registration number must not be empty');
     }
 
-    if (emailError || companyNameError || passwordError || phoneNumberError || companyAddressError || dateOfEstablishmentError || numberOfLightDutyError || numberOfMediumDutyError || numberOfHeavyDutyError || tradeRegistrationNumberError) {
-      return;
-    }
-
     setFormSubmitted(true);
   };
 
   useEffect(() => {
     if (formSubmitted) {
-      fetch('http://localhost:8000/api/enterprise-courier-register/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // 'Authorization': `Token ${auth}`,
-        },
-        body: JSON.stringify({
+      if (!emailError && !companyNameError && !passwordError && !phoneNumberError && !companyAddressError && !dateOfEstablishmentError && !numberOfLightDutyError && !numberOfMediumDutyError && !numberOfHeavyDutyError && !tradeRegistrationNumberError) {
+        const dateOfEstablishmentString = `${dateOfEstablishment.getFullYear()}-${dateOfEstablishment.getMonth() + 1}-${dateOfEstablishment.getDate()}`;
+
+        axios.put('http://localhost:8000/api/profile/enterprise/', {
           email,
           company_name: companyName,
-          password,
           phone_number: phoneNumber,
           company_address: companyAddress,
-          date_of_establishment: dateOfEstablishment,
+          date_of_establishment: dateOfEstablishmentString,
           number_of_light_duty: numberOfLightDuty,
           number_of_medium_duty: numberOfMediumDuty,
           number_of_heavy_duty: numberOfHeavyDuty,
           trade_registration_number: tradeRegistrationNumber,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
+        }, {
+          headers: {
+            'Authorization': `Token ${auth}`
+          }
         })
-        .catch(error => {
-          console.error('Error:', error);
-        })
-        .finally(() => {
-          // Reset the formSubmitted state
-          formSubmitRef.current(false);
-        });
+          .then(response => {
+            console.log(response.data);
+            setMessage('Profile updated successfully'); // Set the success message
+
+            // Make a GET request to refill the input fields
+            axios.get('http://localhost:8000/api/me/', {
+              headers: {
+                'Authorization': `Token ${auth}`
+              }
+            })
+              .then(response => {
+                setEmail(response.data.email);
+                setCompanyName(response.data.company_name);
+                setPassword(response.data.password);
+                setPhoneNumber(response.data.phone_number);
+                setCompanyAddress(response.data.company_address);
+                setDateOfEstablishment(new Date(response.data.date_of_establishment));
+                setNumberOfLightDuty(response.data.number_of_light_duty);
+                setNumberOfMediumDuty(response.data.number_of_medium_duty);
+                setNumberOfHeavyDuty(response.data.number_of_heavy_duty);
+                setTradeRegistrationNumber(response.data.trade_registration_number);
+              })
+              .catch(error => {
+                console.error('There was an error!', error);
+              });
+          })
+          .catch(error => {
+            console.error('There was an error!', error);
+          });
+
+        setFormSubmitted(false);
+      }
     }
-  }, [formSubmitted]);
+  }, [formSubmitted, emailError, companyNameError, passwordError, phoneNumberError, companyAddressError, dateOfEstablishmentError, numberOfLightDutyError, numberOfMediumDutyError, numberOfHeavyDutyError, tradeRegistrationNumberError]);
 
   return (
     <DefaultLayout>
+      {message && (
+        <div className="mb-4 flex w-full border-l-6 border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-black dark:text-[#34D399] ">
+              {message}
+            </h3>
+          </div>
+          <button
+            className="ml-auto"
+            onClick={() => setMessage(null)}
+          >
+            <img src={closeImg} width={35} height={35} alt="" />
+          </button>
+        </div>
+      )}
       <Breadcrumb pageName="Edit your profile" />
       <div className="px-5 py-3 rounded-lg-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <form action="#"

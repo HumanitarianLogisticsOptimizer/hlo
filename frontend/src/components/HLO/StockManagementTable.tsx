@@ -137,7 +137,8 @@ const StockManagementTable: React.FC = () => {
     const item = data.find(item => item.id === id);
     if (item) {
       try {
-        const response = await axios.put(`http://localhost:8000/api/accaids/${id}/`, item);
+        const endpoint = userType === 'acc_admin' ? 'accaids' : 'adcaids';
+        const response = await axios.put(`http://localhost:8000/api/${endpoint}/${id}/`, item);
         console.log('Quantity updated successfully:', response.data);
       } catch (error) {
         console.error('Error updating quantity:', error);

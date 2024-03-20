@@ -11,6 +11,7 @@ interface AuthContextProps {
   auth: string | null;
   setAuth: React.Dispatch<React.SetStateAction<string | null>>;
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const AuthContext = createContext<AuthContextProps | null>(null);
@@ -41,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [auth]);
 
-  const value = { auth, setAuth, user };
+  const value = { auth, setAuth, user, setUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
