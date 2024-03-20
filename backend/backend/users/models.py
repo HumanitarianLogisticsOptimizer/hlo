@@ -32,7 +32,6 @@ class VolunteerCourier(User):
     city = models.TextField()
     country = models.TextField()
     vehicle_size = models.TextField()
-    availability = models.TextField()
 
     class Meta:
         verbose_name = "Volunteer Courier"
