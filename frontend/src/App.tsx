@@ -14,6 +14,7 @@ import HLO_EditProfile_EC from './components/HLO/HLO_EditProfile_EC';
 import ConfirmDeny_Page from './components/HLO/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
 import MapDashboard from './components/HLO/MapDashboard';
+import ConfirmPassword from './components/HLO/ConfirmPassword';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -85,6 +86,15 @@ function App() {
               <>
                 <PageTitle title="Map Dashboard" />
                 <MapDashboard />
+              </>
+            }
+          />
+          <Route
+            path="/auth/confirm-password"
+            element={
+              <>
+                <PageTitle title="Confirm Password" />
+                <ConfirmPassword />
               </>
             }
           />

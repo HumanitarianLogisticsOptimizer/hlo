@@ -4,6 +4,11 @@ import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 import closeImg from "../../images/HLO/close-circle.svg";
+import {
+  validateEmail, validateCompanyName, validatePassword,
+  validatePhoneNumber, validateCompanyAddress, validateTradeRegistrationNumber,
+  validateNumberOfLightDuty, validateNumberOfMediumDuty, validateNumberOfHeavyDuty
+} from './DataAndFunctions/validationFunctions';
 
 const Register_EnterpriseCourier: React.FC = () => {
   const [message, setMessage] = useState(null);
@@ -35,11 +40,6 @@ const Register_EnterpriseCourier: React.FC = () => {
   useEffect(() => {
     formSubmitRef.current = setFormSubmitted;
   }, [setFormSubmitted]);
-
-  const handleTradeRegistrationNumberChange = event => {
-    const limit = 16;
-    setTradeRegistrationNumber(event.target.value.slice(0, limit));
-  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -77,7 +77,8 @@ const Register_EnterpriseCourier: React.FC = () => {
     }
 
     // Check if any errors were found
-    if (emailError || companyNameError || passwordError || phoneNumberError || companyAddressError || tradeRegistrationNumberError || numberOfLightDutyError || numberOfMediumDutyError || numberOfHeavyDutyError) {
+    if (emailError || companyNameError || passwordError || phoneNumberError || companyAddressError
+      || tradeRegistrationNumberError || numberOfLightDutyError || numberOfMediumDutyError || numberOfHeavyDutyError) {
       return;
     }
 
@@ -178,7 +179,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="text"
                 placeholder="Enter your company name"
                 value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                onChange={(e) => {
+                  setCompanyName(e.target.value);
+                  setCompanyNameError(validateCompanyName(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{companyNameError}</span>
@@ -192,7 +196,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="email"
                 placeholder="yourmail@gmail.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError(validateEmail(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{emailError}</span>
@@ -203,6 +210,7 @@ const Register_EnterpriseCourier: React.FC = () => {
             <div className="w-full xl:w-1/2 flex flex-col">
               <PasswordWithPopover password={password} onPasswordChange={(password) => {
                 setPassword(password);
+                setPasswordError(validatePassword(password));
               }} />
               <span className="text-danger font-bold">{passwordError}</span>
             </div>
@@ -214,7 +222,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 country="TR"
                 placeholder="512 345 6789"
                 value={phoneNumber}
-                onChange={setPhoneNumber}
+                onChange={(value) => {
+                  setPhoneNumber(value);
+                  setPhoneNumberError(validatePhoneNumber(value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{phoneNumberError}</span>
@@ -231,7 +242,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 rows={2}
                 placeholder="(Country, city, state, street, apartment number, postal code)"
                 value={companyAddress}
-                onChange={(e) => setCompanyAddress(e.target.value)}
+                onChange={(e) => {
+                  setCompanyAddress(e.target.value);
+                  setCompanyAddressError(validateCompanyAddress(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               ></textarea>
               <span className="text-danger font-bold">{companyAddressError}</span>
@@ -247,7 +261,11 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="number"
                 placeholder="16 digits"
                 value={tradeRegistrationNumber}
-                onChange={handleTradeRegistrationNumberChange}
+                onChange={(e) => {
+                  const limit = 16;
+                  setTradeRegistrationNumber(e.target.value.slice(0, limit));
+                  setTradeRegistrationNumberError(validateTradeRegistrationNumber(e.target.value));
+                }}
                 minLength={16}
                 min={1000000000000000}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -267,7 +285,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="number"
                 placeholder="Light-duty: 2,700 kg - 6350 kg"
                 value={numberOfLightDuty}
-                onChange={(e) => setNumberOfLightDuty(e.target.value)}
+                onChange={(e) => {
+                  setNumberOfLightDuty(e.target.value);
+                  setNumberOfLightDutyError(validateNumberOfLightDuty(e.target.value));
+                }}
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
@@ -282,7 +303,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="number"
                 placeholder="Medium-duty: 6,350 kg - 12,000 kg"
                 value={numberOfMediumDuty}
-                onChange={(e) => setNumberOfMediumDuty(e.target.value)}
+                onChange={(e) => {
+                  setNumberOfMediumDuty(e.target.value);
+                  setNumberOfMediumDutyError(validateNumberOfMediumDuty(e.target.value));
+                }}
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
@@ -299,7 +323,10 @@ const Register_EnterpriseCourier: React.FC = () => {
                 type="number"
                 placeholder="Heavy-duty: 12,000+ kg"
                 value={numberOfHeavyDuty}
-                onChange={(e) => setNumberOfHeavyDuty(e.target.value)}
+                onChange={(e) => {
+                  setNumberOfHeavyDuty(e.target.value);
+                  setNumberOfHeavyDutyError(validateNumberOfHeavyDuty(e.target.value));
+                }}
                 min={0}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />

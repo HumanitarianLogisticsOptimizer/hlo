@@ -4,6 +4,7 @@ import HLO_VehicleOption from "./HLO_VehicleOption";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 import closeImg from "../../images/HLO/close-circle.svg";
+import { validateEmail, validatePassword, validatePhoneNumber, validateVehicleType, validateCarPlate, validateNationalId, validateCity, validateFullName } from "./DataAndFunctions/validationFunctions";
 
 const Register_VolunteerCourier: React.FC = () => {
   const [message, setMessage] = useState(null);
@@ -123,11 +124,6 @@ const Register_VolunteerCourier: React.FC = () => {
       });
   };
 
-  const handleNationalIdChange = event => {
-    const limit = 11;
-    setNationalId(event.target.value.slice(0, limit));
-  };
-
   return (
     <div>
       {message && (
@@ -178,7 +174,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 minLength={1}
                 placeholder="Enter your full name"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => {
+                  setFullName(e.target.value);
+                  setFullNameError(validateFullName(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{fullNameError}</span>
@@ -192,7 +191,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 type="email"
                 placeholder="yourmail@gmail.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailError(validateEmail(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{emailError}</span>
@@ -203,6 +205,7 @@ const Register_VolunteerCourier: React.FC = () => {
             <div className="w-full xl:w-1/2 flex flex-col">
               <PasswordWithPopover password={password} onPasswordChange={(password) => {
                 setPassword(password);
+                setPasswordError(validatePassword(password));
               }} />
               <span className="text-danger font-bold">{passwordError}</span>
             </div>
@@ -214,7 +217,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 country="TR"
                 placeholder="512 345 6789"
                 value={phoneNumber}
-                onChange={setPhoneNumber}
+                onChange={(value) => {
+                  setPhoneNumber(value);
+                  setPhoneNumberError(validatePhoneNumber(value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{phoneNumberError}</span>
@@ -225,6 +231,7 @@ const Register_VolunteerCourier: React.FC = () => {
             <div className="w-full xl:w-1/2 flex flex-col">
               <HLO_VehicleOption vehicleType={vehicleType} onOptionSelected={(selectedOptionId) => {
                 setVehicleType(selectedOptionId);
+                setVehicleTypeError(validateVehicleType(selectedOptionId));
               }} />
               <span className="text-danger font-bold">{vehicleTypeError}</span>
             </div>
@@ -238,7 +245,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 minLength={6}
                 placeholder="Without spaces or dashes"
                 value={carPlate}
-                onChange={(e) => setCarPlate(e.target.value)}
+                onChange={(e) => {
+                  setCarPlate(e.target.value);
+                  setCarPlateError(validateCarPlate(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{carPlateError}</span>
@@ -254,7 +264,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 type="text"
                 placeholder="City"
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  setCityError(validateCity(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{cityError}</span>
@@ -268,7 +281,10 @@ const Register_VolunteerCourier: React.FC = () => {
                 type="text"
                 placeholder="Country"
                 value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                onChange={(e) => {
+                  setCountry(e.target.value);
+                  setCountryError(validateCity(e.target.value));
+                }}
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
               <span className="text-danger font-bold">{countryError}</span>
@@ -283,7 +299,11 @@ const Register_VolunteerCourier: React.FC = () => {
               <input
                 value={nationalId}
                 type="number"
-                onChange={handleNationalIdChange}
+                onChange={(e) => {
+                  const limit = 11;
+                  setNationalId(e.target.value.slice(0, limit));
+                  setNationalIdError(validateNationalId(e.target.value.slice(0, limit)));
+                }}
                 minLength={11}
                 placeholder="National ID"
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

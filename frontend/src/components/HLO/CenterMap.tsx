@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GoogleMap, useLoadScript, MarkerF, InfoWindow } from "@react-google-maps/api";
 import axios from "axios";
-import { cities } from "./Data/cities";
+import { cities } from "./DataAndFunctions/cities";
 
 const CenterMap = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDG_cI9vDGPPL7ThflQznqYx_mjyDp9Ncc",
+    googleMapsApiKey: "AIzaSyCFHVcYEOEZUz5mS2BTzDrfgoBPw4OlNEM",
   });
 
-  const [emaLocation, setEmaLocation] = useState([]);
+  // const [emaLocation, setEmaLocation] = useState([]);
   const [accLocation, setAccLocation] = useState([]);
   const [adcLocations, setAdcLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -128,12 +128,12 @@ const CenterMap = () => {
           lat: parseFloat(loc.location.split(",")[0]),
         })));
 
-        const emaResponse = await axios.get("http://localhost:8000/api/ema/");
-        setEmaLocation(emaResponse.data.map((loc) => ({
-          ...loc,
-          lng: parseFloat(loc.location.split(",")[1]),
-          lat: parseFloat(loc.location.split(",")[0]),
-        })));
+        // const emaResponse = await axios.get("http://localhost:8000/api/ema/");
+        // setEmaLocation(emaResponse.data.map((loc) => ({
+        //   ...loc,
+        //   lng: parseFloat(loc.location.split(",")[1]),
+        //   lat: parseFloat(loc.location.split(",")[0]),
+        // })));
 
         const accResponse = await axios.get("http://localhost:8000/api/acc/");
         setAccLocation(accResponse.data.map((loc) => ({
@@ -151,13 +151,6 @@ const CenterMap = () => {
   }, []);
 
   const [locationsArray, setLocationsArray] = useState([]);
-
-  // const mapRef = useRef(null);
-
-  // const onMapLoad = useCallback((map) => {
-  //   mapRef.current = map;
-  // }, []);
-
   const mapRef = useRef(null);
 
   const onMapLoad = useCallback((map) => {
@@ -250,14 +243,15 @@ const CenterMap = () => {
         mapContainerStyle={{
           height: "88vh",
         }}
-        center={(emaLocation && emaLocation[0]) || (adcLocations && adcLocations[0]) || (accLocation && accLocation[0])}
+        center={(adcLocations && adcLocations[0]) || (accLocation && accLocation[0])}
         zoom={13}
         onLoad={onMapLoad}
         options={{
-          styles: isDarkMode ? darkModeMapStyles : undefined,
+          mapId: "855fe6c783ef24cc",
+          styles: isDarkMode ? darkModeMapStyles : undefined
         }}
       >
-        {emaLocation.map((location, index) => (
+        {/* {emaLocation.map((location, index) => (
           <MarkerF
             key={index}
             position={location}
@@ -265,7 +259,7 @@ const CenterMap = () => {
             icon={'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'}
             onClick={() => setSelectedLocation({ ...location, id: `ema-${index}` })}
           />
-        ))}
+        ))} */}
         {accLocation.map((location, index) => (
           <MarkerF
             key={index}

@@ -8,6 +8,11 @@ import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
 import closeImg from "../../images/HLO/close-circle.svg";
 import axios from "axios";
+import {
+  validateEmail, validateCompanyName, validatePassword,
+  validatePhoneNumber, validateCompanyAddress, validateTradeRegistrationNumber,
+  validateNumberOfLightDuty, validateNumberOfMediumDuty, validateNumberOfHeavyDuty
+} from './DataAndFunctions/validationFunctions';
 
 const HLO_EditProfile_EC = () => {
   const { auth, user } = useContext(AuthContext);
@@ -46,10 +51,6 @@ const HLO_EditProfile_EC = () => {
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
 
-  const handleTradeRegistrationNumberChange = event => {
-    const limit = 16;
-    setTradeRegistrationNumber(event.target.value.slice(0, limit));
-  };
 
   useEffect(() => {
     formSubmitRef.current = setFormSubmitted;
@@ -196,7 +197,10 @@ const HLO_EditProfile_EC = () => {
                   type="text"
                   placeholder="Enter your full company name"
                   value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
+                  onChange={(e) => {
+                    setCompanyName(e.target.value);
+                    setCompanyNameError(validateCompanyName(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{companyNameError}</span>
@@ -210,7 +214,10 @@ const HLO_EditProfile_EC = () => {
                   type="email"
                   placeholder="yourmail@gmail.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailError(validateEmail(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{emailError}</span>
@@ -221,6 +228,7 @@ const HLO_EditProfile_EC = () => {
               <div className="w-full xl:w-1/2 flex flex-col">
                 <PasswordWithPopover password={password} onPasswordChange={(password) => {
                   setPassword(password);
+                  setPasswordError(validatePassword(password));
                 }} />
                 <span className="text-danger font-bold">{passwordError}</span>
               </div>
@@ -233,7 +241,10 @@ const HLO_EditProfile_EC = () => {
                   country="TR"
                   placeholder="512 345 6789"
                   value={phoneNumber}
-                  onChange={setPhoneNumber}
+                  onChange={(value) => {
+                    setPhoneNumber(value);
+                    setPhoneNumberError(validatePhoneNumber(value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{phoneNumberError}</span>
@@ -249,7 +260,10 @@ const HLO_EditProfile_EC = () => {
                   rows={2}
                   placeholder="(Country, city, state, street, apartment number, postal code)"
                   value={companyAddress}
-                  onChange={(e) => setCompanyAddress(e.target.value)}
+                  onChange={(e) => {
+                    setCompanyAddress(e.target.value);
+                    setCompanyAddressError(validateCompanyAddress(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{companyAddressError}</span>
@@ -265,7 +279,11 @@ const HLO_EditProfile_EC = () => {
                   value={tradeRegistrationNumber}
                   type="number"
                   placeholder="16 digits"
-                  onChange={handleTradeRegistrationNumberChange}
+                  onChange={(e) => {
+                    const limit = 16;
+                    setTradeRegistrationNumber(e.target.value.slice(0, limit));
+                    setTradeRegistrationNumberError(validateTradeRegistrationNumber(e.target.value));
+                  }}
                   minLength={16}
                   min={1000000000000000}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -287,7 +305,10 @@ const HLO_EditProfile_EC = () => {
                   placeholder="Light-duty: 2,700 kg - 6350 kg"
                   min={0}
                   value={numberOfLightDuty}
-                  onChange={(e) => setNumberOfLightDuty(Number(e.target.value))}
+                  onChange={(e) => {
+                    setNumberOfLightDuty(e.target.value);
+                    setNumberOfLightDutyError(validateNumberOfLightDuty(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{numberOfLightDutyError}</span>
@@ -302,7 +323,10 @@ const HLO_EditProfile_EC = () => {
                   placeholder="Medium-duty: 6,350 kg - 12,000 kg"
                   min={0}
                   value={numberOfMediumDuty}
-                  onChange={(e) => setNumberOfMediumDuty(Number(e.target.value))}
+                  onChange={(e) => {
+                    setNumberOfMediumDuty(e.target.value);
+                    setNumberOfMediumDutyError(validateNumberOfMediumDuty(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{numberOfMediumDutyError}</span>
@@ -319,7 +343,10 @@ const HLO_EditProfile_EC = () => {
                   placeholder="Heavy-duty: 12,000+ kg"
                   min={0}
                   value={numberOfHeavyDuty}
-                  onChange={(e) => setNumberOfHeavyDuty(Number(e.target.value))}
+                  onChange={(e) => {
+                    setNumberOfHeavyDuty(e.target.value);
+                    setNumberOfHeavyDutyError(validateNumberOfHeavyDuty(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{numberOfHeavyDutyError}</span>

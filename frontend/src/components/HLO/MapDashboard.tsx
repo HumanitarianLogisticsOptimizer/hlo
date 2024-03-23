@@ -8,10 +8,10 @@ const MapDashboard: React.FC = () => {
       <div className="bg-white p-2 dark:bg-boxdark">
         <div className="text-black dark:text-gray mt-3 mx-1p">
           <div>
-            <div className="flex">
+            {/* <div className="flex">
               <img src="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" />
               <p>Emergency Management Authorities</p>
-            </div>
+            </div> */}
             <div className="flex my-3">
               <img src="https://maps.google.com/mapfiles/ms/icons/red-dot.png" />
               <p>Aid Collection Centers</p>

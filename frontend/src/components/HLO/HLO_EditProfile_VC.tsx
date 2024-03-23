@@ -8,6 +8,11 @@ import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import closeImg from "../../images/HLO/close-circle.svg";
+import {
+  validateEmail, validatePassword, validatePhoneNumber,
+  validateVehicleType, validateCarPlate, validateNationalId,
+  validateCity, validateFullName
+} from "./DataAndFunctions/validationFunctions";
 
 const HLO_EditProfile_VC = () => {
   const { auth, user } = useContext(AuthContext);
@@ -47,11 +52,6 @@ const HLO_EditProfile_VC = () => {
     formSubmitRef.current = setFormSubmitted;
   }, [setFormSubmitted]);
 
-  const handleNationalIdChange = event => {
-    const limit = 11;
-    setNationalId(event.target.value.slice(0, limit));
-  };
-
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -87,7 +87,8 @@ const HLO_EditProfile_VC = () => {
       setCountryError('Country must not be empty');
     }
 
-    if (fullNameError || emailError || passwordError || phoneNumberError || vehicleTypeError || carPlateError || nationalIdError || cityError || countryError) {
+    if (fullNameError || emailError || passwordError || phoneNumberError || vehicleTypeError
+      || carPlateError || nationalIdError || cityError || countryError) {
       return;
     }
 
@@ -193,7 +194,10 @@ const HLO_EditProfile_VC = () => {
                   minLength={1}
                   placeholder="Enter your full name"
                   value={fullName}
-                  onChange={e => setFullName(e.target.value)}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    setFullNameError(validateFullName(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{fullNameError}</span>
@@ -207,7 +211,10 @@ const HLO_EditProfile_VC = () => {
                   type="email"
                   placeholder="yourmail@gmail.com"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setEmailError(validateEmail(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{emailError}</span>
@@ -218,6 +225,7 @@ const HLO_EditProfile_VC = () => {
               <div className="w-full xl:w-1/2 flex flex-col">
                 <PasswordWithPopover password={password} onPasswordChange={(password) => {
                   setPassword(password);
+                  setPasswordError(validatePassword(password));
                 }} />
                 <span className="text-danger font-bold">{passwordError}</span>
               </div>
@@ -230,7 +238,10 @@ const HLO_EditProfile_VC = () => {
                   country="TR"
                   placeholder="512 345 6789"
                   value={phoneNumber}
-                  onChange={setPhoneNumber}
+                  onChange={(value) => {
+                    setPhoneNumber(value);
+                    setPhoneNumberError(validatePhoneNumber(value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{phoneNumberError}</span>
@@ -241,6 +252,7 @@ const HLO_EditProfile_VC = () => {
               <div className="w-full xl:w-1/2 flex flex-col">
                 <HLO_VehicleOption vehicleType={vehicleType} onOptionSelected={(selectedOptionId) => {
                   setVehicleType(selectedOptionId);
+                  setVehicleTypeError(validateVehicleType(selectedOptionId));
                 }} />
                 <span className="text-danger font-bold">{vehicleTypeError}</span>
               </div>
@@ -254,7 +266,10 @@ const HLO_EditProfile_VC = () => {
                   minLength={6}
                   placeholder="Without spaces or dashes"
                   value={carPlate}
-                  onChange={e => setCarPlate(e.target.value)}
+                  onChange={(e) => {
+                    setCarPlate(e.target.value);
+                    setCarPlateError(validateCarPlate(e.target.value));
+                  }}
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
                 <span className="text-danger font-bold">{carPlateError}</span>
@@ -269,7 +284,11 @@ const HLO_EditProfile_VC = () => {
                 <input
                   value={nationalId}
                   type="number"
-                  onChange={handleNationalIdChange}
+                  onChange={(e) => {
+                    const limit = 11;
+                    setNationalId(e.target.value.slice(0, limit));
+                    validateNationalId(e.target.value.slice(0, limit));
+                  }}
                   minLength={11}
                   placeholder="National ID"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -286,7 +305,10 @@ const HLO_EditProfile_VC = () => {
                     type="text"
                     placeholder="City"
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={(e) => {
+                      setCity(e.target.value);
+                      setCityError(validateCity(e.target.value));
+                    }}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                   <span className="text-danger font-bold">{cityError}</span>
@@ -300,7 +322,10 @@ const HLO_EditProfile_VC = () => {
                     type="text"
                     placeholder="Country"
                     value={country}
-                    onChange={(e) => setCountry(e.target.value)}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      setCountryError(validateCity(e.target.value));
+                    }}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                   <span className="text-danger font-bold">{countryError}</span>
