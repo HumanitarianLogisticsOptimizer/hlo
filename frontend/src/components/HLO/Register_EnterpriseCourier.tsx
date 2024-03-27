@@ -338,6 +338,7 @@ const Register_EnterpriseCourier: React.FC = () => {
           <div className="mb-5">
             <input
               type="submit"
+              disabled={formSubmitted}
               value="Send Registration Request"
               className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
             />

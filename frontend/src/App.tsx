@@ -15,6 +15,8 @@ import ConfirmDeny_Page from './components/HLO/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
 import MapDashboard from './components/HLO/MapDashboard';
 import ConfirmPassword from './components/HLO/ConfirmPassword';
+import CreateCenter from './components/HLO/CreateCenter';
+import CreateAdmin from './components/HLO/CreateAdmin';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,6 +97,24 @@ function App() {
               <>
                 <PageTitle title="Confirm Password" />
                 <ConfirmPassword />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/createCenter"
+            element={
+              <>
+                <PageTitle title="Create New Center" />
+                <CreateCenter />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/createAdmin"
+            element={
+              <>
+                <PageTitle title="Create New Admin" />
+                <CreateAdmin />
               </>
             }
           />

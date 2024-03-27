@@ -3,7 +3,9 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import HLODashLogo from '../../images/HLO/hlo-dash.svg';
 import HLOStockLogo from '../../images/HLO/hlo-stock.svg';
-import HLORequest from '../../images/HLO/hlo-request.svg';
+import UserCheck from '../../images/HLO/user-check.svg';
+import UserPlus from '../../images/HLO/user-plus.svg'
+import CenterLogo from '../../images/HLO/center.svg';
 import mapImg from '../../images/HLO/map.svg';
 import { AuthContext } from '../HLO/AuthProvider';
 
@@ -144,7 +146,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/hlo/mapdashboard"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('hlodashboard') && 'bg-graydark dark:bg-meta-4'
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('mapdashboard') && 'bg-graydark dark:bg-meta-4'
                     }`}
                 >
                   <img src={mapImg} height={25} width={25} />
@@ -215,16 +217,38 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               </li>
                             )}
                             {(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) && (
-                              <li>
-                                <NavLink
-                                  to="/hlo/admin/confirmdeny_page"
-                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
-                                    }`}
-                                >
-                                  <img src={HLORequest} height={25} width={25} />
-                                  Account Activation
-                                </NavLink>
-                              </li>
+                              <>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/confirmdeny_page"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={UserCheck} height={25} width={25} />
+                                    Account Activation
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createcenter"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createcenter') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={CenterLogo} height={25} width={25} />
+                                    Create Center
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createadmin"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createadmin') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={UserPlus} height={25} width={25} />
+                                    Create Admin
+                                  </NavLink>
+                                </li>
+                              </>
                             )}
                           </ul>
                         </div>

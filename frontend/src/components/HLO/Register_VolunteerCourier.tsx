@@ -1,10 +1,15 @@
+import axios from "axios";
 import PhoneInput from "react-phone-number-input/input";
 import { Link } from "react-router-dom";
 import HLO_VehicleOption from "./HLO_VehicleOption";
 import PasswordWithPopover from "./PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 import closeImg from "../../images/HLO/close-circle.svg";
-import { validateEmail, validatePassword, validatePhoneNumber, validateVehicleType, validateCarPlate, validateNationalId, validateCity, validateFullName } from "./DataAndFunctions/validationFunctions";
+import {
+  validateEmail, validatePassword, validatePhoneNumber,
+  validateVehicleType, validateCarPlate, validateNationalId,
+  validateCity, validateFullName
+} from "./DataAndFunctions/validationFunctions";
 
 const Register_VolunteerCourier: React.FC = () => {
   const [message, setMessage] = useState(null);
@@ -78,32 +83,19 @@ const Register_VolunteerCourier: React.FC = () => {
 
     setFormSubmitted(true);
 
-    fetch('http://localhost:8000/api/volunteer-courier-register/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        full_name: fullName,
-        password,
-        phone_number: phoneNumber,
-        car_plate_number: carPlate,
-        national_id_number: nationalId,
-        city,
-        country,
-        vehicle_size: vehicleType,
-      }),
+    axios.post('http://localhost:8000/api/volunteer-courier-register/', {
+      email,
+      full_name: fullName,
+      password,
+      phone_number: phoneNumber,
+      car_plate_number: carPlate,
+      national_id_number: nationalId,
+      city,
+      country,
+      vehicle_size: vehicleType,
     })
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        // Only parse the response as JSON if there's a response body
-        return response.text().then(text => text ? JSON.parse(text) : {});
-      })
-      .then(data => {
-        console.log(data);
+        console.log(response.data);
         setMessage('Registration request sent! Please wait for the admin to approve your request.');
 
         setFullName("");
@@ -316,6 +308,7 @@ const Register_VolunteerCourier: React.FC = () => {
             <input
               type="submit"
               value="Send Registration Request"
+              disabled={formSubmitted}
               className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
             />
           </div>

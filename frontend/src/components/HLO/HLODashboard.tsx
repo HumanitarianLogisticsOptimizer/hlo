@@ -34,14 +34,10 @@ const HLODashboard: React.FC = () => {
           </div>
 
           <div>
-            <div
-              className={`leading-relaxed ${openTab === 1 ? 'block' : 'hidden'}`}
-            >
+            <div className={`leading-relaxed ${openTab === 1 ? 'block' : 'hidden'}`} >
               <DataTableACCs />
             </div>
-            <div
-              className={`leading-relaxed ${openTab === 2 ? 'block' : 'hidden'}`}
-            >
+            <div className={`leading-relaxed ${openTab === 2 ? 'block' : 'hidden'}`} >
               <DataTablesADCs />
             </div>
           </div>

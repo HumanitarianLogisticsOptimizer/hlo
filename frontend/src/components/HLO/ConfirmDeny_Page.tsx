@@ -31,10 +31,14 @@ const ConfirmDeny_Page: React.FC = () => {
   }
 
   useEffect(() => {
-    if (!(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type))) {
+    if (auth) {
+      if (user?.user_type && ['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) {
+        navigate('/');
+      }
+    } else {
       navigate('/auth/signin');
     }
-  }, [user, navigate]);
+  }, [user, navigate, auth]);
 
   const [users, setUsers] = useState<User[]>([]);
   const [message, setMessage] = useState<string | null>(null);

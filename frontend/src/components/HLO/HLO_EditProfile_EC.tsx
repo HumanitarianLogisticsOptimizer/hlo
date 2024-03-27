@@ -357,6 +357,7 @@ const HLO_EditProfile_EC = () => {
             <div className="mb-5">
               <input
                 type="submit"
+                disabled={formSubmitted}
                 value="Save profile"
                 className="flex w-full justify-center rounded-lg bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
               />
