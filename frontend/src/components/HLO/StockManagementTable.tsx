@@ -4,7 +4,7 @@ import { useContext } from 'react'; // replace with the actual path to the AuthC
 import updateImg from "../../images/HLO/update.svg"
 import updateImgLight from "../../images/HLO/update-light.svg"
 import { AuthContext } from './AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface TableData {
   id: number;
@@ -15,11 +15,12 @@ interface TableData {
 }
 
 const StockManagementTable: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const { auth, user } = useContext(AuthContext);
+  console.log(user);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
+    if (!auth) {
       navigate('/auth/signin');
     }
     if (user?.user_type !== 'acc_admin' && user?.user_type !== 'adc_admin') {
@@ -202,6 +203,11 @@ const StockManagementTable: React.FC = () => {
               </div>
             </div>
           ))}
+          <div className="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
+            <div className="col-span-12">
+              <Link to="/hlo/admin/createaidrequest" className="text-primary">Go to Aid Request Page</Link>
+            </div>
+          </div>
         </div>
         {/* table body end */}
       </div>

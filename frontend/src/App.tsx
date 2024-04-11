@@ -17,6 +17,7 @@ import MapDashboard from './components/HLO/MapDashboard';
 import ConfirmPassword from './components/HLO/ConfirmPassword';
 import CreateCenter from './components/HLO/CreateCenter';
 import CreateAdmin from './components/HLO/CreateAdmin';
+import CreateAidRequest from './components/HLO/CreateAidRequest';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -115,6 +116,15 @@ function App() {
               <>
                 <PageTitle title="Create New Admin" />
                 <CreateAdmin />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/createAidRequest"
+            element={
+              <>
+                <PageTitle title="Create New Aid Request" />
+                <CreateAidRequest />
               </>
             }
           />

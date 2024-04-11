@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
+import { AuthContext } from '../HLO/AuthProvider';
 import HLODashLogo from '../../images/HLO/hlo-dash.svg';
 import HLOStockLogo from '../../images/HLO/hlo-stock.svg';
 import UserCheck from '../../images/HLO/user-check.svg';
 import UserPlus from '../../images/HLO/user-plus.svg'
 import CenterLogo from '../../images/HLO/center.svg';
 import mapImg from '../../images/HLO/map.svg';
-import { AuthContext } from '../HLO/AuthProvider';
+import reqeustImg from '../../images/HLO/request.svg';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -200,21 +201,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         </NavLink>
                         {/* <!-- Dropdown Menu Start --> */}
                         <div
-                          className={`translate transform overflow-hidden ${!open && 'hidden'
-                            }`}
+                          className={`translate transform overflow-hidden ${!open && 'hidden'}`}
                         >
                           <ul className='ml-4'>
                             {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin') && (
-                              <li>
-                                <NavLink
-                                  to="/hlo/admin/stockmanagement/"
-                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
-                                    }`}
-                                >
-                                  <img src={HLOStockLogo} height={20} width={20} />
-                                  Stock Management
-                                </NavLink>
-                              </li>
+                              <>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/stockmanagement/"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={HLOStockLogo} height={20} width={20} />
+                                    Stock Management
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createaidrequest/"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('aidrequests') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={reqeustImg} height={20} width={20} />
+                                    Aid Requests
+                                  </NavLink>
+                                </li>
+                              </>
                             )}
                             {(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) && (
                               <>

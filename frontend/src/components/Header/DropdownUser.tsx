@@ -43,7 +43,7 @@ const DropdownUser = () => {
       case 'adc_admin':
         return centerName;
       default:
-        return 'Guest';
+        return 'AFAD '; //DEĞİŞTİRİLECEK
     }
   };
 
@@ -58,7 +58,7 @@ const DropdownUser = () => {
       case 'adc_admin':
         return 'ADC Admin';
       default:
-        return 'Guest';
+        return 'EMA Admin'; //DEĞİŞTİRİLECEK
     }
   }
 
