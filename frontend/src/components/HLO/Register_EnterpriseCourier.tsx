@@ -1,7 +1,7 @@
 import PhoneInput from "react-phone-number-input/input";
 import { Link } from "react-router-dom";
 import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
-import PasswordWithPopover from "./PasswordWithPopover";
+import PasswordWithPopover from "./Components/PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 import closeImg from "../../images/HLO/close-circle.svg";
 import {

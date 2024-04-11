@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import DefaultLayout from '../../layout/DefaultLayout';
-import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import closeImg from "../../images/HLO/close-circle.svg";
+import DefaultLayout from '../../../layout/DefaultLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import closeImg from "../../../images/HLO/close-circle.svg";
 import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from './AuthProvider';
+import { AuthContext } from '../AuthProvider';
 
 const CreateAdmin: React.FC = () => {
   const { auth, user } = useContext(AuthContext);

@@ -2,7 +2,7 @@ import DefaultLayout from "../../layout/DefaultLayout";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";
 import PhoneInput from "react-phone-number-input/input";
 import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
-import PasswordWithPopover from "./PasswordWithPopover";
+import PasswordWithPopover from "./Components/PasswordWithPopover";
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";

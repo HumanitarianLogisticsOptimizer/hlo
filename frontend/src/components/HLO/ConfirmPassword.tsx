@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { validatePassword } from './DataAndFunctions/validationFunctions';
 import { AuthContext } from './AuthProvider';
 import DefaultLayout from '../../layout/DefaultLayout';
-import PasswordWithPopover_Bigger from './PasswordWithPopover_Bigger';
+import PasswordWithPopover_Bigger from './Components/PasswordWithPopover_Bigger';
 
 const ConfirmPassword: React.FC = () => {
   const { auth, user } = useContext(AuthContext);

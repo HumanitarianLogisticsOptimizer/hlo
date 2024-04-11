@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-import PasswordWithPopover_Bigger from '../../components/HLO/PasswordWithPopover_Bigger';
+import PasswordWithPopover_Bigger from '../../components/HLO/Components/PasswordWithPopover_Bigger';
 import axios from 'axios';
 import { AuthContext } from '../../components/HLO/AuthProvider';
 import { useNavigate } from 'react-router-dom';

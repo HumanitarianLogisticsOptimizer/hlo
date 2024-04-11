@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useContext } from 'react'; // replace with the actual path to the AuthContext
-import updateImg from "../../images/HLO/update.svg"
-import updateImgLight from "../../images/HLO/update-light.svg"
-import { AuthContext } from './AuthProvider';
+import updateImg from "../../../images/HLO/update.svg"
+import updateImgLight from "../../../images/HLO/update-light.svg"
+import { AuthContext } from '../AuthProvider';
 import { Link, useNavigate } from 'react-router-dom';
 
 interface TableData {

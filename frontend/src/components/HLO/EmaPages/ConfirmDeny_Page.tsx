@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import DefaultLayout from '../../layout/DefaultLayout';
+import DefaultLayout from '../../../layout/DefaultLayout';
 import axios from 'axios';
-import closeImg from "../../images/HLO/close-circle.svg"
-import { AuthContext } from './AuthProvider';
+import closeImg from "../../../images/HLO/close-circle.svg"
+import { AuthContext } from '../AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 interface User {
   email: string;
   user_type: string;
@@ -71,6 +72,7 @@ const ConfirmDeny_Page: React.FC = () => {
 
   return (
     <DefaultLayout>
+      <Breadcrumb pageName="Account Activation" />
       {message && (
         <div className="mb-4 flex w-full border-l-6 border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
           <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">

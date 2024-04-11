@@ -1,8 +1,8 @@
 import axios from "axios";
 import PhoneInput from "react-phone-number-input/input";
 import { Link } from "react-router-dom";
-import HLO_VehicleOption from "./HLO_VehicleOption";
-import PasswordWithPopover from "./PasswordWithPopover";
+import HLO_VehicleOption from "./Components/HLO_VehicleOption";
+import PasswordWithPopover from "./Components/PasswordWithPopover";
 import { useEffect, useRef, useState } from "react";
 import closeImg from "../../images/HLO/close-circle.svg";
 import {

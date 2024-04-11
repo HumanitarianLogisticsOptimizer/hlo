@@ -1,6 +1,6 @@
 import PhoneInput from "react-phone-number-input/input";
-import HLO_VehicleOption from "./HLO_VehicleOption";
-import PasswordWithPopover from "./PasswordWithPopover";
+import HLO_VehicleOption from "./Components/HLO_VehicleOption";
+import PasswordWithPopover from "./Components/PasswordWithPopover";
 import { useContext, useEffect, useRef, useState } from "react";
 import DefaultLayout from "../../layout/DefaultLayout";
 import Breadcrumb from "../Breadcrumbs/Breadcrumb";

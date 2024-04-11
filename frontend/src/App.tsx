@@ -8,16 +8,18 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import ComingSoon from './pages/Authentication/ComingSoon';
 import HLODashboard from './components/HLO/HLODashboard';
-import StockManagement from './components/HLO/StockManagement';
+import StockManagement from './components/HLO/CenterAdminPages/StockManagement';
 import HLO_EditProfile_VC from './components/HLO/HLO_EditProfile_VC';
 import HLO_EditProfile_EC from './components/HLO/HLO_EditProfile_EC';
-import ConfirmDeny_Page from './components/HLO/ConfirmDeny_Page';
+import ConfirmDeny_Page from './components/HLO/EmaPages/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
 import MapDashboard from './components/HLO/MapDashboard';
 import ConfirmPassword from './components/HLO/ConfirmPassword';
-import CreateCenter from './components/HLO/CreateCenter';
-import CreateAdmin from './components/HLO/CreateAdmin';
-import CreateAidRequest from './components/HLO/CreateAidRequest';
+import CreateCenter from './components/HLO/EmaPages/CreateCenter';
+import CreateAdmin from './components/HLO/EmaPages/CreateAdmin';
+import CreateAidRequest from './components/HLO/CenterAdminPages/CreateAidRequest';
+import ManageCenters from './components/HLO/EmaPages/ManageCenters';
+import UpdateCenter from './components/HLO/EmaPages/UpdateCenter';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -125,6 +127,33 @@ function App() {
               <>
                 <PageTitle title="Create New Aid Request" />
                 <CreateAidRequest />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/manageCenters"
+            element={
+              <>
+                <PageTitle title="Manage Aid Centers" />
+                <ManageCenters />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/update-acc/:id"
+            element={
+              <>
+                <PageTitle title="Update ACC" />
+                <UpdateCenter />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/update-adc/:id"
+            element={
+              <>
+                <PageTitle title="Update ADC" />
+                <UpdateCenter />
               </>
             }
           />

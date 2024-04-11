@@ -242,6 +242,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 </li>
                                 <li>
                                   <NavLink
+                                    to="/hlo/admin/createadmin"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createadmin') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={UserPlus} height={25} width={25} />
+                                    Create Admin
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
                                     to="/hlo/admin/createcenter"
                                     className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createcenter') && 'bg-graydark dark:bg-meta-4'
                                       }`}
@@ -252,12 +262,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 </li>
                                 <li>
                                   <NavLink
-                                    to="/hlo/admin/createadmin"
-                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createadmin') && 'bg-graydark dark:bg-meta-4'
+                                    to="/hlo/admin/managecenters"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('managecenters') && 'bg-graydark dark:bg-meta-4'
                                       }`}
                                   >
-                                    <img src={UserPlus} height={25} width={25} />
-                                    Create Admin
+                                    <img src={CenterLogo} height={25} width={25} />
+                                    Manage Centers
                                   </NavLink>
                                 </li>
                               </>

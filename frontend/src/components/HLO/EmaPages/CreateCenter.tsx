@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import DefaultLayout from '../../layout/DefaultLayout';
-import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import closeImg from "../../images/HLO/close-circle.svg";
+import DefaultLayout from '../../../layout/DefaultLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import closeImg from "../../../images/HLO/close-circle.svg";
 import axios from 'axios';
-import { AuthContext } from './AuthProvider';
+import { AuthContext } from '../AuthProvider';
 import { useNavigate } from 'react-router-dom';
 
 const CreateCenter: React.FC = () => {
