@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from backend.users.models import User, ACC, ADC, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
+from backend.users.models import User, ACC, ADC, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin, EMAAdmin
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,6 +57,17 @@ class EnterpriseCourierSerializer(serializers.ModelSerializer):
                   "trade_registration_number", "trade_registration_number")
 
 
+class EMAAdminSerializer(serializers.ModelSerializer):
+    user_type = serializers.SerializerMethodField(read_only=True)
+
+    def get_user_type(self, object):
+        return "ema_admin"
+
+    class Meta:
+        model = EMAAdmin
+        fields = ("user_type", "email", "ema_name")
+
+
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -105,6 +116,7 @@ class ADCAdminRegisterSerializer(serializers.ModelSerializer):
         center = ADC.objects.get(id=center_id)
         user = ADCAdmin.objects.create_user(center=center, **validated_data)
         return user
+
 
 
 

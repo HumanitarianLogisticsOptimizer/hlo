@@ -1,8 +1,8 @@
 from django.http import Http404
 
-from backend.users.models import VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin
+from backend.users.models import VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin, EMAAdmin
 from backend.users.serializers import VolunteerCourierSerializer, EnterpriseCourierSerializer, ACCAdminSerializer, \
-    ADCAdminSerializer
+    ADCAdminSerializer, EMAAdminSerializer
 
 
 def get_user_model_and_serializer(user):
@@ -29,6 +29,12 @@ def get_user_model_and_serializer(user):
         instance = ADCAdmin.objects.get(id=user.id)
         return instance, ADCAdminSerializer(instance)
     except ADCAdmin.DoesNotExist:
+        pass
+
+    try:
+        instance = EMAAdmin.objects.get(id=user.id)
+        return instance, EMAAdminSerializer(instance)
+    except EMAAdmin.DoesNotExist:
         pass
 
     # If the user doesn't match any model
