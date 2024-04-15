@@ -157,7 +157,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             </ul>
           </div>
 
-          {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin' || (auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type))) && (
+          {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin' || user?.user_type === 'ema_admin') && (
             <>
               <ul className="mb-6 flex flex-col">
                 {/* <!-- Menu Item Auth Pages --> */}
@@ -228,7 +228,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 </li>
                               </>
                             )}
-                            {(auth && !['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) && (
+                            {(auth && user?.user_type === 'ema_admin') && (
                               <>
                                 <li>
                                   <NavLink

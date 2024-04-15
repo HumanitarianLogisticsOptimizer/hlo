@@ -42,7 +42,7 @@ const CreateAdmin: React.FC = () => {
 
   useEffect(() => {
     if (auth) {
-      if (user?.user_type && ['acc_admin', 'adc_admin', 'volunteer_courier', 'enterprise_courier'].includes(user?.user_type)) {
+      if (user?.user_type !== 'ema_admin') {
         navigate('/');
       }
     } else {
