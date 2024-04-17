@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA
+from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA, AidType
 
 
 class ACCSerializer(serializers.ModelSerializer):
@@ -33,3 +33,8 @@ class EMASerializer(serializers.ModelSerializer):
         model = EMA
         fields = "__all__"
 
+
+class AidTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AidType
+        fields = "__all__"

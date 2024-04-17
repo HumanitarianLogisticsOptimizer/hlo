@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
 
-from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA
-from backend.aid.serializers import ACCAidSerializer, ADCAidSerializer, ACCSerializer, ADCSerializer, EMASerializer
+from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA, AidType
+from backend.aid.serializers import ACCAidSerializer, ADCAidSerializer, ACCSerializer, ADCSerializer, EMASerializer, \
+    AidTypeSerializer
 
 
 # Create your views here.
@@ -42,3 +43,7 @@ class EMAViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
 
 
+class AidTypeViewSet(viewsets.ModelViewSet):
+    queryset = AidType.objects.all()
+    serializer_class = AidTypeSerializer
+    permission_classes = (AllowAny,)
