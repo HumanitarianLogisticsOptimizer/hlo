@@ -50,8 +50,19 @@ class ADC(models.Model):
         return f"{self.name} - Managed by {self.ema}"
 
 
+class AidType(models.Model):
+    name = models.CharField("Name", max_length=100)
+
+    class Meta:
+        verbose_name = "Aid Type"
+
+    def __str__(self):
+        return self.name
+
+
 class ACCAid(models.Model):
-    type = models.CharField("Type", max_length=50)
+    type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="acc_aids",
+                             null=True)
     quantity = models.IntegerField("Quantity")
     center = models.ForeignKey(
         ACC,
@@ -68,7 +79,8 @@ class ACCAid(models.Model):
 
 
 class ADCAid(models.Model):
-    type = models.CharField("Type", max_length=50)
+    type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="adc_aids",
+                             null=True)
     quantity = models.IntegerField("Quantity")
     standard_stock = models.IntegerField("Standard Stock")
     demanded_stock = models.IntegerField("Demanded Stock")
