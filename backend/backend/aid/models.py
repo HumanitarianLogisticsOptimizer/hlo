@@ -64,6 +64,8 @@ class ACCAid(models.Model):
     type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="acc_aids",
                              null=True)
     quantity = models.IntegerField("Quantity")
+    standard_stock = models.IntegerField("Standard Stock", default=0)
+    status = models.CharField("Status")
     center = models.ForeignKey(
         ACC,
         verbose_name="Collection Center",
@@ -73,6 +75,16 @@ class ACCAid(models.Model):
 
     class Meta:
         verbose_name = "ACC Aid"
+
+    def save(self, *args, **kwargs):
+        if self.quantity < self.standard_stock / 4:
+            self.status = "High"
+        elif self.quantity > self.standard_stock * 1.5:
+            self.status = "Low"
+        else:
+            self.status = "Medium"
+
+        super(ACCAid, self).save(*args, **kwargs)  # Call the "real" save() method
 
     def __str__(self):
         return f"{self.type} - {self.quantity} units at {self.center}"
