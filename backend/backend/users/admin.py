@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from backend.aid.models import ACC, ADC, EMA, ACCAid, ADCAid
+from backend.aid.models import ACC, ADC, EMA, ACCAid, ADCAid, AidType
 from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin, EMAAdmin
 
 
@@ -104,4 +104,12 @@ class ADCAid(admin.ModelAdmin):
         "standard_stock",
         "demanded_stock",
         "center"
+    )
+
+
+@admin.register(AidType)
+class AidType(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name"
     )
