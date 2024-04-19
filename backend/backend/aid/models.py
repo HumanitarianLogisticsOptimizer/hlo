@@ -60,6 +60,16 @@ class AidType(models.Model):
         return self.name
 
 
+class AidTypeRequest(models.Model):
+    name = models.CharField("Name", max_length=100)
+
+    class Meta:
+        verbose_name = "Aid Type Request"
+
+    def __str__(self):
+        return self.name
+
+
 class ACCAid(models.Model):
     type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="acc_aids",
                              null=True)

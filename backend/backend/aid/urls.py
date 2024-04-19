@@ -11,6 +11,7 @@ router.register("acc", ACCViewSet, basename="acc")
 router.register("adc", ADCViewSet, basename="adc")
 router.register("ema", EMAViewSet, basename="ema")
 router.register("aid_type", AidTypeViewSet, basename="aid_type")
+router.register("aid_type_request", AidTypeViewSet, basename="aid_type_request")
 
 urlpatterns = [
 
