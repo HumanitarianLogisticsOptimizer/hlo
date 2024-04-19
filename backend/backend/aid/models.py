@@ -88,11 +88,11 @@ class ACCAid(models.Model):
 
     def save(self, *args, **kwargs):
         if self.quantity < self.standard_stock / 4:
-            self.status = "High"
+            self.status = 0
         elif self.quantity > self.standard_stock * 1.5:
-            self.status = "Low"
+            self.status = 1
         else:
-            self.status = "Medium"
+            self.status = 2
 
         super(ACCAid, self).save(*args, **kwargs)  # Call the "real" save() method
 
