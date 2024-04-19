@@ -1,6 +1,7 @@
 from django.urls import path
 
 from backend.users import views
+from backend.users.views import CheckPasswordView
 
 app_name = "users"
 
@@ -15,6 +16,7 @@ urlpatterns = [
     path("logout/", view=views.UserLogoutAPIView.as_view(), name="user-logout"),
     path("profile/volunteer/", view=views.VolunteerCourierProfileAPIView.as_view(), name="volunteer-profile"),
     path("profile/enterprise/", view=views.EnterpriseCourierProfileAPIView.as_view(), name="enterprise-profile"),
+    path('check-password/', CheckPasswordView.as_view(), name='check-password'),
 ]
 
 

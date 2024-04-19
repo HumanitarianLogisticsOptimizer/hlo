@@ -10,7 +10,7 @@ from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCA
 from backend.users.serializers import UserLoginSerializer, \
     VolunteerCourierSerializer, EnterpriseCourierSerializer, \
     VolunteerCourierRegisterSerializer, EnterpriseCourierRegisterSerializer, ACCAdminRegisterSerializer, \
-    ADCAdminRegisterSerializer, UserSerializer
+    ADCAdminRegisterSerializer, UserSerializer, CheckPasswordSerializer
 from backend.users.utils import get_user_model_and_serializer
 
 
@@ -192,3 +192,15 @@ class EnterpriseCourierProfileAPIView(UpdateAPIView):
         of the currently authenticated enterprise courier.
         """
         return EnterpriseCourier.objects.get(id=self.request.user.id)
+
+
+class CheckPasswordView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        serializer = CheckPasswordSerializer(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            # If password is correct, return a success response
+            return Response({"message": "Current password is correct"}, status=status.HTTP_200_OK)
+        # Return errors if password is incorrect
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

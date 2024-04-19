@@ -118,6 +118,14 @@ class ADCAdminRegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class CheckPasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect.")
+        return value
 
 
 
