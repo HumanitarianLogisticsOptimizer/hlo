@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
 
 from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA, AidType, AidTypeRequest
 from backend.aid.serializers import ACCAidSerializer, ADCAidSerializer, ACCSerializer, ADCSerializer, EMASerializer, \
@@ -29,12 +31,52 @@ class ACCAidViewSet(viewsets.ModelViewSet):
     filterset_fields = ['center']
     permission_classes = (AllowAny,)
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        type_id = serializer.validated_data['type'].id
+        center_id = serializer.validated_data['center'].id
+        quantity = serializer.validated_data['quantity']
+
+        acc_aid, created = ACCAid.objects.get_or_create(
+            type_id=type_id, center_id=center_id,
+            defaults={'quantity': quantity}
+        )
+
+        if not created:
+            acc_aid.quantity += quantity
+            acc_aid.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class ADCAidViewSet(viewsets.ModelViewSet):
     queryset = ADCAid.objects.all()
     serializer_class = ADCAidSerializer
     filterset_fields = ['center']
     permission_classes = (AllowAny,)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        type_id = serializer.validated_data['type'].id
+        center_id = serializer.validated_data['center'].id
+        quantity = serializer.validated_data['quantity']
+
+        adc_aid, created = ADCAid.objects.get_or_create(
+            type_id=type_id, center_id=center_id,
+            defaults={'quantity': quantity}
+        )
+
+        if not created:
+            adc_aid.quantity += quantity
+            adc_aid.save()
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class EMAViewSet(viewsets.ModelViewSet):
