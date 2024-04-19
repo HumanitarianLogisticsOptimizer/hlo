@@ -2,20 +2,15 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import DefaultLayout from '../../../layout/DefaultLayout';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthProvider';
 import closeImg from "../../../images/HLO/close-circle.svg";
 
-const ManageCenters: React.FC = () => {
+const ManageAidRequests: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [accs, setAccs] = useState([]);
-  const [adcs, setAdcs] = useState([]);
+  const [aidRequests, setAidRequests] = useState([]);
   const [message, setMessage] = useState('');
-
-  const [openTab, setOpenTab] = useState(1);
-  const activeClasses = 'text-primary border-primary';
-  const inactiveClasses = 'border-transparent';
 
   useEffect(() => {
     if (auth) {
@@ -28,60 +23,21 @@ const ManageCenters: React.FC = () => {
   }, [user, navigate, auth]);
 
   useEffect(() => {
-    const fetchAccs = async () => {
+    const fetchAidRequests = async () => {
       try {
-        const response = await axios.get('http://24.133.52.46:8000/api/acc');
-        setAccs(response.data);
+        const response = await axios.get('http://24.133.52.46:8000/api/aid_type');
+        setAidRequests(response.data);
       } catch (error) {
-        console.error('Error fetching ACCs: ', error);
+        console.error('Error fetching aid requests: ', error);
       }
     };
 
-    const fetchAdcs = async () => {
-      try {
-        const response = await axios.get('http://24.133.52.46:8000/api/adc');
-        setAdcs(response.data);
-      } catch (error) {
-        console.error('Error fetching ADCs: ', error);
-      }
-    };
-
-    fetchAccs();
-    fetchAdcs();
+    fetchAidRequests();
   }, []);
-
-  const handleDelete = async (id, type) => {
-    let url;
-    if (type === 'acc') {
-      url = `http://24.133.52.46:8000/api/acc/${id}`;
-    } else if (type === 'adc') {
-      url = `http://24.133.52.46:8000/api/adc/${id}`;
-    } else {
-      console.error('Invalid center type');
-      return;
-    }
-
-    try {
-      const response = await axios.delete(url);
-      console.log(response);
-      // Refresh the data
-      if (type === 'acc') {
-        const updatedAccs = accs.filter(acc => acc.id !== id);
-        setAccs(updatedAccs);
-      } else if (type === 'adc') {
-        const updatedAdcs = adcs.filter(adc => adc.id !== id);
-        setAdcs(updatedAdcs);
-      }
-      setMessage('Center deleted successfully.');
-    } catch (error) {
-      console.error('Error deleting center: ', error);
-      setMessage('Error deleting center.');
-    }
-  };
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Manage Centers" />
+      <Breadcrumb pageName="Manage Aid Types" />
       {message && (
         <div className={`mb-4 flex w-full border-l-6 ${message.startsWith('Error') ? 'border-[#F87171] bg-[#F87171]' : 'border-[#34D399] bg-[#34D399]'} bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9`}>
           <div className={`mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg ${message.startsWith('Error') ? 'bg-[#F87171]' : 'bg-[#34D399]'}`}>
@@ -113,43 +69,25 @@ const ManageCenters: React.FC = () => {
         </div>
       )}
       <div className='w-full'>
-        <div className="mb-4 flex flex-wrap gap-5 border-b border-stroke dark:border-strokedark sm:gap-10">
-          <Link
-            to="#"
-            className={`border-b-2 py-4 px-3 text-lg font-medium hover:text-primary ${openTab === 1 ? activeClasses : inactiveClasses
-              }`}
-            onClick={() => setOpenTab(1)}
-          >
-            ACCs
-          </Link>
-          <Link
-            to="#"
-            className={`border-b-2 py-4 px-3 text-lg font-medium hover:text-primary ${openTab === 2 ? activeClasses : inactiveClasses
-              }`}
-            onClick={() => setOpenTab(2)}
-          >
-            ADCs
-          </Link>
-        </div>
         <div className="overflow-hidden rounded-[10px]">
           <div className="max-w-full overflow-x-auto">
+            <button
+              className="bg-primary hover:opacity-90 text-white font-bold py-2 mb-2 px-4 rounded"
+              onClick={() => navigate('/hlo/admin/createaidtype')}
+            >
+              Create Aid Type
+            </button>
             <div className="min-w-[1170px]">
               {/* table header start */}
               <div className="grid grid-cols-4 px-5 py-4 dark:bg-meta-4 lg:px-7.5 2xl:px-11 bg-primary">
                 <div>
                   <h5 className="text-white font-bold">
-                    Name
-                  </h5>
-                </div>
-                <div>
-                  <h5 className="text-white font-bold">
-                    Address
+                    Type
                   </h5>
                 </div>
                 <div></div>
                 <div>
                   <h5 className="text-white font-bold">
-                    Actions
                   </h5>
                 </div>
               </div>
@@ -157,35 +95,24 @@ const ManageCenters: React.FC = () => {
 
               {/* table body start */}
               <div className="bg-white dark:bg-boxdark">
-                {(openTab === 1 ? accs : adcs).map((center, index) => (
+                {aidRequests.map((request, index) => (
                   <div
                     key={index}
                     className="grid grid-cols-4 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11"
                   >
                     <div>
-                      <p className="text-[#637381] dark:text-bodydark">
-                        {center.name}
-                      </p>
-                    </div>
-                    <div>
                       <textarea readOnly rows={2} cols={50} className="text-[#637381] dark:text-bodydark border-none bg-transparent resize-none"
                         style={{ overflow: 'hidden', padding: '0' }}
                       >
-                        {center.address}
+                        {request.name}
                       </textarea>
                     </div>
                     <div className="col-span-2 gap-7 flex justify-end">
                       <button
                         className="inline-flex items-center justify-center rounded-md border border-primary px-4 text-center font-medium text-primary dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"
-                        onClick={() => navigate(`/hlo/admin/update-${openTab === 1 ? 'acc' : 'adc'}/${center.id}`)}
+                        onClick={() => navigate(`/hlo/admin/updateaidtype/${request.id}`)}
                       >
                         Update
-                      </button>
-                      <button
-                        className="inline-flex items-center justify-center rounded-md border border-primary px-4 text-center font-medium text-primary dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"
-                        onClick={() => handleDelete(center.id, openTab === 1 ? 'acc' : 'adc')}
-                      >
-                        Delete
                       </button>
                     </div>
                   </div>
@@ -200,4 +127,4 @@ const ManageCenters: React.FC = () => {
   );
 };
 
-export default ManageCenters;
+export default ManageAidRequests;

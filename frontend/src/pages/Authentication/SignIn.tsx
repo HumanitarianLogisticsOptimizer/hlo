@@ -36,7 +36,7 @@ const SignIn: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', {
+      const response = await axios.post('http://24.133.52.46:8000/api/login/', {
         email,
         password
       });

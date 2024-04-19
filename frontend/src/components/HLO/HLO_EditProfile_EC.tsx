@@ -101,7 +101,7 @@ const HLO_EditProfile_EC = () => {
       if (!emailError && !companyNameError && !passwordError && !phoneNumberError && !companyAddressError && !dateOfEstablishmentError && !numberOfLightDutyError && !numberOfMediumDutyError && !numberOfHeavyDutyError && !tradeRegistrationNumberError) {
         const dateOfEstablishmentString = `${dateOfEstablishment.getFullYear()}-${dateOfEstablishment.getMonth() + 1}-${dateOfEstablishment.getDate()}`;
 
-        axios.put('http://localhost:8000/api/profile/enterprise/', {
+        axios.put('http://24.133.52.46:8000/api/profile/enterprise/', {
           email,
           company_name: companyName,
           phone_number: phoneNumber,
@@ -121,7 +121,7 @@ const HLO_EditProfile_EC = () => {
             setMessage('Profile updated successfully'); // Set the success message
 
             // Make a GET request to refill the input fields
-            axios.get('http://localhost:8000/api/me/', {
+            axios.get('http://24.133.52.46:8000/api/me/', {
               headers: {
                 'Authorization': `Token ${auth}`
               }

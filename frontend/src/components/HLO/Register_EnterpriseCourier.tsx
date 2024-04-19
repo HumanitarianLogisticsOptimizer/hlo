@@ -84,7 +84,7 @@ const Register_EnterpriseCourier: React.FC = () => {
 
     setFormSubmitted(true);
 
-    fetch('http://localhost:8000/api/enterprise-courier-register/', {
+    fetch('http://24.133.52.46:8000/api/enterprise-courier-register/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -44,7 +44,7 @@ const DataTablesADCs = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/adc/")
+      .get("http://24.133.52.46:8000/api/adc/")
       .then((res) => {
         setAdcData(res.data);
       })

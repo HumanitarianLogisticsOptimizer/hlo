@@ -41,7 +41,7 @@ const CreateCenter: React.FC = () => {
 
   useEffect(() => {
     // Fetch the list of EMAs when the component mounts
-    fetch('http://localhost:8000/api/ema/')
+    fetch('http://24.133.52.46:8000/api/ema/')
       .then((response) => response.json())
       .then((data) => setEmaList(data))
       .catch((error) => console.error('Error fetching EMAs: ', error));
@@ -89,9 +89,9 @@ const CreateCenter: React.FC = () => {
 
     let url;
     if (buttonType === 'ACC') {
-      url = 'http://localhost:8000/api/acc/';
+      url = 'http://24.133.52.46:8000/api/acc/';
     } else if (buttonType === 'ADC') {
-      url = 'http://localhost:8000/api/adc/';
+      url = 'http://24.133.52.46:8000/api/adc/';
     } else {
       console.error('Invalid button type');
       return;

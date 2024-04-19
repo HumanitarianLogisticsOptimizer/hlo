@@ -13,6 +13,7 @@ const CenterMap = () => {
   const [adcLocations, setAdcLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCity, setSelectedCity] = useState("Ankara");
+  const [highStatusAids, setHighStatusAids] = useState([]);
 
   const isDarkMode = useDarkMode();
 
@@ -121,21 +122,14 @@ const CenterMap = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const adcResponse = await axios.get("http://localhost:8000/api/adc/");
+        const adcResponse = await axios.get("http://24.133.52.46:8000/api/adc/");
         setAdcLocations(adcResponse.data.map((loc) => ({
           ...loc,
           lng: parseFloat(loc.location.split(",")[1]),
           lat: parseFloat(loc.location.split(",")[0]),
         })));
 
-        // const emaResponse = await axios.get("http://localhost:8000/api/ema/");
-        // setEmaLocation(emaResponse.data.map((loc) => ({
-        //   ...loc,
-        //   lng: parseFloat(loc.location.split(",")[1]),
-        //   lat: parseFloat(loc.location.split(",")[0]),
-        // })));
-
-        const accResponse = await axios.get("http://localhost:8000/api/acc/");
+        const accResponse = await axios.get("http://24.133.52.46:8000/api/acc/");
         setAccLocation(accResponse.data.map((loc) => ({
           ...loc,
           lng: parseFloat(loc.location.split(",")[1]),
@@ -166,7 +160,7 @@ const CenterMap = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/adc/");
+        const response = await axios.get("http://24.133.52.46:8000/api/adc/");
         // Correctly update the state with the fetched data
         setLocationsArray(response.data.map((loc) => ({
           ...loc,
@@ -251,22 +245,32 @@ const CenterMap = () => {
           styles: isDarkMode ? darkModeMapStyles : undefined
         }}
       >
-        {/* {emaLocation.map((location, index) => (
-          <MarkerF
-            key={index}
-            position={location}
-            // Blue marker for EMA
-            icon={'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'}
-            onClick={() => setSelectedLocation({ ...location, id: `ema-${index}` })}
-          />
-        ))} */}
         {accLocation.map((location, index) => (
           <MarkerF
             key={index}
             position={location}
             // Red marker for ACC
             icon={'https://maps.google.com/mapfiles/ms/icons/red-dot.png'}
-            onClick={() => setSelectedLocation({ ...location, id: `acc-${index}` })}
+            onClick={async () => {
+              setSelectedLocation({ ...location, id: `acc-${index}` });
+              try {
+                const response = await axios.get(`http://24.133.52.46:8000/api/accaids/?center=${location.id}`);
+                const highAids = response.data.filter(aid => aid.status === 'High').slice(0, 5);
+                const aidData = await Promise.all(highAids.map(async aid => {
+                  const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
+                  return {
+                    ...aid,
+                    type: {
+                      id: aid.type,
+                      name: typeResponse.data.name
+                    }
+                  };
+                }));
+                setHighStatusAids(aidData);
+              } catch (error) {
+                console.error('Failed to fetch aids:', error);
+              }
+            }}
           />
         ))}
         {adcLocations.map((location, index) => (
@@ -286,6 +290,9 @@ const CenterMap = () => {
             <div>
               <h2>{selectedLocation.name}</h2>
               <p>{selectedLocation.address}</p>
+              <ul className="pt-3">
+                {highStatusAids.map(aid => <li className=" text-black" key={aid.id}>{aid.type.name} <span className="font-bold text-red uppercase text-lg">{aid.status}</span></li>)}
+              </ul>
             </div>
           </InfoWindow>
         )}

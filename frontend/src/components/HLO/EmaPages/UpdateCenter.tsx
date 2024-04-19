@@ -40,7 +40,7 @@ const UpdateCenter: React.FC = () => {
     const baseUrl = routeLocation.pathname.includes('acc') ? 'api/acc' : 'api/adc';
 
     // Fetch the data of the center when the component mounts
-    axios.get(`http://localhost:8000/${baseUrl}/${id}/`)
+    axios.get(`http://24.133.52.46:8000/${baseUrl}/${id}/`)
       .then((response) => {
         const center = response.data;
         setName(center.name);
@@ -51,7 +51,7 @@ const UpdateCenter: React.FC = () => {
       .catch((error) => console.error('Error fetching center: ', error));
 
     // Fetch the list of EMAs when the component mounts
-    axios.get('http://localhost:8000/api/ema/')
+    axios.get('http://24.133.52.46:8000/api/ema/')
       .then((response) => setEmaList(response.data))
       .catch((error) => console.error('Error fetching EMAs: ', error));
   }, [id, routeLocation.pathname]);
@@ -91,7 +91,7 @@ const UpdateCenter: React.FC = () => {
 
     console.log(centerData);
 
-    axios.put(`http://localhost:8000/${baseUrl}/${id}/`, centerData)
+    axios.put(`http://24.133.52.46:8000/${baseUrl}/${id}/`, centerData)
       .then((response) => {
         console.log(response);
         setMessage('Center updated successfully');

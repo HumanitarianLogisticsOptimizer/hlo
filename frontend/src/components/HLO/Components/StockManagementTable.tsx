@@ -5,13 +5,19 @@ import updateImg from "../../../images/HLO/update.svg"
 import updateImgLight from "../../../images/HLO/update-light.svg"
 import { AuthContext } from '../AuthProvider';
 import { Link, useNavigate } from 'react-router-dom';
+import closeImg from "../../../images/HLO/close-circle.svg";
 
 interface TableData {
   id: number;
-  type: string;
+  type: {
+    id: number;
+    name: string;
+  };
   quantity: number;
   center: number;
   urgency: string;
+  status: string;
+  standard_stock: number;
 }
 
 const StockManagementTable: React.FC = () => {
@@ -33,6 +39,8 @@ const StockManagementTable: React.FC = () => {
   const [centerName, setCenterName] = useState('');
   const [data, setData] = useState<TableData[]>([]);
   const centerId = user?.center;
+
+  const [message, setMessage] = useState('');
 
   const isDarkMode = useDarkMode();
 
@@ -60,14 +68,24 @@ const StockManagementTable: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/" + centerType + "aids/?center=" + centerId);
-        setData(response.data);
+        const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "aids/?center=" + centerId);
+        const aidData = await Promise.all(response.data.map(async aid => {
+          const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
+          return {
+            ...aid,
+            type: {
+              id: aid.type,
+              name: typeResponse.data.name
+            }
+          };
+        }));
+        setData(aidData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
 
       try {
-        const response = await axios.get("http://localhost:8000/api/" + centerType + "/" + centerId + "/");
+        const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "/" + centerId + "/");
         setCenterName(response.data.name);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -77,53 +95,30 @@ const StockManagementTable: React.FC = () => {
     fetchData();
   }, []);
 
-
-  const setUrgency = (quantity: number): string => {
-    if (quantity <= 50) {
-      return 'HIGH';
-    } else if (quantity <= 150) {
-      return 'MEDIUM';
-    } else {
-      return 'LOW';
-    }
-  };
-
-  const updateUrgency = (id: number) => {
-    const item = data.find((item) => item.id === id);
-    if (item) {
-      const urgency = setUrgency(item.quantity);
-      item.urgency = urgency;
-    }
-  };
-
-  data.forEach((item) => {
-    updateUrgency(item.id);
-  });
-
-  const renderButton = (urgency: string): JSX.Element => {
-    switch (urgency) {
-      case 'HIGH':
+  const renderButton = (status: string): JSX.Element => {
+    switch (status) {
+      case 'High':
         return (
           <button className="inline-flex disabled rounded bg-[#DC3545] py-1 px-2 text-sm font-medium text-white hover:cursor-default">
-            {urgency}
+            {status}
           </button>
         );
-      case 'MEDIUM':
+      case 'Medium':
         return (
           <button className="inline-flex disabled rounded bg-[#F9C107] py-1 px-2 text-sm font-medium text-white hover:cursor-default">
-            {urgency}
+            {status}
           </button>
         );
-      case 'LOW':
+      case 'Low':
         return (
           <button className="inline-flex disabled rounded bg-[#3BA2B8] py-1 px-2 text-sm font-medium text-white hover:cursor-default">
-            {urgency}
+            {status}
           </button>
         );
       default:
         return (
           <p className="text-[#637381] dark:text-bodydark w-min">
-            {urgency}
+            {status}
           </p>
         );
     }
@@ -139,8 +134,17 @@ const StockManagementTable: React.FC = () => {
     if (item) {
       try {
         const endpoint = userType === 'acc_admin' ? 'accaids' : 'adcaids';
-        const response = await axios.put(`http://localhost:8000/api/${endpoint}/${id}/`, item);
+        const updatedItemData = {
+          quantity: item.quantity,
+          standard_stock: item.standard_stock,
+          status: item.status,
+          type: item.type.id,
+          center: item.center,
+        };
+        const response = await axios.put(`http://24.133.52.46:8000/api/${endpoint}/${id}/`, updatedItemData);
         console.log('Quantity updated successfully:', response.data);
+        setMessage('Quantity updated successfully');
+        setTimeout(() => setMessage(''), 5000);
       } catch (error) {
         console.error('Error updating quantity:', error);
       }
@@ -149,6 +153,36 @@ const StockManagementTable: React.FC = () => {
 
   return (
     <div className="w-full overflow-x-auto">
+      {message && (
+        <div className="mb-4 flex w-full border-l-6 border-[#34D399] bg-[#34D399] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#34D399]">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-black dark:text-[#34D399] ">
+              {message}
+            </h3>
+          </div>
+          <button
+            className="ml-auto"
+            onClick={() => setMessage('')}
+          >
+            <img src={closeImg} width={35} height={35} alt="" />
+          </button>
+        </div>
+      )}
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-2xl font-bold text-black dark:text-white">{centerName}</h2>
       </div>
@@ -177,7 +211,7 @@ const StockManagementTable: React.FC = () => {
               className="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11"
             >
               <div className="col-span-3 pl-3">
-                <p className="text-[#637381] dark:text-bodydark">{item.type}</p>
+                <p className="text-[#637381] dark:text-bodydark">{item.type.name}</p>
               </div>
 
               <div className="col-span-3">
@@ -190,7 +224,7 @@ const StockManagementTable: React.FC = () => {
               </div>
 
               <div className="col-span-3">
-                {renderButton(item.urgency)}
+                {renderButton(item.status)}
               </div>
               <div className="relative col-span-1">
                 <button
@@ -205,7 +239,7 @@ const StockManagementTable: React.FC = () => {
           ))}
           <div className="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
             <div className="col-span-12">
-              <Link to="/hlo/admin/createaidrequest" className="text-primary">Go to Aid Request Page</Link>
+              <Link to="/hlo/admin/createaidrequest" className="text-primary">Add Aid</Link>
             </div>
           </div>
         </div>

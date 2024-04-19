@@ -20,7 +20,7 @@ const DropdownUser = () => {
 
   useEffect(() => {
     if (userType === 'acc_admin' || userType === 'adc_admin') {
-      fetch(`http://localhost:8000/api/${userType === 'acc_admin' ? 'acc' : 'adc'}/${user?.center}`, {
+      fetch(`http://24.133.52.46:8000/api/${userType === 'acc_admin' ? 'acc' : 'adc'}/${user?.center}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const DropdownUser = () => {
   });
 
   const handleLogout = () => {
-    fetch('http://localhost:8000/api/logout/', {
+    fetch('http://24.133.52.46:8000/api/logout/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

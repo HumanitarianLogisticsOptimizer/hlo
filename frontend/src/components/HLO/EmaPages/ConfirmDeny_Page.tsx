@@ -45,7 +45,7 @@ const ConfirmDeny_Page: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
 
   const fetchUsers = () => {
-    axios.get('http://localhost:8000/api/activate-user/')
+    axios.get('http://24.133.52.46:8000/api/activate-user/')
       .then(response => {
         setUsers(response.data);
       })
@@ -59,7 +59,7 @@ const ConfirmDeny_Page: React.FC = () => {
   }, []);
 
   const activateUser = (email: string) => {
-    axios.post('http://localhost:8000/api/activate-user/', { email: email })
+    axios.post('http://24.133.52.46:8000/api/activate-user/', { email: email })
       .then(response => {
         console.log(response.data);
         setMessage('User activated successfully');

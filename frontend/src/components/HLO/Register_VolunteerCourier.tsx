@@ -83,7 +83,7 @@ const Register_VolunteerCourier: React.FC = () => {
 
     setFormSubmitted(true);
 
-    axios.post('http://localhost:8000/api/volunteer-courier-register/', {
+    axios.post('http://24.133.52.46:8000/api/volunteer-courier-register/', {
       email,
       full_name: fullName,
       password,

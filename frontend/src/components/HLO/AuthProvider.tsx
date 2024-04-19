@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await axios.get('http://localhost:8000/api/me/', {
+      const response = await axios.get('http://24.133.52.46:8000/api/me/', {
         headers: { Authorization: `Token ${auth}` },
       });
       setUser(response.data);

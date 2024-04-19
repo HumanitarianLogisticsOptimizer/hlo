@@ -20,6 +20,9 @@ import CreateAdmin from './components/HLO/EmaPages/CreateAdmin';
 import CreateAidRequest from './components/HLO/CenterAdminPages/CreateAidRequest';
 import ManageCenters from './components/HLO/EmaPages/ManageCenters';
 import UpdateCenter from './components/HLO/EmaPages/UpdateCenter';
+import ManageAidRequests from './components/HLO/EmaPages/ManageAidRequests';
+import CreateAidType from './components/HLO/EmaPages/CreateAidType';
+import UpdateAidType from './components/HLO/EmaPages/UpdateAidType';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -154,6 +157,33 @@ function App() {
               <>
                 <PageTitle title="Update ADC" />
                 <UpdateCenter />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/aidmanagement"
+            element={
+              <>
+                <PageTitle title="Aid Management" />
+                <ManageAidRequests />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/createaidtype"
+            element={
+              <>
+                <PageTitle title="Create Aid Type" />
+                <CreateAidType />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/updateaidtype/:id"
+            element={
+              <>
+                <PageTitle title="Update Aid Type" />
+                <UpdateAidType />
               </>
             }
           />

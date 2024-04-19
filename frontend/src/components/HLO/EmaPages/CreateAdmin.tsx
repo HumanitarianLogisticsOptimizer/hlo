@@ -53,8 +53,8 @@ const CreateAdmin: React.FC = () => {
   useEffect(() => {
     const fetchCenters = async () => {
       try {
-        const accResponse = await axios.get('http://localhost:8000/api/acc');
-        const adcResponse = await axios.get('http://localhost:8000/api/adc');
+        const accResponse = await axios.get('http://24.133.52.46:8000/api/acc');
+        const adcResponse = await axios.get('http://24.133.52.46:8000/api/adc');
         setAccList(accResponse.data);
         setAdcList(adcResponse.data);
       } catch (error) {
@@ -93,10 +93,10 @@ const CreateAdmin: React.FC = () => {
     let url;
     let centerId;
     if (openTab === 1) {
-      url = 'http://localhost:8000/api/acc-admin-register/';
+      url = 'http://24.133.52.46:8000/api/acc-admin-register/';
       centerId = accCenterId;
     } else if (openTab === 2) {
-      url = 'http://localhost:8000/api/adc-admin-register/';
+      url = 'http://24.133.52.46:8000/api/adc-admin-register/';
       centerId = adcCenterId;
     } else {
       console.error('Invalid button type');
@@ -120,7 +120,7 @@ const CreateAdmin: React.FC = () => {
 
       // Activate the admin
       try {
-        const activateResponse = await axios.post('http://localhost:8000/api/activate-user/', { email });
+        const activateResponse = await axios.post('http://24.133.52.46:8000/api/activate-user/', { email });
         console.log(activateResponse);
       } catch (activateError) {
         console.error('Error activating admin: ', activateError);
@@ -167,10 +167,7 @@ const CreateAdmin: React.FC = () => {
       )}
       <div className="rounded-sm bg-white shadow-default dark:bg-boxdark">
         <div className="w-full xl:w-1/2">
-          <div className='w-full p-4 sm:p-12.5 xl:p-17.5'>
-            <h2 className="mb-4 text-title-lg font-bold text-black dark:text-white">
-              Create New Aid Center Admin
-            </h2>
+          <div className='w-full p-4 sm:p-12.5'>
             <div className="mb-4 flex flex-wrap gap-5 border-b border-stroke dark:border-strokedark sm:gap-10">
               <Link
                 to="#"

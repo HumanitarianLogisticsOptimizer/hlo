@@ -97,7 +97,7 @@ const HLO_EditProfile_VC = () => {
 
   useEffect(() => {
     if (formSubmitted) {
-      axios.put('http://localhost:8000/api/profile/volunteer/', {
+      axios.put('http://24.133.52.46:8000/api/profile/volunteer/', {
         email,
         full_name: fullName,
         password,
@@ -116,7 +116,7 @@ const HLO_EditProfile_VC = () => {
           console.log(response.data);
           setMessage('Profile updated successfully'); // Set the success message
 
-          axios.get('http://localhost:8000/api/me/', {
+          axios.get('http://24.133.52.46:8000/api/me/', {
             headers: {
               'Authorization': `Token ${auth}`
             }

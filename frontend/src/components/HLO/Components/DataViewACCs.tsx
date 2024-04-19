@@ -6,7 +6,7 @@ function DataViewACCs() {
   const [accData, setAccData] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/acc/")
+    axios.get("http://24.133.52.46:8000/api/acc/")
       .then(res => {
         setAccData(res.data);
       })
