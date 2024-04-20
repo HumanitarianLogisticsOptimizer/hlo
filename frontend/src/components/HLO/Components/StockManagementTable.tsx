@@ -65,33 +65,33 @@ const StockManagementTable: React.FC = () => {
     return isDarkMode;
   }
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "aids/?center=" + centerId);
+      const aidData = await Promise.all(response.data.map(async aid => {
+        const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
+        return {
+          ...aid,
+          type: {
+            id: aid.type,
+            name: typeResponse.data.name
+          }
+        };
+      }));
+      setData(aidData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+
+    try {
+      const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "/" + centerId + "/");
+      setCenterName(response.data.name);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "aids/?center=" + centerId);
-        const aidData = await Promise.all(response.data.map(async aid => {
-          const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
-          return {
-            ...aid,
-            type: {
-              id: aid.type,
-              name: typeResponse.data.name
-            }
-          };
-        }));
-        setData(aidData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-
-      try {
-        const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "/" + centerId + "/");
-        setCenterName(response.data.name);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -145,6 +145,7 @@ const StockManagementTable: React.FC = () => {
         console.log('Quantity updated successfully:', response.data);
         setMessage('Quantity updated successfully');
         setTimeout(() => setMessage(''), 5000);
+        fetchData();
       } catch (error) {
         console.error('Error updating quantity:', error);
       }
@@ -239,7 +240,7 @@ const StockManagementTable: React.FC = () => {
           ))}
           <div className="grid grid-cols-12 border-t border-[#EEEEEE] px-5 py-4 dark:border-strokedark lg:px-7.5 2xl:px-11">
             <div className="col-span-12">
-              <Link to="/hlo/admin/createaidrequest" className="text-primary">Add Aid</Link>
+              <Link to="/hlo/admin/addaidtype" className="text-primary">Add Aid</Link>
             </div>
           </div>
         </div>

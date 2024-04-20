@@ -9,13 +9,6 @@ const DropdownUser = () => {
 
   const { user, setUser } = useContext(AuthContext);
   const userType = user?.user_type;
-  const userTypeRoutes = {
-    'enterprise_courier': '/hlo/profile_ec',
-    'volunteer_courier': '/hlo/profile_vc',
-    'acc_admin': '/hlo/profile_accAdmin',
-    'adc_admin': '/hlo/profile_adcAdmin',
-  };
-  const toAttribute = userTypeRoutes[userType];
   const [centerName, setCenterName] = useState(null);
 
   useEffect(() => {
@@ -164,8 +157,7 @@ const DropdownUser = () => {
           <ul className="flex flex-col gap-5 border-b border-stroke px-6 py-7.5 dark:border-strokedark">
             <li>
               <Link
-                to={toAttribute}
-                // to="/auth/confirm-password" Add this line after password confirmation is fully implemented
+                to="/auth/confirm-password"
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
               >
                 <svg

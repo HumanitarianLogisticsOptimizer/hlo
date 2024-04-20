@@ -4,6 +4,8 @@ import { validatePassword } from './DataAndFunctions/validationFunctions';
 import { AuthContext } from './AuthProvider';
 import DefaultLayout from '../../layout/DefaultLayout';
 import PasswordWithPopover_Bigger from './Components/PasswordWithPopover_Bigger';
+import axios from 'axios';
+import closeImg from "../../images/HLO/close-circle.svg";
 
 const ConfirmPassword: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
@@ -17,6 +19,7 @@ const ConfirmPassword: React.FC = () => {
   const toAttribute = userTypeRoutes[userType];
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   // Redirect to login page if not authenticated
@@ -26,23 +29,66 @@ const ConfirmPassword: React.FC = () => {
     }
   }, [auth, navigate]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     setPasswordError('');
+    setErrorMessage(''); // Reset the error message
     if (!password) {
       setPasswordError(validatePassword(password));
     }
 
-    if (password === user?.password) { // This will not work, should change
-      navigate(toAttribute);
-    } else {
-      console.log('Incorrect password');
+    try {
+      const response = await axios.post(
+        'http://24.133.52.46:8000/api/check-password/',
+        { current_password: password },
+        { headers: { Authorization: `Token ${auth}` } }
+      );
+
+      if (response.status === 200) {
+        navigate(toAttribute);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setErrorMessage('Incorrect password');
+      } else {
+        console.error('Error checking password:', error);
+      }
     }
   };
 
   return (
     <DefaultLayout>
+      {errorMessage && (
+        <div className="mb-4 flex w-full border-l-6 border-[#F87171] bg-[#F87171] bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9">
+          <div className="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-[#F87171]">
+            <svg
+              width="16"
+              height="12"
+              viewBox="0 0 16 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M15.2984 0.826822L15.2868 0.811827L15.2741 0.797751C14.9173 0.401867 14.3238 0.400754 13.9657 0.794406L5.91888 9.45376L2.05667 5.2868C1.69856 4.89287 1.10487 4.89389 0.747996 5.28987C0.417335 5.65675 0.417335 6.22337 0.747996 6.59026L0.747959 6.59029L0.752701 6.59541L4.86742 11.0348C5.14445 11.3405 5.52858 11.5 5.89581 11.5C6.29242 11.5 6.65178 11.3355 6.92401 11.035L15.2162 2.11161C15.5833 1.74452 15.576 1.18615 15.2984 0.826822Z"
+                fill="white"
+                stroke="white"
+              ></path>
+            </svg>
+          </div>
+          <div className="w-full">
+            <h3 className="text-lg font-semibold text-black dark:text-[#F87171]">
+              {errorMessage}
+            </h3>
+          </div>
+          <button
+            className="ml-auto"
+            onClick={() => setErrorMessage('')}
+          >
+            <img src={closeImg} width={35} height={35} alt="" />
+          </button>
+        </div>
+      )}
       <div className="rounded-sm bg-white shadow-default dark:bg-boxdark">
         <div className="w-full xl:w-1/2 m-auto">
           <div className="w-full p-4 sm:p-12.5 xl:p-17.5">

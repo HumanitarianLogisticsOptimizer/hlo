@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthProvider';
 import closeImg from "../../../images/HLO/close-circle.svg";
 
-const CreateAidRequest: React.FC = () => {
+const AddAidType: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -218,4 +218,4 @@ const CreateAidRequest: React.FC = () => {
   );
 };
 
-export default CreateAidRequest;
+export default AddAidType;

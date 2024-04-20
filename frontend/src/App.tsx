@@ -17,12 +17,12 @@ import MapDashboard from './components/HLO/MapDashboard';
 import ConfirmPassword from './components/HLO/ConfirmPassword';
 import CreateCenter from './components/HLO/EmaPages/CreateCenter';
 import CreateAdmin from './components/HLO/EmaPages/CreateAdmin';
-import CreateAidRequest from './components/HLO/CenterAdminPages/CreateAidRequest';
 import ManageCenters from './components/HLO/EmaPages/ManageCenters';
 import UpdateCenter from './components/HLO/EmaPages/UpdateCenter';
-import ManageAidRequests from './components/HLO/EmaPages/ManageAidRequests';
+import ManageAidTypes from './components/HLO/EmaPages/ManageAidTypes';
 import CreateAidType from './components/HLO/EmaPages/CreateAidType';
 import UpdateAidType from './components/HLO/EmaPages/UpdateAidType';
+import AddAidType from './components/HLO/CenterAdminPages/AddAidType';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -125,11 +125,11 @@ function App() {
             }
           />
           <Route
-            path="/hlo/admin/createAidRequest"
+            path="/hlo/admin/addAidType"
             element={
               <>
-                <PageTitle title="Create New Aid Request" />
-                <CreateAidRequest />
+                <PageTitle title="Add New Aid Type" />
+                <AddAidType />
               </>
             }
           />
@@ -165,7 +165,7 @@ function App() {
             element={
               <>
                 <PageTitle title="Aid Management" />
-                <ManageAidRequests />
+                <ManageAidTypes />
               </>
             }
           />
