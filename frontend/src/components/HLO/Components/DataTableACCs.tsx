@@ -86,6 +86,7 @@ const DataTableACCs = () => {
     useSortBy,
     usePagination
   );
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -190,7 +191,7 @@ const DataTableACCs = () => {
               return (
                 <tr {...row.getRowProps()} key={key}>
                   <td {...row.cells[0].getCellProps()}>
-                    <img width={100} src={ isDarkMode ? "src/images/HLO/hlo-acc-light.svg" : "src/images/HLO/hlo-acc.svg" } alt="ACC Image" />
+                    <img width={100} src={isDarkMode ? "src/images/HLO/hlo-acc-light.svg" : "src/images/HLO/hlo-acc.svg"} alt="ACC Image" />
                   </td>
                   {row.cells.slice(1).map((cell, key) => {
                     return (

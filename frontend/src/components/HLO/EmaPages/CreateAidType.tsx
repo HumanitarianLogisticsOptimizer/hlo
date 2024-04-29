@@ -87,14 +87,14 @@ const CreateAidType: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="mb-3 block text-md font-medium text-black dark:text-white">
-                  Aid Type Name
+                  Aid Type
                 </label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    setNameError(!e.target.value ? 'Aid type name is required' : '');
+                    setNameError(!e.target.value ? 'Aid type is required' : '');
                   }}
                   placeholder="Name"
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
