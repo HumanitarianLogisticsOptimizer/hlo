@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import DefaultLayout from "../../layout/DefaultLayout";
-import DataTableACCs from "./Components/DataTableACCs";
-import DataTablesADCs from "./Components/DataTableADCs";
+import DefaultLayout from "../../../layout/DefaultLayout";
+import DataTableACCs from "../Components/DataTableACCs";
+import DataTablesADCs from "../Components/DataTableADCs";
 import { Link } from "react-router-dom";
 
 const HLODashboard: React.FC = () => {

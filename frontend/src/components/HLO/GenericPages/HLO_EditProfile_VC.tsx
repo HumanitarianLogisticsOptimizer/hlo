@@ -1,18 +1,18 @@
 import PhoneInput from "react-phone-number-input/input";
-import HLO_VehicleOption from "./Components/HLO_VehicleOption";
-import PasswordWithPopover from "./Components/PasswordWithPopover";
+import HLO_VehicleOption from "../Components/HLO_VehicleOption";
+import PasswordWithPopover from "../Components/PasswordWithPopover";
 import { useContext, useEffect, useRef, useState } from "react";
-import DefaultLayout from "../../layout/DefaultLayout";
-import Breadcrumb from "../Breadcrumbs/Breadcrumb";
-import { AuthContext } from "./AuthProvider";
+import DefaultLayout from "../../../layout/DefaultLayout";
+import Breadcrumb from "../../Breadcrumbs/Breadcrumb";
+import { AuthContext } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import closeImg from "../../images/HLO/close-circle.svg";
+import closeImg from "../../../images/HLO/close-circle.svg";
 import {
   validateEmail, validatePassword, validatePhoneNumber,
   validateVehicleType, validateCarPlate, validateNationalId,
   validateCity, validateFullName
-} from "./DataAndFunctions/validationFunctions";
+} from "../DataAndFunctions/validationFunctions";
 
 const HLO_EditProfile_VC = () => {
   const { auth, user } = useContext(AuthContext);

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GoogleMap, useLoadScript, MarkerF, InfoWindow } from "@react-google-maps/api";
 import axios from "axios";
-import { cities } from "./DataAndFunctions/cities";
+import { cities } from "../DataAndFunctions/cities";
 
 const CenterMap = () => {
   const { isLoaded, loadError } = useLoadScript({

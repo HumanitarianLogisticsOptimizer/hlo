@@ -1,4 +1,4 @@
-import DefaultLayout from "../../layout/DefaultLayout";
+import DefaultLayout from "../../../layout/DefaultLayout";
 import CenterMap from "./CenterMap";
 
 const MapDashboard: React.FC = () => {

@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validatePassword } from './DataAndFunctions/validationFunctions';
-import { AuthContext } from './AuthProvider';
-import DefaultLayout from '../../layout/DefaultLayout';
-import PasswordWithPopover_Bigger from './Components/PasswordWithPopover_Bigger';
+import { validatePassword } from '../DataAndFunctions/validationFunctions';
+import { AuthContext } from '../AuthProvider';
+import DefaultLayout from '../../../layout/DefaultLayout';
+import PasswordWithPopover_Bigger from '../Components/PasswordWithPopover_Bigger';
 import axios from 'axios';
-import closeImg from "../../images/HLO/close-circle.svg";
+import closeImg from "../../../images/HLO/close-circle.svg";
 
 const ConfirmPassword: React.FC = () => {
   const { auth, user } = useContext(AuthContext);

@@ -1,18 +1,18 @@
-import DefaultLayout from "../../layout/DefaultLayout";
-import Breadcrumb from "../Breadcrumbs/Breadcrumb";
+import DefaultLayout from "../../../layout/DefaultLayout";
+import Breadcrumb from "../../Breadcrumbs/Breadcrumb";
 import PhoneInput from "react-phone-number-input/input";
-import DatePickerOne from "../Forms/DatePicker/DatePickerOne";
-import PasswordWithPopover from "./Components/PasswordWithPopover";
+import DatePickerOne from "../../Forms/DatePicker/DatePickerOne";
+import PasswordWithPopover from "../Components/PasswordWithPopover";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "./AuthProvider";
+import { AuthContext } from "../AuthProvider";
 import { useNavigate } from "react-router-dom";
-import closeImg from "../../images/HLO/close-circle.svg";
+import closeImg from "../../../images/HLO/close-circle.svg";
 import axios from "axios";
 import {
   validateEmail, validateCompanyName, validatePassword,
   validatePhoneNumber, validateCompanyAddress, validateTradeRegistrationNumber,
   validateNumberOfLightDuty, validateNumberOfMediumDuty, validateNumberOfHeavyDuty
-} from './DataAndFunctions/validationFunctions';
+} from '../DataAndFunctions/validationFunctions';
 
 const HLO_EditProfile_EC = () => {
   const { auth, user } = useContext(AuthContext);

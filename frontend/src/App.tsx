@@ -7,14 +7,14 @@ import SignUp from './pages/Authentication/SignUp';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import ComingSoon from './pages/Authentication/ComingSoon';
-import HLODashboard from './components/HLO/HLODashboard';
+import HLODashboard from './components/HLO/GenericPages/HLODashboard';
 import StockManagement from './components/HLO/CenterAdminPages/StockManagement';
-import HLO_EditProfile_VC from './components/HLO/HLO_EditProfile_VC';
-import HLO_EditProfile_EC from './components/HLO/HLO_EditProfile_EC';
+import HLO_EditProfile_VC from './components/HLO/GenericPages/HLO_EditProfile_VC';
+import HLO_EditProfile_EC from './components/HLO/GenericPages/HLO_EditProfile_EC';
 import ConfirmDeny_Page from './components/HLO/EmaPages/ConfirmDeny_Page';
 import { AuthProvider } from './components/HLO/AuthProvider';
-import MapDashboard from './components/HLO/MapDashboard';
-import ConfirmPassword from './components/HLO/ConfirmPassword';
+import MapDashboard from './components/HLO/GenericPages/MapDashboard';
+import ConfirmPassword from './components/HLO/GenericPages/ConfirmPassword';
 import CreateCenter from './components/HLO/EmaPages/CreateCenter';
 import CreateAdmin from './components/HLO/EmaPages/CreateAdmin';
 import ManageCenters from './components/HLO/EmaPages/ManageCenters';
@@ -23,6 +23,8 @@ import ManageAidTypes from './components/HLO/EmaPages/ManageAidTypes';
 import CreateAidType from './components/HLO/EmaPages/CreateAidType';
 import UpdateAidType from './components/HLO/EmaPages/UpdateAidType';
 import AddAidType from './components/HLO/CenterAdminPages/AddAidType';
+import ManageROM from './components/HLO/EmaPages/ManageROM';
+import Tasks from './components/HLO/CourierPages/Tasks';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -184,6 +186,24 @@ function App() {
               <>
                 <PageTitle title="Update Aid Type" />
                 <UpdateAidType />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/admin/rommanagement"
+            element={
+              <>
+                <PageTitle title="Manage ROM Activities" />
+                <ManageROM />
+              </>
+            }
+          />
+          <Route
+            path="/hlo/courier/tasks"
+            element={
+              <>
+                <PageTitle title="Courier Tasks" />
+                <Tasks />
               </>
             }
           />
