@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from backend.aid.models import ACC, ADC, EMA, ACCAid, ADCAid, AidType
 from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin, EMAAdmin
+from backend.logistics.models import VolunteerTask, EnterpriseTask
 
 
 @admin.register(User)
@@ -112,4 +113,26 @@ class AidType(admin.ModelAdmin):
     list_display = (
         "id",
         "name"
+    )
+
+
+@admin.register(VolunteerTask)
+class AidType(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "destination",
+        "target",
+        "load",
+        "owner"
+    )
+
+
+@admin.register(EnterpriseTask)
+class AidType(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "destination",
+        "target",
+        "load",
+        "owner"
     )
