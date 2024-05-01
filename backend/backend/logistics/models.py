@@ -14,7 +14,8 @@ class VolunteerTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Distribution Center"
     )
-    load = models.CharField("Load", max_length=100)
+    load_type = models.CharField("Load Type", max_length=100)
+    load_quantity = models.IntegerField("Load Quantity")
     owner = models.ForeignKey(
         VolunteerCourier,
         on_delete=models.CASCADE,
@@ -36,7 +37,8 @@ class EnterpriseTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Distribution Center"
     )
-    load = models.CharField("Load", max_length=100)
+    load_type = models.CharField("Load Type", max_length=100)
+    load_quantity = models.IntegerField("Load Quantity")
     owner = models.ForeignKey(
         EnterpriseCourier,
         on_delete=models.CASCADE,

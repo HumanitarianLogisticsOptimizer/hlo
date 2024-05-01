@@ -117,22 +117,24 @@ class AidType(admin.ModelAdmin):
 
 
 @admin.register(VolunteerTask)
-class AidType(admin.ModelAdmin):
+class VolunteerTask(admin.ModelAdmin):
     list_display = (
         "id",
         "destination",
         "target",
-        "load",
+        "load_type",
+        "load_quantity",
         "owner"
     )
 
 
 @admin.register(EnterpriseTask)
-class AidType(admin.ModelAdmin):
+class EnterpriseTask(admin.ModelAdmin):
     list_display = (
         "id",
         "destination",
         "target",
-        "load",
+        "load_type",
+        "load_quantity",
         "owner"
     )
