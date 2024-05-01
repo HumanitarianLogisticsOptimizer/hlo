@@ -14,6 +14,7 @@ const CenterMap = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedCity, setSelectedCity] = useState("Ankara");
   const [highStatusAids, setHighStatusAids] = useState([]);
+  const [highAidsCount, setHighAidsCount] = useState({});
 
   const isDarkMode = useDarkMode();
 
@@ -177,6 +178,25 @@ const CenterMap = () => {
     fetchLocations();
   }, []);
 
+  useEffect(() => {
+    // Fetch the count of high status aids for each location when the component mounts
+    const fetchHighAidsCount = async () => {
+      const newHighAidsCount = {};
+      for (const location of accLocation) {
+        try {
+          const response = await axios.get(`http://24.133.52.46:8000/api/accaids/?center=${location.id}`);
+          const highAids = response.data.filter(aid => aid.status === 'High');
+          newHighAidsCount[location.id] = highAids.length;
+        } catch (error) {
+          console.error('Failed to fetch aids:', error);
+        }
+      }
+      setHighAidsCount(newHighAidsCount);
+    };
+
+    fetchHighAidsCount();
+  }, [accLocation]);
+
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps...";
 
@@ -249,6 +269,37 @@ const CenterMap = () => {
           <MarkerF
             key={index}
             position={location}
+            // Conditionally render the icon based on the count of high status aids
+            icon={highAidsCount[location.id] >= 5 ? 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'}
+            onClick={
+              async () => {
+                setSelectedLocation({ ...location, id: `acc-${index}` });
+                try {
+                  const response = await axios.get(`http://24.133.52.46:8000/api/accaids/?center=${location.id}`);
+                  const highAids = response.data.filter(aid => aid.status === 'High').slice(0, 5);
+                  console.log(highAids);
+                  const aidData = await Promise.all(highAids.map(async aid => {
+                    const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
+                    return {
+                      ...aid,
+                      type: {
+                        id: aid.type,
+                        name: typeResponse.data.name
+                      }
+                    };
+                  }));
+                  setHighStatusAids(aidData);
+                } catch (error) {
+                  console.error('Failed to fetch aids:', error);
+                }
+              }
+            }
+          />
+        ))}
+        {/* {accLocation.map((location, index) => (
+          <MarkerF
+            key={index}
+            position={location}
             // Red marker for ACC
             icon={'https://maps.google.com/mapfiles/ms/icons/red-dot.png'}
             onClick={async () => {
@@ -256,6 +307,7 @@ const CenterMap = () => {
               try {
                 const response = await axios.get(`http://24.133.52.46:8000/api/accaids/?center=${location.id}`);
                 const highAids = response.data.filter(aid => aid.status === 'High').slice(0, 5);
+                console.log(highAids);
                 const aidData = await Promise.all(highAids.map(async aid => {
                   const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
                   return {
@@ -272,7 +324,7 @@ const CenterMap = () => {
               }
             }}
           />
-        ))}
+        ))} */}
         {adcLocations.map((location, index) => (
           <MarkerF
             key={index}
