@@ -52,6 +52,7 @@ class ADC(models.Model):
 
 class AidType(models.Model):
     name = models.CharField("Name", max_length=100)
+    volume = models.IntegerField("Volume")
 
     class Meta:
         verbose_name = "Aid Type"
