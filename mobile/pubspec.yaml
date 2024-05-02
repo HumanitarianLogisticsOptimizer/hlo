@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_maps_flutter: ^2.5.1
   http: ^1.1.0
+  provider: ^6.1.2
+  shared_preferences: ^2.2.3
+  fluttertoast: ^8.2.5
+  sliding_sheet: ^0.5.2
   geolocator: ^10.1.0
 
 dev_dependencies:
@@ -63,6 +67,7 @@ flutter:
     - assets/acc.json
     - assets/adc.json
     - assets/acc.png
+    - assets/urgentAcc.png
     - assets/adc.png
 
   # To add assets to your application, add an assets section, like this:

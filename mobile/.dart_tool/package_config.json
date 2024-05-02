@@ -56,6 +56,18 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "ffi",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/ffi-2.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "file",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/file-7.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "flutter",
       "rootUri": "file:///Users/asimaltinisik/developer/flutter/packages/flutter",
       "packageUri": "lib/",
@@ -84,6 +96,12 @@
       "rootUri": "file:///Users/asimaltinisik/developer/flutter/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "fluttertoast",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/fluttertoast-8.2.5",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "geolocator",
@@ -212,10 +230,40 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "nested",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/nested-1.0.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "path",
       "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/path-1.8.3",
       "packageUri": "lib/",
       "languageVersion": "2.12"
+    },
+    {
+      "name": "path_provider_linux",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "path_provider_platform_interface",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "path_provider_windows",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/path_provider_windows-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "platform",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/platform-3.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "plugin_platform_interface",
@@ -224,16 +272,70 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "provider",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/provider-6.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "sanitize_html",
       "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/sanitize_html-2.1.0",
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
+      "name": "shared_preferences",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences-2.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "shared_preferences_android",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_android-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_foundation",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.3.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "shared_preferences_linux",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_platform_interface",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_platform_interface-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "shared_preferences_web",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_web-2.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "shared_preferences_windows",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/asimaltinisik/developer/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.0"
+    },
+    {
+      "name": "sliding_sheet",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/sliding_sheet-0.5.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
     },
     {
       "name": "source_span",
@@ -308,13 +410,25 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "win32",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/win32-5.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
+    },
+    {
+      "name": "xdg_directories",
+      "rootUri": "file:///Users/asimaltinisik/.pub-cache/hosted/pub.dev/xdg_directories-1.0.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "hlo",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.1"
     }
   ],
-  "generated": "2024-01-07T21:18:38.879789Z",
+  "generated": "2024-05-02T21:20:37.038127Z",
   "generator": "pub",
   "generatorVersion": "3.1.5"
 }

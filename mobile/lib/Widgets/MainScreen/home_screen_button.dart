@@ -27,10 +27,9 @@ class HomeScreenButton extends StatelessWidget {
         FloatingActionButton(
           heroTag: name, // button name
           mini: true,
-          backgroundColor: backgroundColor ??
-              secondaryColor,
+          backgroundColor: backgroundColor ?? colors.secondaryColor,
           onPressed: onPressed,
-          child: Icon(icon, color: primaryColor),
+          child: Icon(icon, color: colors.primaryColor),
         ),
         if (showBadge && badge != null)
           Positioned(
@@ -39,7 +38,7 @@ class HomeScreenButton extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: const BoxDecoration(
-                color: accentColor,
+                color: colors.accentColor,
                 shape: BoxShape.circle,
               ),
               child: badge,
