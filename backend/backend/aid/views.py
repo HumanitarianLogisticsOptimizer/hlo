@@ -1,13 +1,19 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-
+from rest_framework.views import APIView
+import os
+from django.conf import settings
+from rest_framework.viewsets import ViewSet
 
 from backend.aid.models import ACCAid, ADCAid, ACC, ADC, EMA, AidType, AidTypeRequest
 from backend.aid.serializers import ACCAidSerializer, ADCAidSerializer, ACCSerializer, ADCSerializer, EMASerializer, \
     AidTypeSerializer, AidTypeRequestSerializer
+from backend.logistics.optimization import mip_setup, mip_solve
+from backend.utils.export import export_models_to_excel
 
 
 # Create your views here.
@@ -96,3 +102,45 @@ class AidTypeRequestViewSet(viewsets.ModelViewSet):
     queryset = AidTypeRequest.objects.all()
     serializer_class = AidTypeRequestSerializer
     permission_classes = (AllowAny,)
+
+
+class ExportDataToExcel(APIView):
+    permission_classes = (AllowAny,)  # or IsAdminUser if you prefer
+
+    def get(self, request):
+        app_name = 'aid'
+        model_names = ['ACC', 'ADC', 'ACCAid', 'ADCAid']
+        excel_directory = os.path.join(settings.MEDIA_ROOT, 'inputs')
+
+        if not os.path.exists(excel_directory):
+            os.makedirs(excel_directory)
+
+        excel_file_path = os.path.join(excel_directory, 'inputs_to_load.xlsx')
+
+        export_models_to_excel(app_name, model_names, excel_file_path)
+
+        return Response({"message": f"Excel file created at {excel_file_path}"})
+
+
+class OptimizationViewSet(ViewSet):
+    """
+    A simple ViewSet for running optimization processes.
+    """
+    permission_classes = [AllowAny]
+
+    @action(detail=False, methods=['get'])
+    def run(self, request):
+        try:
+            # Specify the absolute path to your inputs file
+            inputs_directory = '/app/backend/media/inputs/inputs_to_load.xlsx'
+
+            # Read user inputs
+            inputs_dict = mip_setup.read_inputs(inputs_directory)
+
+            # Prepare
+            mip_inputs = mip_setup.InputsSetup(inputs_dict)
+            mip_solve.mathematical_model_solve(mip_inputs)
+
+            return Response({'message': 'Optimization successfully completed!'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
