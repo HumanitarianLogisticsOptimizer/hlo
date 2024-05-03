@@ -199,7 +199,7 @@ function App() {
             }
           />
           <Route
-            path="/hlo/courier/tasks"
+            path="/hlo/tasks"
             element={
               <>
                 <PageTitle title="Courier Tasks" />

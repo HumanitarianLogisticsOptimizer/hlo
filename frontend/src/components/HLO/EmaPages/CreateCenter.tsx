@@ -4,7 +4,7 @@ import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 import closeImg from "../../../images/HLO/close-circle.svg";
 import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CreateCenter: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
@@ -24,6 +24,10 @@ const CreateCenter: React.FC = () => {
   const [emaError, setEmaError] = useState('');
 
   const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
+  const [openTab, setOpenTab] = useState(1);
+  const activeClasses = 'text-primary border-primary';
+  const inactiveClasses = 'border-transparent';
+
 
   const changeTextColor = () => {
     setIsOptionSelected(true);
@@ -73,7 +77,6 @@ const CreateCenter: React.FC = () => {
       hasError = true;
     }
 
-    // If any errors were found, stop the form submission
     if (hasError) {
       return;
     }
@@ -154,6 +157,31 @@ const CreateCenter: React.FC = () => {
             <h2 className="mb-9 text-title-lg font-bold text-black dark:text-white">
               Create New Aid Center
             </h2>
+
+            <div className="mb-4 flex flex-wrap gap-5 border-b border-stroke dark:border-strokedark sm:gap-10">
+              <Link
+                to="#"
+                className={`border-b-2 py-4 px-3 text-sm font-medium hover:text-primary md:text-base ${openTab === 1 ? activeClasses : inactiveClasses
+                  }`}
+                onClick={() => {
+                  setOpenTab(1);
+                  setButtonType('ACC');
+                }}
+              >
+                ACC
+              </Link>
+              <Link
+                to="#"
+                className={`border-b-2 py-4 px-3 text-sm font-medium hover:text-primary md:text-base ${openTab === 2 ? activeClasses : inactiveClasses
+                  }`}
+                onClick={() => {
+                  setOpenTab(2);
+                  setButtonType('ADC');
+                }}
+              >
+                ADC
+              </Link>
+            </div>
 
             <form onSubmit={(e) => handleSubmit(e, buttonType)}>
               <div className="mb-4">
@@ -250,16 +278,8 @@ const CreateCenter: React.FC = () => {
               <div className="flex gap-6">
                 <input
                   type="submit"
-                  value="Create ACC"
+                  value={buttonType === 'ACC' ? 'Create ACC' : 'Create ADC'}
                   disabled={formSubmitted}
-                  onClick={() => setButtonType("ACC")}
-                  className="cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                />
-                <input
-                  type="submit"
-                  value="Create ADC"
-                  disabled={formSubmitted}
-                  onClick={() => setButtonType("ADC")}
                   className="cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                 />
               </div>

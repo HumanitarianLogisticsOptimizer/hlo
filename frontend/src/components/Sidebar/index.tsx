@@ -9,6 +9,7 @@ import UserPlus from '../../images/HLO/user-plus.svg'
 import CenterLogo from '../../images/HLO/center.svg';
 import mapImg from '../../images/HLO/map.svg';
 import aidImg from '../../images/HLO/hlo-aid.svg';
+import tasksImg from '../../images/HLO/tasks.svg';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -193,6 +194,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                     Stock Management
                                   </NavLink>
                                 </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/tasks"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('tasks') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={tasksImg} height={25} width={25} />
+                                    Tasks
+                                  </NavLink>
+                                </li>
                                 {/* <li>
                                   <NavLink
                                     to="/hlo/admin/createaidrequest/"
@@ -296,7 +307,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col">
               <SidebarLinkGroup
                 activeCondition={
-                  pathname === '/hlo/courier' || pathname.includes('hlo/courier')
+                  pathname === '/hlo/tasks' || pathname.includes('hlo/tasks')
                 }
               >
                 {(handleClick, open) => {
@@ -304,8 +315,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/courier' || pathname.includes('courier')) &&
-                          'bg-graydark dark:bg-meta-4'
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4
                           }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -339,11 +349,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className='ml-4'>
                           <li>
                             <NavLink
-                              to="/hlo/courier/tasks"
+                              to="/hlo/tasks"
                               className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('tasks') && 'bg-graydark dark:bg-meta-4'
                                 }`}
                             >
-                              {/* SVG here */}
+                              <img src={tasksImg} height={25} width={25} />
                               Tasks
                             </NavLink>
                           </li>

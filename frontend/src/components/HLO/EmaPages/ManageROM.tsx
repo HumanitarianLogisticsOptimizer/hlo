@@ -50,10 +50,25 @@ const ManageROM: React.FC = () => {
         accessor: 'id',
       },
       {
-        Header: 'Task Name',
-        accessor: 'name',
+        Header: 'Destination',
+        accessor: 'destination',
       },
-      // Add more columns as needed
+      {
+        Header: 'Target',
+        accessor: 'target',
+      },
+      {
+        Header: 'Owner',
+        accessor: 'owner',
+      },
+      {
+        Header: 'Load Type',
+        accessor: 'loadType',
+      },
+      {
+        Header: 'Load Quantity',
+        accessor: 'loadQuantity',
+      },
     ],
     []
   );
@@ -87,6 +102,94 @@ const ManageROM: React.FC = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
+
+  useEffect(() => {
+    // Mock tasks data
+    const mockTasks = [
+      {
+        id: '1',
+        destination: 'ACC1',
+        target: 'ADC1',
+        owner: 'volunteer_courier',
+        loadType: 'Aid1',
+        loadQuantity: 10,
+      },
+      {
+        id: '2',
+        destination: 'ACC2',
+        target: 'ADC2',
+        owner: 'enterprise_courier',
+        loadType: 'Aid2',
+        loadQuantity: 20,
+      },
+      {
+        id: '3',
+        destination: 'ACC3',
+        target: 'ADC3',
+        owner: 'volunteer_courier',
+        loadType: 'Aid3',
+        loadQuantity: 30,
+      },
+      {
+        id: '4',
+        destination: 'ACC4',
+        target: 'ADC4',
+        owner: 'enterprise_courier',
+        loadType: 'Aid4',
+        loadQuantity: 40,
+      },
+      {
+        id: '5',
+        destination: 'ACC5',
+        target: 'ADC5',
+        owner: 'volunteer_courier',
+        loadType: 'Aid5',
+        loadQuantity: 50,
+      },
+      {
+        id: '6',
+        destination: 'ACC6',
+        target: 'ADC6',
+        owner: 'enterprise_courier',
+        loadType: 'Aid6',
+        loadQuantity: 60,
+      },
+      {
+        id: '7',
+        destination: 'ACC7',
+        target: 'ADC7',
+        owner: 'volunteer_courier',
+        loadType: 'Aid7',
+        loadQuantity: 70,
+      },
+      {
+        id: '8',
+        destination: 'ACC8',
+        target: 'ADC8',
+        owner: 'enterprise_courier',
+        loadType: 'Aid8',
+        loadQuantity: 80,
+      },
+      {
+        id: '9',
+        destination: 'ACC9',
+        target: 'ADC9',
+        owner: 'volunteer_courier',
+        loadType: 'Aid9',
+        loadQuantity: 90,
+      },
+      {
+        id: '10',
+        destination: 'ACC10',
+        target: 'ADC10',
+        owner: 'enterprise_courier',
+        loadType: 'Aid10',
+        loadQuantity: 100,
+      },
+    ];
+
+    setTasks(mockTasks);
+  }, []);
 
   return (
     <DefaultLayout>
@@ -213,6 +316,18 @@ const ManageROM: React.FC = () => {
                   </td>
                   <td {...row.cells[1].getCellProps()}>
                     {row.cells[1].render('Cell')}
+                  </td>
+                  <td {...row.cells[2].getCellProps()}>
+                    {row.cells[2].render('Cell')}
+                  </td>
+                  <td {...row.cells[3].getCellProps()}>
+                    {row.cells[3].render('Cell')}
+                  </td>
+                  <td {...row.cells[4].getCellProps()}>
+                    {row.cells[4].render('Cell')}
+                  </td>
+                  <td {...row.cells[5].getCellProps()}>
+                    {row.cells[5].render('Cell')}
                   </td>
                 </tr>
               );

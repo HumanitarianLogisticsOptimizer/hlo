@@ -6,16 +6,19 @@ import { useTable, useSortBy, useGlobalFilter, useFilters, usePagination } from 
 import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import ModalQR from '../Components/ModalQR';
 
 const Tasks: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const allowedUserTypes = ['volunteer_courier', 'enterprise_courier', 'acc_admin', 'adc_admin'];
 
   useEffect(() => {
     if (auth) {
-      if (user?.user_type !== 'volunteer_courier' && user?.user_type !== 'enterprise_courier') {
+      if (!allowedUserTypes.includes(user?.user_type)) {
         navigate('/');
       }
     } else {
@@ -39,6 +42,7 @@ const Tasks: React.FC = () => {
 
   const data = useMemo(() => tasks, [tasks]);
 
+
   const columns = useMemo(
     () => [
       {
@@ -46,10 +50,21 @@ const Tasks: React.FC = () => {
         accessor: 'id',
       },
       {
-        Header: 'Task Name',
-        accessor: 'name',
+        Header: 'Destination',
+        accessor: 'destination',
       },
-      // Add more columns as needed
+      {
+        Header: 'Target',
+        accessor: 'target',
+      },
+      {
+        Header: 'Load Type',
+        accessor: 'loadType',
+      },
+      {
+        Header: 'Load Quantity',
+        accessor: 'loadQuantity',
+      },
     ],
     []
   );
@@ -84,11 +99,87 @@ const Tasks: React.FC = () => {
 
   const { globalFilter, pageIndex, pageSize } = state;
 
-  // Rest of the component...
+  useEffect(() => {
+    // Mock tasks data
+    const mockTasks = [
+      {
+        id: '1',
+        destination: 'ACC1',
+        target: 'ADC1',
+        loadType: 'Aid1',
+        loadQuantity: 10,
+      },
+      {
+        id: '2',
+        destination: 'ACC2',
+        target: 'ADC2',
+        loadType: 'Aid2',
+        loadQuantity: 20,
+      },
+      {
+        id: '3',
+        destination: 'ACC3',
+        target: 'ADC3',
+        loadType: 'Aid3',
+        loadQuantity: 30,
+      },
+      {
+        id: '4',
+        destination: 'ACC4',
+        target: 'ADC4',
+        loadType: 'Aid4',
+        loadQuantity: 40,
+      },
+      {
+        id: '5',
+        destination: 'ACC5',
+        target: 'ADC5',
+        loadType: 'Aid5',
+        loadQuantity: 50,
+      },
+      {
+        id: '6',
+        destination: 'ACC6',
+        target: 'ADC6',
+        loadType: 'Aid6',
+        loadQuantity: 60,
+      },
+      {
+        id: '7',
+        destination: 'ACC7',
+        target: 'ADC7',
+        loadType: 'Aid7',
+        loadQuantity: 70,
+      },
+      {
+        id: '8',
+        destination: 'ACC8',
+        target: 'ADC8',
+        loadType: 'Aid8',
+        loadQuantity: 80,
+      },
+      {
+        id: '9',
+        destination: 'ACC9',
+        target: 'ADC9',
+        loadType: 'Aid9',
+        loadQuantity: 90,
+      },
+      {
+        id: '10',
+        destination: 'ACC10',
+        target: 'ADC10',
+        loadType: 'Aid10',
+        loadQuantity: 100,
+      },
+    ];
+
+    setTasks(mockTasks);
+  }, []);
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Manage ROM" />
+      <Breadcrumb pageName="Tasks" />
       {message && (
         <div className={`mb-4 flex w-full border-l-6 ${message.startsWith('Error') ? 'border-[#F87171] bg-[#F87171]' : 'border-[#34D399] bg-[#34D399]'} bg-opacity-[15%] px-7 py-8 shadow-md dark:bg-[#1B1B24] dark:bg-opacity-30 md:p-9`}>
           <div className={`mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg ${message.startsWith('Error') ? 'bg-[#F87171]' : 'bg-[#34D399]'}`}>
@@ -199,12 +290,21 @@ const Tasks: React.FC = () => {
             {page.map((row, key) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={key}>
+                <tr {...row.getRowProps()} key={key} onClick={() => { if (['acc_admin', 'adc_admin'].includes(user?.user_type)) setIsModalOpen(true) }} className={['acc_admin', 'adc_admin'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
                   <td className=' text-graydark text-lg' {...row.cells[0].getCellProps()}>
                     {row.cells[0].render('Cell')}
                   </td>
                   <td {...row.cells[1].getCellProps()}>
                     {row.cells[1].render('Cell')}
+                  </td>
+                  <td {...row.cells[2].getCellProps()}>
+                    {row.cells[2].render('Cell')}
+                  </td>
+                  <td {...row.cells[3].getCellProps()}>
+                    {row.cells[3].render('Cell')}
+                  </td>
+                  <td {...row.cells[4].getCellProps()}>
+                    {row.cells[4].render('Cell')}
                   </td>
                 </tr>
               );
@@ -273,6 +373,7 @@ const Tasks: React.FC = () => {
         </div>
       </section>
       {/* Table component goes here */}
+      <ModalQR isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </DefaultLayout>
   );
 };
