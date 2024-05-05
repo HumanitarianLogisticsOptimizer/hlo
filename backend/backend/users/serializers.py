@@ -5,7 +5,7 @@ from backend.users.models import User, ACC, ADC, VolunteerCourier, EnterpriseCou
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email",)
+        fields = ("id", "email",)
 
 
 class VolunteerCourierSerializer(serializers.ModelSerializer):
