@@ -25,6 +25,7 @@ import UpdateAidType from './components/HLO/EmaPages/UpdateAidType';
 import AddAidType from './components/HLO/CenterAdminPages/AddAidType';
 import ManageROM from './components/HLO/EmaPages/ManageROM';
 import Tasks from './components/HLO/CourierPages/Tasks';
+import ConfirmCode from './components/HLO/CenterAdminPages/ConfirmCode';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -105,6 +106,15 @@ function App() {
               <>
                 <PageTitle title="Confirm Password" />
                 <ConfirmPassword />
+              </>
+            }
+          />
+          <Route
+            path="/auth/confirm-code"
+            element={
+              <>
+                <PageTitle title="Confirm Code" />
+                <ConfirmCode />
               </>
             }
           />
