@@ -89,6 +89,7 @@ const DropdownUser = () => {
   });
 
   const handleLogout = () => {
+    // localStorage.removeItem('auth');
     fetch('http://24.133.52.46:8000/api/logout/', {
       method: 'POST',
       headers: {

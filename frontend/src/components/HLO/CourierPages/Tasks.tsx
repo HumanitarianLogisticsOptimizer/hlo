@@ -6,7 +6,7 @@ import { useTable, useSortBy, useGlobalFilter, useFilters, usePagination } from 
 import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import ModalQR from '../Components/ModalQR';
+import ModalCode from '../Components/ModalCode';
 
 const Tasks: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
@@ -15,6 +15,7 @@ const Tasks: React.FC = () => {
   const [tasks, setTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const allowedUserTypes = ['volunteer_courier', 'enterprise_courier', 'acc_admin', 'adc_admin'];
+  const [code, setCode] = useState('');
 
   useEffect(() => {
     if (auth) {
@@ -29,16 +30,47 @@ const Tasks: React.FC = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(''); // Add the API endpoint here
-        setTasks(response.data);
+        let response;
+        switch (user?.user_type) {
+          case 'volunteer_courier':
+            response = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
+            break;
+          case 'enterprise_courier':
+            response = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
+            break;
+          case 'acc_admin':
+          case 'adc_admin':
+            const volunteerResponse = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
+            const enterpriseResponse = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
+            response = { data: [...volunteerResponse.data, ...enterpriseResponse.data] };
+            break;
+          default:
+            break;
+        }
+
+        let tasks = response?.data || [];
+
+        if (user) {
+          switch (user.user_type) {
+            case 'acc_admin':
+              tasks = tasks.filter(task => task.destination === user.center_id);
+              break;
+            case 'adc_admin':
+              tasks = tasks.filter(task => task.target === user.center_id);
+              break;
+            default:
+              break;
+          }
+        }
+
+        setTasks(tasks);
       } catch (error) {
         console.error('Error fetching tasks: ', error);
       }
     };
 
     fetchTasks();
-  }
-  );
+  }, [user]);
 
   const data = useMemo(() => tasks, [tasks]);
 
@@ -50,7 +82,7 @@ const Tasks: React.FC = () => {
         accessor: 'id',
       },
       {
-        Header: 'Destination',
+        Header: 'Source',
         accessor: 'destination',
       },
       {
@@ -64,6 +96,27 @@ const Tasks: React.FC = () => {
       {
         Header: 'Load Quantity',
         accessor: 'loadQuantity',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
+        Cell: ({ value }) => {
+          let color = '';
+          switch (value) {
+            case 'pending':
+              color = 'yellow';
+              break;
+            case 'on the road':
+              color = 'blue';
+              break;
+            case 'done':
+              color = 'green';
+              break;
+            default:
+              break;
+          }
+          return <span style={{ color }}>{value}</span>;
+        },
       },
     ],
     []
@@ -290,8 +343,20 @@ const Tasks: React.FC = () => {
             {page.map((row, key) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} key={key} onClick={() => { if (['acc_admin', 'adc_admin'].includes(user?.user_type)) setIsModalOpen(true) }} className={['acc_admin', 'adc_admin'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
-                  <td className=' text-graydark text-lg' {...row.cells[0].getCellProps()}>
+                <tr {...row.getRowProps()} key={key} onClick={() => {
+                  if (user?.user_type === 'volunteer_courier') {
+                    setIsModalOpen(true);
+                    if (row.original.status === 'pending') {
+                      setCode(row.original.source_code);
+                    } else {
+                      setCode(row.original.target_code);
+                    }
+                  } else if (user?.user_type === 'enterprise_courier' && ['pending', 'done'].includes(row.original.status)) {
+                    setIsModalOpen(true);
+                    setCode(row.original.target_code);
+                  }
+                }} className={['volunteer_courier', 'enterprise_courier'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
+                  <td className='text-lg' {...row.cells[0].getCellProps()}>
                     {row.cells[0].render('Cell')}
                   </td>
                   <td {...row.cells[1].getCellProps()}>
@@ -305,6 +370,9 @@ const Tasks: React.FC = () => {
                   </td>
                   <td {...row.cells[4].getCellProps()}>
                     {row.cells[4].render('Cell')}
+                  </td>
+                  <td {...row.cells[5].getCellProps()}>
+                    {row.cells[5].render('Cell')}
                   </td>
                 </tr>
               );
@@ -373,7 +441,7 @@ const Tasks: React.FC = () => {
         </div>
       </section>
       {/* Table component goes here */}
-      <ModalQR isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <ModalCode isOpen={isModalOpen} setIsOpen={setIsModalOpen} code={code} />
     </DefaultLayout>
   );
 };

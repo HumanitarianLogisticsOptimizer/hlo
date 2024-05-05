@@ -22,7 +22,6 @@ interface TableData {
 
 const StockManagementTable: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
-  console.log(user);
   const navigate = useNavigate();
 
   useEffect(() => {

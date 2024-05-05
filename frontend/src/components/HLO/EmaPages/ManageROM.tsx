@@ -5,13 +5,20 @@ import closeImg from "../../../images/HLO/close-circle.svg";
 import { useTable, useSortBy, useGlobalFilter, useFilters, usePagination } from 'react-table';
 import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ModalROM from '../Components/ModalROM';
 
 const ManageROM: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
-  const [tasks, setTasks] = useState([]);
+  const [volunteerTasks, setVolunteerTasks] = useState([]);
+  const [enterpriseTasks, setEnterpriseTasks] = useState([]);
+  const [taskType, setTaskType] = useState('volunteer');
+
+  const [openTab, setOpenTab] = useState(1);
+  const activeClasses = 'text-primary border-primary';
+  const inactiveClasses = 'border-transparent';
 
   useEffect(() => {
     if (auth) {
@@ -23,25 +30,38 @@ const ManageROM: React.FC = () => {
     }
   }, [user, navigate, auth]);
 
-  useEffect(() => {
-    // Fetch tasks from ROM
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get('http://your-api-url/tasks');
-        setTasks(response.data);
-      } catch (error) {
-        console.error('Error fetching tasks: ', error);
-      }
-    };
+  const data = useMemo(() => {
+    if (taskType === 'volunteer') {
+      return volunteerTasks;
+    } else if (taskType === 'enterprise') {
+      return enterpriseTasks;
+    } else {
+      return [];
+    }
+  }, [taskType, volunteerTasks, enterpriseTasks]);
 
-    fetchTasks();
+  useEffect(() => {
+    handleTriggerROM();
   }, []);
 
-  const handleTriggerROM = () => {
-    // Logic to trigger ROM goes here
+  const handleTriggerROM = async () => {
+    try {
+      // Trigger the ROM
+      await axios.post('http://24.133.52.46/api/optimization/run/');
+
+      const volunteerTasksResponse = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
+      setVolunteerTasks(volunteerTasksResponse.data);
+
+      const enterpriseTasksResponse = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
+      setEnterpriseTasks(enterpriseTasksResponse.data);
+    } catch (error) {
+      console.error('Error triggering ROM and fetching tasks: ', error);
+    }
   };
 
-  const data = useMemo(() => tasks, [tasks]);
+  const handleModalResult = (result: boolean) => {
+    result ? handleTriggerROM() : {};
+  };
 
   const columns = useMemo(
     () => [
@@ -50,8 +70,8 @@ const ManageROM: React.FC = () => {
         accessor: 'id',
       },
       {
-        Header: 'Destination',
-        accessor: 'destination',
+        Header: 'Source',
+        accessor: 'source',
       },
       {
         Header: 'Target',
@@ -103,93 +123,90 @@ const ManageROM: React.FC = () => {
 
   const { globalFilter, pageIndex, pageSize } = state;
 
-  useEffect(() => {
-    // Mock tasks data
-    const mockTasks = [
-      {
-        id: '1',
-        destination: 'ACC1',
-        target: 'ADC1',
-        owner: 'volunteer_courier',
-        loadType: 'Aid1',
-        loadQuantity: 10,
-      },
-      {
-        id: '2',
-        destination: 'ACC2',
-        target: 'ADC2',
-        owner: 'enterprise_courier',
-        loadType: 'Aid2',
-        loadQuantity: 20,
-      },
-      {
-        id: '3',
-        destination: 'ACC3',
-        target: 'ADC3',
-        owner: 'volunteer_courier',
-        loadType: 'Aid3',
-        loadQuantity: 30,
-      },
-      {
-        id: '4',
-        destination: 'ACC4',
-        target: 'ADC4',
-        owner: 'enterprise_courier',
-        loadType: 'Aid4',
-        loadQuantity: 40,
-      },
-      {
-        id: '5',
-        destination: 'ACC5',
-        target: 'ADC5',
-        owner: 'volunteer_courier',
-        loadType: 'Aid5',
-        loadQuantity: 50,
-      },
-      {
-        id: '6',
-        destination: 'ACC6',
-        target: 'ADC6',
-        owner: 'enterprise_courier',
-        loadType: 'Aid6',
-        loadQuantity: 60,
-      },
-      {
-        id: '7',
-        destination: 'ACC7',
-        target: 'ADC7',
-        owner: 'volunteer_courier',
-        loadType: 'Aid7',
-        loadQuantity: 70,
-      },
-      {
-        id: '8',
-        destination: 'ACC8',
-        target: 'ADC8',
-        owner: 'enterprise_courier',
-        loadType: 'Aid8',
-        loadQuantity: 80,
-      },
-      {
-        id: '9',
-        destination: 'ACC9',
-        target: 'ADC9',
-        owner: 'volunteer_courier',
-        loadType: 'Aid9',
-        loadQuantity: 90,
-      },
-      {
-        id: '10',
-        destination: 'ACC10',
-        target: 'ADC10',
-        owner: 'enterprise_courier',
-        loadType: 'Aid10',
-        loadQuantity: 100,
-      },
-    ];
-
-    setTasks(mockTasks);
-  }, []);
+  // useEffect(() => { // Mock tasks data
+  //   const mockTasks = [
+  //     {
+  //       id: '1',
+  //       destination: 'ACC1',
+  //       target: 'ADC1',
+  //       owner: 'volunteer_courier',
+  //       loadType: 'Aid1',
+  //       loadQuantity: 10,
+  //     },
+  //     {
+  //       id: '2',
+  //       destination: 'ACC2',
+  //       target: 'ADC2',
+  //       owner: 'enterprise_courier',
+  //       loadType: 'Aid2',
+  //       loadQuantity: 20,
+  //     },
+  //     {
+  //       id: '3',
+  //       destination: 'ACC3',
+  //       target: 'ADC3',
+  //       owner: 'volunteer_courier',
+  //       loadType: 'Aid3',
+  //       loadQuantity: 30,
+  //     },
+  //     {
+  //       id: '4',
+  //       destination: 'ACC4',
+  //       target: 'ADC4',
+  //       owner: 'enterprise_courier',
+  //       loadType: 'Aid4',
+  //       loadQuantity: 40,
+  //     },
+  //     {
+  //       id: '5',
+  //       destination: 'ACC5',
+  //       target: 'ADC5',
+  //       owner: 'volunteer_courier',
+  //       loadType: 'Aid5',
+  //       loadQuantity: 50,
+  //     },
+  //     {
+  //       id: '6',
+  //       destination: 'ACC6',
+  //       target: 'ADC6',
+  //       owner: 'enterprise_courier',
+  //       loadType: 'Aid6',
+  //       loadQuantity: 60,
+  //     },
+  //     {
+  //       id: '7',
+  //       destination: 'ACC7',
+  //       target: 'ADC7',
+  //       owner: 'volunteer_courier',
+  //       loadType: 'Aid7',
+  //       loadQuantity: 70,
+  //     },
+  //     {
+  //       id: '8',
+  //       destination: 'ACC8',
+  //       target: 'ADC8',
+  //       owner: 'enterprise_courier',
+  //       loadType: 'Aid8',
+  //       loadQuantity: 80,
+  //     },
+  //     {
+  //       id: '9',
+  //       destination: 'ACC9',
+  //       target: 'ADC9',
+  //       owner: 'volunteer_courier',
+  //       loadType: 'Aid9',
+  //       loadQuantity: 90,
+  //     },
+  //     {
+  //       id: '10',
+  //       destination: 'ACC10',
+  //       target: 'ADC10',
+  //       owner: 'enterprise_courier',
+  //       loadType: 'Aid10',
+  //       loadQuantity: 100,
+  //     },
+  //   ];
+  // }, []);
 
   return (
     <DefaultLayout>
@@ -225,12 +242,33 @@ const ManageROM: React.FC = () => {
         </div>
       )}
       <section className="data-table-common data-table-two p-5 rounded-lg-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        <button
-          className="mb-4 inline-flex items-center justify-center rounded-md border border-primary px-4 py-2 text-center font-medium text-primary dark:border-white dark:text-white hover:shadow-4 lg:px-8 xl:px-10"
-          onClick={handleTriggerROM}
-        >
-          Activate ROM
-        </button>
+        <ModalROM onResult={handleModalResult} />
+
+        <div className="mb-4 flex flex-wrap gap-5 border-b border-stroke dark:border-strokedark sm:gap-10">
+          <Link
+            to="#"
+            className={`border-b-2 py-4 px-3 text-sm font-medium hover:text-primary md:text-base ${openTab === 1 ? activeClasses : inactiveClasses
+              }`}
+            onClick={() => {
+              setOpenTab(1);
+              setTaskType('volunteer');
+            }}
+          >
+            Volunteer Tasks
+          </Link>
+          <Link
+            to="#"
+            className={`border-b-2 py-4 px-3 text-sm font-medium hover:text-primary md:text-base ${openTab === 2 ? activeClasses : inactiveClasses
+              }`}
+            onClick={() => {
+              setOpenTab(2);
+              setTaskType('enterprise');
+            }}
+          >
+            Enterprise Tasks
+          </Link>
+        </div>
+
         <div className="flex justify-between border-b border-stroke pb-4 dark:border-strokedark">
           <div className="w-100">
             <input
@@ -311,22 +349,22 @@ const ManageROM: React.FC = () => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()} key={key}>
-                  <td className=' text-graydark text-lg' {...row.cells[0].getCellProps()}>
+                  <td className='text-lg' {...row.cells[0].getCellProps()}>
                     {row.cells[0].render('Cell')}
                   </td>
-                  <td {...row.cells[1].getCellProps()}>
+                  <td className='text-lg'  {...row.cells[1].getCellProps()}>
                     {row.cells[1].render('Cell')}
                   </td>
-                  <td {...row.cells[2].getCellProps()}>
+                  <td className='text-lg'  {...row.cells[2].getCellProps()}>
                     {row.cells[2].render('Cell')}
                   </td>
-                  <td {...row.cells[3].getCellProps()}>
+                  <td className='text-lg'  {...row.cells[3].getCellProps()}>
                     {row.cells[3].render('Cell')}
                   </td>
-                  <td {...row.cells[4].getCellProps()}>
+                  <td className='text-lg'  {...row.cells[4].getCellProps()}>
                     {row.cells[4].render('Cell')}
                   </td>
-                  <td {...row.cells[5].getCellProps()}>
+                  <td className='text-lg'  {...row.cells[5].getCellProps()}>
                     {row.cells[5].render('Cell')}
                   </td>
                 </tr>

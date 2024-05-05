@@ -22,19 +22,21 @@ const ConfirmCode: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    // Redirect to login page if not authenticated
     useEffect(() => {
         if (!auth) {
             navigate('/auth/signin');
         }
-    }, [auth, navigate]);
+        if (user?.user_type !== 'acc_admin' && user?.user_type !== 'adc_admin') {
+            navigate('/');
+        }
+    }, [user, navigate]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
             const response = await axios.post(
-                'http://24.133.52.46:8000/api/check-password/',
+                'http://24.133.52.46:8000/api/check-password/', // TODO: Change to the correct URL
                 { current_password: code },
                 { headers: { Authorization: `Token ${auth}` } }
             );

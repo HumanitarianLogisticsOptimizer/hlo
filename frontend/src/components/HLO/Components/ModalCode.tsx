@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const ModalQR: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => void }> = ({ isOpen, setIsOpen }) => {
+const ModalCode: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => void; code: string }> = ({ isOpen, setIsOpen, code }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const trigger = useRef<any>(null);
   const modal = useRef<any>(null);
 
-  // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
       if (!modal.current) return;
@@ -44,8 +43,7 @@ const ModalQR: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => void 
           onBlur={() => setModalOpen(false)}
           className="md:px-17.5 w-full max-w-142.5 rounded-lg bg-white px-4 py-6 text-center dark:bg-boxdark md:py-15 flex flex-col items-center justify-center"
         >
-          <img src="https://via.placeholder.com/150" width={350} height={350} alt="QR Code" />
-          {/* ... */}
+          <h1 className="text-6xl font-bold">{code}</h1>
           <div className="2xsm:w-1/2 w-full px-3 mt-4">
             <button
               onClick={() => setIsOpen(false)}
@@ -54,11 +52,10 @@ const ModalQR: React.FC<{ isOpen: boolean; setIsOpen: (isOpen: boolean) => void 
               Cancel
             </button>
           </div>
-          {/* ... */}
         </div>
       </div>
     </div>
   );
 };
 
-export default ModalQR;
+export default ModalCode;
