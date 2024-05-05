@@ -1,5 +1,5 @@
 from django.contrib.auth import logout
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.generics import RetrieveUpdateDestroyAPIView, RetrieveAPIView, ListCreateAPIView, \
     RetrieveUpdateAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -204,3 +204,17 @@ class CheckPasswordView(APIView):
             return Response({"message": "Current password is correct"}, status=status.HTTP_200_OK)
         # Return errors if password is incorrect
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VolunteerCourierViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
+
+    queryset = VolunteerCourier.objects.all()
+    serializer_class = VolunteerCourierSerializer
+
+
+class EnterpriseCourierViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
+
+    queryset = EnterpriseCourier.objects.all()
+    serializer_class = EnterpriseCourierSerializer

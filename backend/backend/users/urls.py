@@ -1,9 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from backend.users import views
-from backend.users.views import CheckPasswordView
+from backend.users.views import CheckPasswordView, VolunteerCourierViewSet, EnterpriseCourierViewSet
 
 app_name = "users"
+
+
+router = DefaultRouter()
+router.register("volunteer_couriers", VolunteerCourierViewSet, basename="volunteer_couriers")
+router.register("enterprise_couriers", EnterpriseCourierViewSet, basename="enterprise_couriers")
+
 
 urlpatterns = [
     path("me/", view=views.UserAPIView.as_view(), name="user-me"),
@@ -17,6 +24,8 @@ urlpatterns = [
     path("profile/volunteer/", view=views.VolunteerCourierProfileAPIView.as_view(), name="volunteer-profile"),
     path("profile/enterprise/", view=views.EnterpriseCourierProfileAPIView.as_view(), name="enterprise-profile"),
     path('check-password/', CheckPasswordView.as_view(), name='check-password'),
+    path('', include(router.urls)),
+
 ]
 
 

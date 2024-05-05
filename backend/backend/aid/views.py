@@ -14,6 +14,8 @@ from backend.aid.serializers import ACCAidSerializer, ADCAidSerializer, ACCSeria
     AidTypeSerializer, AidTypeRequestSerializer
 from backend.logistics.optimization import mip_setup, mip_solve
 from backend.utils.export import export_models_to_excel
+from backend.utils.task_allocation import allocate_and_create_tasks
+import pandas as pd
 
 
 # Create your views here.
@@ -124,7 +126,7 @@ class ExportDataToExcel(APIView):
 
 class OptimizationViewSet(ViewSet):
     """
-    A simple ViewSet for running optimization processes.
+    A ViewSet for running optimization processes and then allocating tasks based on the results.
     """
     permission_classes = [AllowAny]
 
@@ -133,14 +135,19 @@ class OptimizationViewSet(ViewSet):
         try:
             # Specify the absolute path to your inputs file
             inputs_directory = '/app/backend/media/inputs/inputs_to_load.xlsx'
+            outputs_directory = '/app/backend/media/outputs/results.xlsx'  # Assume results are saved here
 
             # Read user inputs
             inputs_dict = mip_setup.read_inputs(inputs_directory)
-
-            # Prepare
             mip_inputs = mip_setup.InputsSetup(inputs_dict)
+
+            # Run optimization
             mip_solve.mathematical_model_solve(mip_inputs)
 
-            return Response({'message': 'Optimization successfully completed!'}, status=status.HTTP_200_OK)
+            # Assuming results are saved to outputs_directory, load them
+            df = pd.read_excel(outputs_directory, sheet_name='x_ijk_results')
+            allocate_and_create_tasks(df)
+
+            return Response({'message': 'Optimization and task allocation successfully completed!'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

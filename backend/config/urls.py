@@ -15,6 +15,7 @@ urlpatterns = [
     path("auth-token/", obtain_auth_token),
     path("api/", include("backend.aid.urls", namespace="aids")),
     path("api/", include("backend.users.urls", namespace="users")),
+    path("api/", include("backend.logistics.urls", namespace="logistics")),
     path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
     path(
         "api/schema/swagger-ui",

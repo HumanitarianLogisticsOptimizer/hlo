@@ -124,7 +124,9 @@ class VolunteerTask(admin.ModelAdmin):
         "target",
         "load_type",
         "load_quantity",
-        "owner"
+        "owner",
+        "done",
+        "code"
     )
 
 
@@ -136,5 +138,7 @@ class EnterpriseTask(admin.ModelAdmin):
         "target",
         "load_type",
         "load_quantity",
-        "owner"
+        "owner",
     )
+
+

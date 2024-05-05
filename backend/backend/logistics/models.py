@@ -1,6 +1,7 @@
 from django.db import models
 from backend.aid.models import ACC, ADC
 from backend.users.models import VolunteerCourier, EnterpriseCourier
+import random
 
 
 class VolunteerTask(models.Model):
@@ -21,9 +22,17 @@ class VolunteerTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Owner"
     )
+    done = models.BooleanField(default=False, verbose_name="Task Completed")
+    code = models.CharField(max_length=6, editable=False, unique=True, verbose_name="Task Code")
 
     def __str__(self):
         return f"Task from {self.destination.name} to {self.target.name} by {self.owner.full_name}"
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            # Generate a random 6-digit code
+            self.code = ''.join(random.choices('0123456789', k=6))
+        super().save(*args, **kwargs)
 
 
 class EnterpriseTask(models.Model):
@@ -44,6 +53,7 @@ class EnterpriseTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Owner"
     )
+    done = models.BooleanField(default=False, verbose_name="Task Completed")
 
     def __str__(self):
         return f"Task from {self.destination.name} to {self.target.name} for {self.owner.company_name}"
