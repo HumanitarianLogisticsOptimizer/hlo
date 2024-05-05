@@ -5,7 +5,7 @@ import random
 
 
 class VolunteerTask(models.Model):
-    destination = models.ForeignKey(
+    source = models.ForeignKey(
         ACC,
         on_delete=models.CASCADE,
         verbose_name="Collection Center"
@@ -22,21 +22,33 @@ class VolunteerTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Owner"
     )
-    done = models.BooleanField(default=False, verbose_name="Task Completed")
-    code = models.CharField(max_length=6, editable=False, unique=True, verbose_name="Task Code")
+    status = models.CharField("Status", max_length=100)
+    source_code = models.CharField(max_length=6, editable=False, unique=True, verbose_name="Task Source Code")
+    target_code = models.CharField(max_length=6, editable=False, unique=True, verbose_name="Task Target Code")
 
     def __str__(self):
-        return f"Task from {self.destination.name} to {self.target.name} by {self.owner.full_name}"
+        return f"Task from {self.source.name} to {self.target.name} by {self.owner.full_name}"
 
     def save(self, *args, **kwargs):
-        if not self.code:
-            # Generate a random 6-digit code
-            self.code = ''.join(random.choices('0123456789', k=6))
+        # Generate source_code if it doesn't exist
+        if not self.source_code:
+            self.source_code = self._generate_unique_code('source_code')
+
+        # Generate target_code if it doesn't exist
+        if not self.target_code:
+            self.target_code = self._generate_unique_code('target_code')
+
         super().save(*args, **kwargs)
+
+    def _generate_unique_code(self, field_name):
+        while True:
+            code = ''.join(random.choices('0123456789', k=6))
+            if not VolunteerTask.objects.filter(**{field_name: code}).exists():
+                return code
 
 
 class EnterpriseTask(models.Model):
-    destination = models.ForeignKey(
+    source = models.ForeignKey(
         ACC,
         on_delete=models.CASCADE,
         verbose_name="Collection Center"
@@ -53,10 +65,10 @@ class EnterpriseTask(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Owner"
     )
-    done = models.BooleanField(default=False, verbose_name="Task Completed")
+    status = models.CharField("Status", max_length=100)
 
     def __str__(self):
-        return f"Task from {self.destination.name} to {self.target.name} for {self.owner.company_name}"
+        return f"Task from {self.source.name} to {self.target.name} for {self.owner.company_name}"
 
 
 

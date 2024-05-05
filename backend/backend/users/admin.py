@@ -120,13 +120,14 @@ class AidType(admin.ModelAdmin):
 class VolunteerTask(admin.ModelAdmin):
     list_display = (
         "id",
-        "destination",
+        "source",
         "target",
         "load_type",
         "load_quantity",
         "owner",
-        "done",
-        "code"
+        "status",
+        "source_code",
+        "target_code"
     )
 
 
@@ -134,11 +135,12 @@ class VolunteerTask(admin.ModelAdmin):
 class EnterpriseTask(admin.ModelAdmin):
     list_display = (
         "id",
-        "destination",
+        "source",
         "target",
         "load_type",
         "load_quantity",
         "owner",
+        "status"
     )
 
 

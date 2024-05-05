@@ -9,12 +9,12 @@ class VolunteerTaskViewSet(viewsets.ModelViewSet):
     queryset = VolunteerTask.objects.all()
     serializer_class = VolunteerTaskSerializer
     permission_classes = (AllowAny,)
-    filterset_fields = ['destination', 'target', 'owner']
+    filterset_fields = ['source', 'target', 'owner']
 
 
 class EnterpriseTaskViewSet(viewsets.ModelViewSet):
     queryset = EnterpriseTask.objects.all()
     serializer_class = EnterpriseTaskSerializer
     permission_classes = (AllowAny,)
-    filterset_fields = ['destination', 'target', 'owner']
+    filterset_fields = ['source', 'target', 'owner']
 
