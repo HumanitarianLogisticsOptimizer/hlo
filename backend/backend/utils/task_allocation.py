@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 from django.db import transaction
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,50 +16,54 @@ def load_data_from_excel(file_path):
 
 @transaction.atomic
 def allocate_and_create_tasks(df):
-    for index, row in df.iterrows():
+    sorted_df = df.sort_values(by='shipment_quantity', ascending=False)
+    for index, row in sorted_df.iterrows():
         try:
-            destination = ACC.objects.get(pk=row['ACC_supply_center'])
+            source = ACC.objects.get(pk=row['ACC_supply_center'])
             target = ADC.objects.get(pk=row['ADC_demand_center'])
             aid_type = AidType.objects.get(pk=row['aid_type'])
             load_quantity = row['shipment_quantity']
 
-            courier = select_courier(load_quantity)
-            if courier:
-                create_task(courier, destination, target, aid_type.name, load_quantity)
-            else:
-                logger.error("No suitable courier found for load quantity: {}".format(load_quantity))
+            couriers = list(EnterpriseCourier.objects.filter(city=source.city)) + \
+                       list(VolunteerCourier.objects.filter(city=source.city))
+            random.shuffle(couriers)
+
+            allocated = False
+            for courier in couriers:
+                if (isinstance(courier, EnterpriseCourier) and get_enterprise_total_capacity(courier) >= load_quantity) or \
+                   (isinstance(courier, VolunteerCourier) and get_volunteer_capacity(courier) >= load_quantity):
+                    create_task(courier, source, target, aid_type.name, load_quantity)
+                    allocated = True
+                    break
+
+            if not allocated:
+                logger.error(f"No suitable courier found for task {index} with load {load_quantity}")
+
         except ObjectDoesNotExist as e:
             logger.error("Database entry not found: {}".format(e))
 
 
-def select_courier(load_quantity):
-    couriers = list(EnterpriseCourier.objects.all()) + list(VolunteerCourier.objects.all())
-    for courier in couriers:
-        capacity = get_vehicle_capacity(courier.vehicle_size) if hasattr(courier, 'vehicle_size') else get_enterprise_capacity(courier, load_quantity)
-        if capacity and capacity >= load_quantity:
-            return courier
-    return None
+def get_enterprise_total_capacity(courier):
+    return (
+        courier.number_of_light_duty * 790 +
+        courier.number_of_medium_duty * 15000 +
+        courier.number_of_heavy_duty * 79000
+    )
 
 
-def create_task(courier, destination, target, load_type, load_quantity):
+def get_volunteer_capacity(courier):
+    size_to_capacity = {
+        'light_duty': 790,
+        'medium_duty': 15000,
+        'heavy_duty': 79000
+    }
+    return size_to_capacity.get(courier.vehicle_size, 0)  # Default to 0 if none matched
+
+
+def create_task(courier, source, target, load_type, load_quantity):
     if isinstance(courier, EnterpriseCourier):
         task_class = EnterpriseTask
     else:
         task_class = VolunteerTask
-    task = task_class(destination=destination, target=target, load_type=load_type, load_quantity=load_quantity, owner=courier)
+    task = task_class(source=source, target=target, load_type=load_type, load_quantity=load_quantity, owner=courier, status="Pending")
     task.save()
-
-
-def get_vehicle_capacity(vehicle_size):
-    sizes = {'light': 790, 'medium': 15000, 'heavy': 79000}
-    return sizes.get(vehicle_size, None)
-
-
-def get_enterprise_capacity(courier, load_quantity):
-    # Example to fetch capacity based on the vehicle types and their numbers
-    if load_quantity <= 790:
-        return courier.number_of_light_duty * 790
-    elif load_quantity <= 15000:
-        return courier.number_of_medium_duty * 15000
-    else:
-        return courier.number_of_heavy_duty * 79000

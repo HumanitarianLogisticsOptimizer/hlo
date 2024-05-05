@@ -17,6 +17,7 @@ class EMA(models.Model):
 class ACC(models.Model):
     name = models.CharField("Name", max_length=100)
     address = models.CharField("Address", max_length=100)
+    city = models.CharField("City", max_length=100)
     location = models.CharField("Location", max_length=100)
     ema = models.ForeignKey(
         EMA,
@@ -35,6 +36,7 @@ class ACC(models.Model):
 class ADC(models.Model):
     name = models.CharField("Name", max_length=100)
     address = models.CharField("Address", max_length=100)
+    city = models.CharField("City", max_length=100)
     location = models.CharField("Location", max_length=100)
     ema = models.ForeignKey(
         EMA,
