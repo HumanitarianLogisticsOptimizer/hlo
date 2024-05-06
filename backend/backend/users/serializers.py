@@ -16,7 +16,7 @@ class VolunteerCourierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = VolunteerCourier
-        fields = ("user_type", "email", "full_name", "phone_number",
+        fields = ("id", "user_type", "email", "full_name", "phone_number",
                   "car_plate_number", "national_id_number", "city",
                   "country", "vehicle_size")
 
@@ -29,7 +29,7 @@ class ACCAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ACCAdmin
-        fields = ("user_type", "email", "center")
+        fields = ("id", "user_type", "email", "center")
 
 
 class ADCAdminSerializer(serializers.ModelSerializer):
@@ -40,7 +40,7 @@ class ADCAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ADCAdmin
-        fields = ("user_type", "email", "center")
+        fields = ("id", "user_type", "email", "center")
 
 
 class EnterpriseCourierSerializer(serializers.ModelSerializer):
@@ -51,7 +51,7 @@ class EnterpriseCourierSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EnterpriseCourier
-        fields = ("user_type", "email", "company_name", "phone_number",
+        fields = ("id", "user_type", "email", "company_name", "phone_number",
                   "company_address", "date_of_establishment", "number_of_light_duty",
                   "number_of_medium_duty", "number_of_heavy_duty",
                   "trade_registration_number", "trade_registration_number")
@@ -65,7 +65,7 @@ class EMAAdminSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = EMAAdmin
-        fields = ("user_type", "email", "ema_name")
+        fields = ("id", "user_type", "email", "ema_name")
 
 
 class UserLoginSerializer(serializers.Serializer):

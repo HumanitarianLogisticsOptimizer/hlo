@@ -9,39 +9,37 @@ from backend.logistics.models import VolunteerTask, EnterpriseTask
 
 logger = logging.getLogger(__name__)
 
-
 def load_data_from_excel(file_path):
     return pd.read_excel(file_path, sheet_name='x_ijk_results')
-
 
 @transaction.atomic
 def allocate_and_create_tasks(df):
     sorted_df = df.sort_values(by='shipment_quantity', ascending=False)
     for index, row in sorted_df.iterrows():
-        try:
-            source = ACC.objects.get(pk=row['ACC_supply_center'])
-            target = ADC.objects.get(pk=row['ADC_demand_center'])
-            aid_type = AidType.objects.get(pk=row['aid_type'])
-            load_quantity = row['shipment_quantity']
+        source = ACC.objects.get(pk=row['ACC_supply_center'])
+        target = ADC.objects.get(pk=row['ADC_demand_center'])
+        aid_type = AidType.objects.get(pk=row['aid_type'])
+        load_quantity = row['shipment_quantity']
 
-            couriers = list(EnterpriseCourier.objects.filter(city=source.city)) + \
-                       list(VolunteerCourier.objects.filter(city=source.city))
-            random.shuffle(couriers)
+        couriers = list(EnterpriseCourier.objects.filter(city=source.city)) + \
+                   list(VolunteerCourier.objects.filter(city=source.city))
+        random.shuffle(couriers)
 
-            allocated = False
-            for courier in couriers:
-                if (isinstance(courier, EnterpriseCourier) and get_enterprise_total_capacity(courier) >= load_quantity) or \
-                   (isinstance(courier, VolunteerCourier) and get_volunteer_capacity(courier) >= load_quantity):
+        task_created = False
+        for courier in couriers:
+            if isinstance(courier, EnterpriseCourier):
+                if get_enterprise_total_capacity(courier) >= load_quantity:
                     create_task(courier, source, target, aid_type.name, load_quantity)
-                    allocated = True
-                    break
+                    task_created = True
+                    break  # Stop after assigning a task to an enterprise courier
+            elif isinstance(courier, VolunteerCourier):
+                if get_volunteer_capacity(courier) >= load_quantity:
+                    create_task(courier, source, target, aid_type.name, load_quantity)
+                    task_created = True
+                    break  # Stop after assigning a task to a volunteer courier
 
-            if not allocated:
-                logger.error(f"No suitable courier found for task {index} with load {load_quantity}")
-
-        except ObjectDoesNotExist as e:
-            logger.error("Database entry not found: {}".format(e))
-
+        if not task_created:
+            logger.error(f"No suitable courier found for task {index} with load {load_quantity}")
 
 def get_enterprise_total_capacity(courier):
     return (
@@ -50,7 +48,6 @@ def get_enterprise_total_capacity(courier):
         courier.number_of_heavy_duty * 79000
     )
 
-
 def get_volunteer_capacity(courier):
     size_to_capacity = {
         'light_duty': 790,
@@ -58,7 +55,6 @@ def get_volunteer_capacity(courier):
         'heavy_duty': 79000
     }
     return size_to_capacity.get(courier.vehicle_size, 0)  # Default to 0 if none matched
-
 
 def create_task(courier, source, target, load_type, load_quantity):
     if isinstance(courier, EnterpriseCourier):
