@@ -9,10 +9,8 @@ from backend.logistics.models import VolunteerTask, EnterpriseTask
 
 logger = logging.getLogger(__name__)
 
-
 def load_data_from_excel(file_path):
     return pd.read_excel(file_path, sheet_name='x_ijk_results')
-
 
 @transaction.atomic
 def allocate_and_create_tasks(df):
@@ -29,7 +27,7 @@ def allocate_and_create_tasks(df):
 
             couriers = list(EnterpriseCourier.objects.filter(city=source.city)) + \
                        list(VolunteerCourier.objects.filter(city=source.city))
-            couriers.sort(key=lambda x: get_total_capacity(x), reverse=True)
+            random.shuffle(couriers)  # Shuffle to prevent bias towards any group
 
             while total_needed > 0:
                 for courier in couriers:
@@ -43,7 +41,6 @@ def allocate_and_create_tasks(df):
 
         except ObjectDoesNotExist as e:
             logger.error("Database entry not found: {}".format(e))
-
 
 def get_total_capacity(courier):
     if isinstance(courier, EnterpriseCourier):
@@ -59,7 +56,6 @@ def get_total_capacity(courier):
             'heavy_duty': 79000
         }
         return size_to_capacity.get(courier.vehicle_size, 0)  # Default to 0 if none matched
-
 
 def create_task(courier, source, target, load_type, load_quantity):
     if isinstance(courier, EnterpriseCourier):
