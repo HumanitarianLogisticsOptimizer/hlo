@@ -272,6 +272,7 @@ class NetworkManager {
           'user_type': data['user_type'],
           'email': data['email'],
           'center': data['center'],
+          'id': data['id'],
         };
       } else {
         throw const HttpException('Failed to get profile details');
@@ -280,4 +281,40 @@ class NetworkManager {
       throw HttpException('Failed to get profile details: $e');
     }
   }
+
+  Future<List<Map<String, dynamic>>> getVolunteerTasks(int ownerId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('${baseUrl}volunteer_tasks/'),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        // Filter tasks by owner ID
+        final List<Map<String, dynamic>> tasks = data
+            .where((task) => task['owner'] == ownerId)
+            .toList()
+            .cast<Map<String, dynamic>>();
+        return tasks;
+      } else {
+        throw HttpException('Failed to fetch volunteer tasks');
+      }
+    } catch (e) {
+      throw HttpException('Failed to fetch volunteer tasks: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getEnterpriseTasks() async {
+  try {
+    final response = await http.get(Uri.parse('${baseUrl}enterprise_tasks/'));
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.cast<Map<String, dynamic>>();
+    } else {
+      throw HttpException('Failed to fetch enterprise tasks');
+    }
+  } catch (e) {
+    throw HttpException('Failed to fetch enterprise tasks: $e');
+  }
+}
+
 }

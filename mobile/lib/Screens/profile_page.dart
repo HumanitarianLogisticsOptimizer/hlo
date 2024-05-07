@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hlo/Managers/network_manager.dart';
 import 'package:hlo/Managers/colors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hlo/Screens/tasks.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -108,30 +109,49 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text('User Type: ${_profileDetails['user_type']}'),
-        Text('Email: ${_profileDetails['email']}'),
-        Text('Center: ${_profileDetails['center']}'),
-        SizedBox(height: 20),
-        ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(colors.accentColor),
+        const Text(
+          'Welcome,',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
           ),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(),
-              ),
-            );
-          },
-          child: Text('Tasks'),
         ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(colors.accentColor),
+        SizedBox(height: 5),
+        Text(
+          _profileDetails['email'],
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          onPressed: _logout,
-          child: Text('Logout'),
+        ),
+        Text(''),
+        SizedBox(height: 20),
+        SizedBox(
+          width: 100,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(colors.accentColor),
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TasksPage(),
+                ),
+              );
+            },
+            child: Text('Tasks'),
+          ),
+        ),
+        SizedBox(height: 10),
+        SizedBox(
+          width: 100,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(colors.accentColor),
+            ),
+            onPressed: _logout,
+            child: Text('Logout'),
+          ),
         ),
       ],
     );

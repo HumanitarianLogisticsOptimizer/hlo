@@ -7,12 +7,14 @@ import 'package:hlo/Managers/colors.dart';
 import 'package:hlo/Managers/favorites_manager.dart';
 import 'package:hlo/Managers/network_manager.dart';
 import 'package:hlo/Screens/profile_page.dart';
+import 'package:hlo/Screens/tasks.dart';
 import 'package:hlo/Widgets/MainScreen/home_screen_button.dart';
 import 'package:hlo/Managers/get_users_location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MaterialApp(
+    //home: TasksPage(),
     home: MyApp(),
   ));
 }
