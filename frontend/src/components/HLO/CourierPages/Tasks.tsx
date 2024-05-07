@@ -30,38 +30,41 @@ const Tasks: React.FC = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        const [accResponse, adcResponse] = await Promise.all([
+          axios.get('http://24.133.52.46:8000/api/acc/'),
+          axios.get('http://24.133.52.46:8000/api/adc/'),
+        ]);
+
+        const accs = accResponse.data;
+        const adcs = adcResponse.data;
+
         let response;
         switch (user?.user_type) {
           case 'volunteer_courier':
-            response = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
+            response = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?owner=${user?.id}`);
             break;
           case 'enterprise_courier':
-            response = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
+            response = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?owner=${user?.id}`);
             break;
           case 'acc_admin':
+            const volunteerResponseAcc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?source=${user?.center}`);
+            const enterpriseResponseAcc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?source=${user?.center}`);
+            response = { data: [...volunteerResponseAcc.data, ...enterpriseResponseAcc.data] };
+            break;
           case 'adc_admin':
-            const volunteerResponse = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
-            const enterpriseResponse = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
-            response = { data: [...volunteerResponse.data, ...enterpriseResponse.data] };
+            const volunteerResponseAdc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?target=${user?.center}`);
+            const enterpriseResponseAdc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?target=${user?.center}`);
+            response = { data: [...volunteerResponseAdc.data, ...enterpriseResponseAdc.data] };
             break;
           default:
             break;
         }
 
-        let tasks = response?.data || [];
-
-        if (user) {
-          switch (user.user_type) {
-            case 'acc_admin':
-              tasks = tasks.filter(task => task.destination === user.center_id);
-              break;
-            case 'adc_admin':
-              tasks = tasks.filter(task => task.target === user.center_id);
-              break;
-            default:
-              break;
-          }
-        }
+        let tasks = response?.data.map(task => ({
+          ...task,
+          source: accs.find(acc => acc.id === task.source)?.name,
+          target: adcs.find(adc => adc.id === task.target)?.name,
+        })) || [];
 
         setTasks(tasks);
       } catch (error) {
@@ -83,7 +86,7 @@ const Tasks: React.FC = () => {
       },
       {
         Header: 'Source',
-        accessor: 'destination',
+        accessor: 'source',
       },
       {
         Header: 'Target',
@@ -91,32 +94,15 @@ const Tasks: React.FC = () => {
       },
       {
         Header: 'Load Type',
-        accessor: 'loadType',
+        accessor: 'load_type',
       },
       {
         Header: 'Load Quantity',
-        accessor: 'loadQuantity',
+        accessor: 'load_quantity',
       },
       {
         Header: 'Status',
         accessor: 'status',
-        Cell: ({ value }) => {
-          let color = '';
-          switch (value) {
-            case 'pending':
-              color = 'yellow';
-              break;
-            case 'on the road':
-              color = 'blue';
-              break;
-            case 'done':
-              color = 'green';
-              break;
-            default:
-              break;
-          }
-          return <span style={{ color }}>{value}</span>;
-        },
       },
     ],
     []
@@ -151,84 +137,6 @@ const Tasks: React.FC = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
-
-  useEffect(() => {
-    // Mock tasks data
-    const mockTasks = [
-      {
-        id: '1',
-        destination: 'ACC1',
-        target: 'ADC1',
-        loadType: 'Aid1',
-        loadQuantity: 10,
-      },
-      {
-        id: '2',
-        destination: 'ACC2',
-        target: 'ADC2',
-        loadType: 'Aid2',
-        loadQuantity: 20,
-      },
-      {
-        id: '3',
-        destination: 'ACC3',
-        target: 'ADC3',
-        loadType: 'Aid3',
-        loadQuantity: 30,
-      },
-      {
-        id: '4',
-        destination: 'ACC4',
-        target: 'ADC4',
-        loadType: 'Aid4',
-        loadQuantity: 40,
-      },
-      {
-        id: '5',
-        destination: 'ACC5',
-        target: 'ADC5',
-        loadType: 'Aid5',
-        loadQuantity: 50,
-      },
-      {
-        id: '6',
-        destination: 'ACC6',
-        target: 'ADC6',
-        loadType: 'Aid6',
-        loadQuantity: 60,
-      },
-      {
-        id: '7',
-        destination: 'ACC7',
-        target: 'ADC7',
-        loadType: 'Aid7',
-        loadQuantity: 70,
-      },
-      {
-        id: '8',
-        destination: 'ACC8',
-        target: 'ADC8',
-        loadType: 'Aid8',
-        loadQuantity: 80,
-      },
-      {
-        id: '9',
-        destination: 'ACC9',
-        target: 'ADC9',
-        loadType: 'Aid9',
-        loadQuantity: 90,
-      },
-      {
-        id: '10',
-        destination: 'ACC10',
-        target: 'ADC10',
-        loadType: 'Aid10',
-        loadQuantity: 100,
-      },
-    ];
-
-    setTasks(mockTasks);
-  }, []);
 
   return (
     <DefaultLayout>
@@ -342,39 +250,40 @@ const Tasks: React.FC = () => {
           <tbody {...getTableBodyProps()}>
             {page.map((row, key) => {
               prepareRow(row);
-              return (
-                <tr {...row.getRowProps()} key={key} onClick={() => {
-                  if (user?.user_type === 'volunteer_courier') {
-                    setIsModalOpen(true);
-                    if (row.original.status === 'pending') {
-                      setCode(row.original.source_code);
-                    } else {
-                      setCode(row.original.target_code);
-                    }
-                  } else if (user?.user_type === 'enterprise_courier' && ['pending', 'done'].includes(row.original.status)) {
-                    setIsModalOpen(true);
+              return (<tr {...row.getRowProps()} key={key} onClick={() => {
+                if (user?.user_type === 'volunteer_courier') {
+                  setIsModalOpen(true);
+                  if (row.original.status === 'Pending') {
+                    setCode(row.original.source_code);
+                  } else if (row.original.status === 'On the road') {
                     setCode(row.original.target_code);
                   }
-                }} className={['volunteer_courier', 'enterprise_courier'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
-                  <td className='text-lg' {...row.cells[0].getCellProps()}>
-                    {row.cells[0].render('Cell')}
-                  </td>
-                  <td {...row.cells[1].getCellProps()}>
-                    {row.cells[1].render('Cell')}
-                  </td>
-                  <td {...row.cells[2].getCellProps()}>
-                    {row.cells[2].render('Cell')}
-                  </td>
-                  <td {...row.cells[3].getCellProps()}>
-                    {row.cells[3].render('Cell')}
-                  </td>
-                  <td {...row.cells[4].getCellProps()}>
-                    {row.cells[4].render('Cell')}
-                  </td>
-                  <td {...row.cells[5].getCellProps()}>
-                    {row.cells[5].render('Cell')}
-                  </td>
-                </tr>
+                } else if (user?.user_type === 'enterprise_courier' && ['Pending', 'On the road'].includes(row.original.status)) {
+                  setIsModalOpen(true);
+                  setCode(row.original.target_code);
+                }
+              }} className={['volunteer_courier', 'enterprise_courier'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
+                <td className='text-lg' {...row.cells[0].getCellProps()}>
+                  {row.cells[0].render('Cell')}
+                </td>
+                <td {...row.cells[1].getCellProps()}>
+                  {row.cells[1].render('Cell')}
+                </td>
+                <td {...row.cells[2].getCellProps()}>
+                  {row.cells[2].render('Cell')}
+                </td>
+                <td {...row.cells[3].getCellProps()}>
+                  {row.cells[3].render('Cell')}
+                </td>
+                <td {...row.cells[4].getCellProps()}>
+                  {row.cells[4].render('Cell')}
+                </td>
+                <td className={`${row.original.status === 'Pending' ? 'text-yellow-500' :
+                  row.original.status === 'On the road' ? 'text-blue-500' : 'text-green-500'}`}
+                  {...row.cells[5].getCellProps()}>
+                  {row.cells[5].render('Cell')}
+                </td>
+              </tr>
               );
             })}
           </tbody>

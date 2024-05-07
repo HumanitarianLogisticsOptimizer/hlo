@@ -53,6 +53,7 @@ const CodeWithPopover: React.FC<CodeWithPopoverProps> = ({ onChange }) => {
     return (
         <div className="relative inline-block w-full">
             <div
+                ref={trigger} // Attach the trigger ref here
                 onMouseEnter={() => setPopoversOpen(true)}
                 onMouseLeave={() => setPopoversOpen(false)}
             >
@@ -73,7 +74,7 @@ const CodeWithPopover: React.FC<CodeWithPopoverProps> = ({ onChange }) => {
                 </div>
             </div>
             <div
-                ref={popovers}
+                ref={popovers} // Attach the popovers ref here
                 onFocus={() => setPopoversOpen(true)}
                 onBlur={() => setPopoversOpen(false)}
                 className={`absolute left-1/2 top-full z-20 mt-3 w-75 -translate-x-1/2 rounded bg-white drop-shadow-5 dark:bg-meta-4 ${popoversOpen === true ? 'block' : 'hidden'

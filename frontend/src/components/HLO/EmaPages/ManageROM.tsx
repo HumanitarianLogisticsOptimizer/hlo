@@ -39,23 +39,52 @@ const ManageROM: React.FC = () => {
       return [];
     }
   }, [taskType, volunteerTasks, enterpriseTasks]);
-
   useEffect(() => {
-    handleTriggerROM();
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const [accResponse, adcResponse, volunteerCouriersResponse, enterpriseCouriersResponse] = await Promise.all([
+        axios.get('http://24.133.52.46:8000/api/acc/'),
+        axios.get('http://24.133.52.46:8000/api/adc/'),
+        axios.get('http://24.133.52.46:8000/api/volunteer_couriers/'),
+        axios.get('http://24.133.52.46:8000/api/enterprise_couriers/'),
+      ]);
+
+      const accs = accResponse.data;
+      const adcs = adcResponse.data;
+      const volunteerCouriers = volunteerCouriersResponse.data;
+      const enterpriseCouriers = enterpriseCouriersResponse.data;
+
+      const volunteerTasksResponse = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
+      const volunteerTasks = volunteerTasksResponse.data.map(task => ({
+        ...task,
+        source: accs.find(acc => acc.id === task.source)?.name,
+        target: adcs.find(adc => adc.id === task.target)?.name,
+        owner: volunteerCouriers.find(courier => courier.id === task.owner)?.full_name,
+      }));
+      setVolunteerTasks(volunteerTasks);
+
+      const enterpriseTasksResponse = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
+      const enterpriseTasks = enterpriseTasksResponse.data.map(task => ({
+        ...task,
+        source: accs.find(acc => acc.id === task.source)?.name,
+        target: adcs.find(adc => adc.id === task.target)?.name,
+        owner: enterpriseCouriers.find(courier => courier.id === task.owner)?.company_name,
+      }));
+      setEnterpriseTasks(enterpriseTasks);
+    } catch (error) {
+      console.error('Error fetching tasks: ', error);
+    }
+  };
 
   const handleTriggerROM = async () => {
     try {
-      // Trigger the ROM
-      await axios.post('http://24.133.52.46/api/optimization/run/');
-
-      const volunteerTasksResponse = await axios.get('http://24.133.52.46:8000/api/volunteer_tasks/');
-      setVolunteerTasks(volunteerTasksResponse.data);
-
-      const enterpriseTasksResponse = await axios.get('http://24.133.52.46:8000/api/enterprise_tasks/');
-      setEnterpriseTasks(enterpriseTasksResponse.data);
+      await axios.get('http://24.133.52.46:8000/api/optimization/run/');
+      fetchData();
     } catch (error) {
-      console.error('Error triggering ROM and fetching tasks: ', error);
+      console.error('Error triggering ROM: ', error);
     }
   };
 
@@ -83,11 +112,15 @@ const ManageROM: React.FC = () => {
       },
       {
         Header: 'Load Type',
-        accessor: 'loadType',
+        accessor: 'load_type',
       },
       {
         Header: 'Load Quantity',
-        accessor: 'loadQuantity',
+        accessor: 'load_quantity',
+      },
+      {
+        Header: 'Status',
+        accessor: 'status',
       },
     ],
     []
@@ -122,91 +155,6 @@ const ManageROM: React.FC = () => {
   } = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
-
-  // useEffect(() => { // Mock tasks data
-  //   const mockTasks = [
-  //     {
-  //       id: '1',
-  //       destination: 'ACC1',
-  //       target: 'ADC1',
-  //       owner: 'volunteer_courier',
-  //       loadType: 'Aid1',
-  //       loadQuantity: 10,
-  //     },
-  //     {
-  //       id: '2',
-  //       destination: 'ACC2',
-  //       target: 'ADC2',
-  //       owner: 'enterprise_courier',
-  //       loadType: 'Aid2',
-  //       loadQuantity: 20,
-  //     },
-  //     {
-  //       id: '3',
-  //       destination: 'ACC3',
-  //       target: 'ADC3',
-  //       owner: 'volunteer_courier',
-  //       loadType: 'Aid3',
-  //       loadQuantity: 30,
-  //     },
-  //     {
-  //       id: '4',
-  //       destination: 'ACC4',
-  //       target: 'ADC4',
-  //       owner: 'enterprise_courier',
-  //       loadType: 'Aid4',
-  //       loadQuantity: 40,
-  //     },
-  //     {
-  //       id: '5',
-  //       destination: 'ACC5',
-  //       target: 'ADC5',
-  //       owner: 'volunteer_courier',
-  //       loadType: 'Aid5',
-  //       loadQuantity: 50,
-  //     },
-  //     {
-  //       id: '6',
-  //       destination: 'ACC6',
-  //       target: 'ADC6',
-  //       owner: 'enterprise_courier',
-  //       loadType: 'Aid6',
-  //       loadQuantity: 60,
-  //     },
-  //     {
-  //       id: '7',
-  //       destination: 'ACC7',
-  //       target: 'ADC7',
-  //       owner: 'volunteer_courier',
-  //       loadType: 'Aid7',
-  //       loadQuantity: 70,
-  //     },
-  //     {
-  //       id: '8',
-  //       destination: 'ACC8',
-  //       target: 'ADC8',
-  //       owner: 'enterprise_courier',
-  //       loadType: 'Aid8',
-  //       loadQuantity: 80,
-  //     },
-  //     {
-  //       id: '9',
-  //       destination: 'ACC9',
-  //       target: 'ADC9',
-  //       owner: 'volunteer_courier',
-  //       loadType: 'Aid9',
-  //       loadQuantity: 90,
-  //     },
-  //     {
-  //       id: '10',
-  //       destination: 'ACC10',
-  //       target: 'ADC10',
-  //       owner: 'enterprise_courier',
-  //       loadType: 'Aid10',
-  //       loadQuantity: 100,
-  //     },
-  //   ];
-  // }, []);
 
   return (
     <DefaultLayout>
@@ -366,6 +314,11 @@ const ManageROM: React.FC = () => {
                   </td>
                   <td className='text-lg'  {...row.cells[5].getCellProps()}>
                     {row.cells[5].render('Cell')}
+                  </td>
+                  <td className={`${row.original.status === 'Pending' ? 'text-yellow-500' :
+                    row.original.status === 'On the road' ? 'text-blue-500' : 'text-green-500'}`}
+                    {...row.cells[6].getCellProps()}>
+                    {row.cells[6].render('Cell')}
                   </td>
                 </tr>
               );
