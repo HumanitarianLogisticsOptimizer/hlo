@@ -339,11 +339,11 @@ const CenterMap = () => {
             position={{ lat: selectedLocation.lat, lng: selectedLocation.lng }}
             onCloseClick={() => setSelectedLocation(null)}
           >
-            <div>
-              <h2>{selectedLocation.name}</h2>
-              <p>{selectedLocation.address}</p>
+            <div className="text-black">
+              <h2 className=" text-title-md">{selectedLocation.name}</h2>
+              <p className=" text-md">{selectedLocation.address}</p>
               <ul className="pt-3">
-                {highStatusAids.map(aid => <li className=" text-black" key={aid.id}>{aid.type.name} <span className="font-bold text-red uppercase text-lg">{aid.status}</span></li>)}
+                {highStatusAids.map(aid => <li className=" text-lg font-bold" key={aid.id}>{aid.type.name} <span className="font-bold text-red uppercase text-lg">{aid.status}</span></li>)}
               </ul>
             </div>
           </InfoWindow>

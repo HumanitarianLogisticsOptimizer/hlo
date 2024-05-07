@@ -183,6 +183,7 @@ const Register_EnterpriseCourier: React.FC = () => {
         <h2 className="text-lg font-bold text-black dark:text-white sm:text-title-lg">
           Register as an Enterprise Courier
         </h2>
+        <p className="text-red">Enterprise couriers must select their city accurately during registration. Creating separate accounts for each serviced city is essential for effective task allocation and resource management.</p>
       </div>
       <form action="#" onSubmit={handleFormSubmit}>
         <div className="p-6.5">

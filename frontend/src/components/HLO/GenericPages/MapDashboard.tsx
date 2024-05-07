@@ -20,6 +20,10 @@ const MapDashboard: React.FC = () => {
               <img src="https://maps.google.com/mapfiles/ms/icons/green-dot.png" />
               <p>Aid Distribution Centers</p>
             </div>
+            <div className="flex mb-3">
+              <img src="https://maps.google.com/mapfiles/ms/icons/blue-dot.png" />
+              <p>ACCs that have urgent needs</p>
+            </div>
           </div>
         </div>
         <CenterMap />
