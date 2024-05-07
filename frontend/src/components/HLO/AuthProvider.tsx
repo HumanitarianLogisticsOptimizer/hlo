@@ -11,6 +11,7 @@ interface AuthContextProps {
   auth: string | null;
   setAuth: React.Dispatch<React.SetStateAction<string | null>>;
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 export const AuthContext = createContext<AuthContextProps | null>(null);
@@ -21,7 +22,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const response = await axios.get('http://localhost:8000/api/me/', {
+      const response = await axios.get('http://24.133.52.46:8000/api/me/', {
         headers: { Authorization: `Token ${auth}` },
       });
       setUser(response.data);
@@ -41,7 +42,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [auth]);
 
-  const value = { auth, setAuth, user };
+  const value = { auth, setAuth, user, setUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

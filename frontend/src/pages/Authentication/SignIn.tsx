@@ -1,23 +1,26 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-import PasswordWithPopover_Bigger from '../../components/HLO/PasswordWithPopover_Bigger';
+import PasswordWithPopover_Bigger from '../../components/HLO/Components/PasswordWithPopover_Bigger';
 import axios from 'axios';
 import { AuthContext } from '../../components/HLO/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { validateEmail, validatePassword } from '../../components/HLO/DataAndFunctions/validationFunctions';
 
 const SignIn: React.FC = () => {
-  const { setAuth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
+  useEffect(() => {
+    if (auth) {
+      navigate('/');
+    }
+  }, [auth, navigate]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,22 +30,13 @@ const SignIn: React.FC = () => {
 
     // Validate the email and password
     if (!email) {
-      setEmailError('Email must not be empty');
-      return;
+      setEmailError(validateEmail(email));
+    } if (!password) {
+      setPasswordError(validatePassword(password));
     }
-    if (!password) {
-      setPasswordError('Password must not be empty');
-      return;
-    }
-
-    // Add your password format validation here
-    // if (!passwordMatchesFormat(password)) {
-    //   setPasswordError('Password must match the requested format');
-    //   return;
-    // }
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', {
+      const response = await axios.post('http://24.133.52.46:8000/api/login/', {
         email,
         password
       });
@@ -78,7 +72,10 @@ const SignIn: React.FC = () => {
                     type="email"
                     id="email"
                     placeholder="Enter your email"
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      setEmailError(validateEmail(event.target.value));
+                    }}
                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
 
@@ -104,7 +101,12 @@ const SignIn: React.FC = () => {
               </div>
 
               <div className="mb-6">
-                <PasswordWithPopover_Bigger onChange={handlePasswordChange} />
+                <PasswordWithPopover_Bigger
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                    setPasswordError(validatePassword(event.target.value));
+                  }}
+                />
                 <span className="text-danger underline">{passwordError}</span>
               </div>
               <div className="mb-5">
@@ -120,7 +122,13 @@ const SignIn: React.FC = () => {
                 <p>
                   Don't have an account?{' '}
                   <Link to="/auth/signup" className="text-primary">
-                    Sign Up
+                    Register
+                  </Link>
+                </p>
+                <p className='mt-1'>
+                  Are you an HLO Admin?{' '}
+                  <Link to="http://24.133.52.46:8000/admin/" target="_blank" className="text-primary">
+                    HLO Admin Log in
                   </Link>
                 </p>
               </div>

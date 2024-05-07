@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from backend.aid.models import ACC, ADC, EMA, ACCAid, ADCAid
+from backend.aid.models import ACC, ADC, EMA, ACCAid, ADCAid, AidType
 from backend.users.models import User, VolunteerCourier, EnterpriseCourier, ACCAdmin, ADCAdmin, EMAAdmin
+from backend.logistics.models import VolunteerTask, EnterpriseTask
 
 
 @admin.register(User)
@@ -105,3 +106,41 @@ class ADCAid(admin.ModelAdmin):
         "demanded_stock",
         "center"
     )
+
+
+@admin.register(AidType)
+class AidType(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "name"
+    )
+
+
+@admin.register(VolunteerTask)
+class VolunteerTask(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "source",
+        "target",
+        "load_type",
+        "load_quantity",
+        "owner",
+        "status",
+        "source_code",
+        "target_code"
+    )
+
+
+@admin.register(EnterpriseTask)
+class EnterpriseTask(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "source",
+        "target",
+        "load_type",
+        "load_quantity",
+        "owner",
+        "status"
+    )
+
+

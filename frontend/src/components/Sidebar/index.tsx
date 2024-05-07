@@ -1,10 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
+import { AuthContext } from '../HLO/AuthProvider';
 import HLODashLogo from '../../images/HLO/hlo-dash.svg';
 import HLOStockLogo from '../../images/HLO/hlo-stock.svg';
-import HLORequest from '../../images/HLO/hlo-request.svg';
-import { AuthContext } from '../HLO/AuthProvider';
+import UserCheck from '../../images/HLO/user-check.svg';
+import UserPlus from '../../images/HLO/user-plus.svg'
+import CenterLogo from '../../images/HLO/center.svg';
+import mapImg from '../../images/HLO/map.svg';
+import aidImg from '../../images/HLO/hlo-aid.svg';
+import tasksImg from '../../images/HLO/tasks.svg';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -12,7 +17,8 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-  const { auth, setAuth } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const { pathname } = location;
 
@@ -23,26 +29,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
   );
-
-  const handleLogout = () => {
-    fetch('http://localhost:8000/api/logout/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${auth}`,
-      },
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-      setAuth(null);
-      localStorage.removeItem('auth');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  };
 
   // close on click outside
   useEffect(() => {
@@ -132,152 +118,266 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('hlodashboard') && 'bg-graydark dark:bg-meta-4'
                     }`}
                 >
-                  <img src={HLODashLogo} height={25} width={25} />
-                  HLO Dashboard
+                  <img src={HLODashLogo} height={30} width={30} />
+                  Centers List View
                 </NavLink>
               </li>
               <li>
                 <NavLink
-                  to="/hlo/stockmanagement/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
+                  to="/hlo/mapdashboard"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('mapdashboard') && 'bg-graydark dark:bg-meta-4'
                     }`}
                 >
-                  <img src={HLOStockLogo} height={20} width={20} />
-                  Stock Management
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/hlo/confirmdeny_page"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
-                    }`}
-                >
-                  <img src={HLORequest} height={25} width={25} />
-                  Confirm/Deny Registration
+                  <img src={mapImg} height={25} width={25} />
+                  Centers Map View
                 </NavLink>
               </li>
             </ul>
           </div>
 
-          <ul className="mb-6 flex flex-col">
-            {/* <!-- Menu Item Auth Pages --> */}
-            <SidebarLinkGroup
-              activeCondition={
-                pathname === '/auth' || pathname.includes('auth')
-              }
-            >
-              {(handleClick, open) => {
-                return (
-                  <React.Fragment>
-                    <NavLink
-                      to="#"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/auth' || pathname.includes('auth')) &&
-                        'bg-graydark dark:bg-meta-4'
-                        }`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        sidebarExpanded
-                          ? handleClick()
-                          : setSidebarExpanded(true);
-                      }}
-                    >
-                      <svg
-                        className="fill-current"
-                        width="25"
-                        height="25"
-                        viewBox="0 0 18 19"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g clipPath="url(#clip0_130_9814)">
-                          <path
-                            d="M12.7127 0.55835H9.53457C8.80332 0.55835 8.18457 1.1771 8.18457 1.90835V3.84897C8.18457 4.18647 8.46582 4.46772 8.80332 4.46772C9.14082 4.46772 9.45019 4.18647 9.45019 3.84897V1.88022C9.45019 1.82397 9.47832 1.79585 9.53457 1.79585H12.7127C13.3877 1.79585 13.9221 2.33022 13.9221 3.00522V15.0709C13.9221 15.7459 13.3877 16.2802 12.7127 16.2802H9.53457C9.47832 16.2802 9.45019 16.2521 9.45019 16.1959V14.2552C9.45019 13.9177 9.16894 13.6365 8.80332 13.6365C8.43769 13.6365 8.18457 13.9177 8.18457 14.2552V16.1959C8.18457 16.9271 8.80332 17.5459 9.53457 17.5459H12.7127C14.0908 17.5459 15.1877 16.4209 15.1877 15.0709V3.03335C15.1877 1.65522 14.0627 0.55835 12.7127 0.55835Z"
-                            fill=""
-                          />
-                          <path
-                            d="M10.4346 8.60205L7.62207 5.7333C7.36895 5.48018 6.97519 5.48018 6.72207 5.7333C6.46895 5.98643 6.46895 6.38018 6.72207 6.6333L8.46582 8.40518H3.45957C3.12207 8.40518 2.84082 8.68643 2.84082 9.02393C2.84082 9.36143 3.12207 9.64268 3.45957 9.64268H8.49395L6.72207 11.4427C6.46895 11.6958 6.46895 12.0896 6.72207 12.3427C6.83457 12.4552 7.00332 12.5114 7.17207 12.5114C7.34082 12.5114 7.50957 12.4552 7.62207 12.3145L10.4346 9.4458C10.6877 9.24893 10.6877 8.85518 10.4346 8.60205Z"
-                            fill=""
-                          />
-                        </g>
-                        <defs>
-                          <clipPath id="clip0_130_9814">
-                            <rect
-                              width="18"
-                              height="18"
-                              fill="white"
-                              transform="translate(0 0.052124)"
+          {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin' || user?.user_type === 'ema_admin') && (
+            <>
+              <ul className="mb-6 flex flex-col">
+                {/* <!-- Menu Item Auth Pages --> */}
+                <SidebarLinkGroup
+                  activeCondition={
+                    pathname === '/hlo/admin' || pathname.includes('hlo/admin')
+                  }
+                >
+                  {(handleClick, open) => {
+                    return (
+                      <React.Fragment>
+                        <NavLink
+                          to="#"
+                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${(pathname === '/auth' || pathname.includes('auth')) &&
+                            'bg-graydark dark:bg-meta-4'
+                            }`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            sidebarExpanded
+                              ? handleClick()
+                              : setSidebarExpanded(true);
+                          }}
+                        >
+                          {/* SVG here */}
+                          Admin Pages
+                          <svg
+                            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                              fill=""
                             />
-                          </clipPath>
-                        </defs>
-                      </svg>
-                      Authentication
-                      <svg
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                          </svg>
+                        </NavLink>
+                        {/* <!-- Dropdown Menu Start --> */}
+                        <div
+                          className={`translate transform overflow-hidden ${!open && 'hidden'}`}
+                        >
+                          <ul className='ml-4'>
+                            {(user?.user_type === 'acc_admin' || user?.user_type === 'adc_admin') && (
+                              <>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/stockmanagement/"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('stock') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={HLOStockLogo} height={20} width={20} />
+                                    Stock Management
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/tasks"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('tasks') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={tasksImg} height={25} width={25} />
+                                    Tasks
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/auth/confirm-code"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirm-code') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={tasksImg} height={25} width={25} />
+                                    Confirm Couirer Code
+                                  </NavLink>
+                                </li>
+                                {/* <li>
+                                  <NavLink
+                                    to="/hlo/admin/createaidrequest/"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('aidrequests') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={reqeustImg} height={20} width={20} />
+                                    Aid Requests
+                                  </NavLink>
+                                </li> */}
+                              </>
+                            )}
+                            {(auth && user?.user_type === 'ema_admin') && (
+                              <>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/confirmdeny_page"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('confirmdeny_page') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={UserCheck} height={25} width={25} />
+                                    Account Activation
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createadmin"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createadmin') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={UserPlus} height={25} width={25} />
+                                    Create Admin
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createcenter"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createcenter') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={CenterLogo} height={25} width={25} />
+                                    Create Center
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/managecenters"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('managecenters') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={CenterLogo} height={25} width={25} />
+                                    Manage Centers
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/createaidtype"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('createaidtype') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={aidImg} height={25} width={25} />
+                                    Create Aid Type
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/aidmanagement"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('aidmanagement') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={aidImg} height={25} width={25} />
+                                    Manage Aid Types
+                                  </NavLink>
+                                </li>
+                                <li>
+                                  <NavLink
+                                    to="/hlo/admin/rommanagement/"
+                                    className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('rommanagement') && 'bg-graydark dark:bg-meta-4'
+                                      }`}
+                                  >
+                                    <img src={aidImg} height={25} width={25} />
+                                    Manage ROM
+                                  </NavLink>
+                                </li>
+                              </>
+                            )}
+                          </ul>
+                        </div>
+                        {/* <!-- Dropdown Menu End --> */}
+
+                      </React.Fragment>
+                    );
+                  }}
+                </SidebarLinkGroup>
+                {/* <!-- Menu Item Auth Pages --> */}
+              </ul>
+            </>
+          )}
+          {/* <!-- Menu Item Auth Pages --> */}
+          {(user?.user_type === 'volunteer_courier' || user?.user_type === 'enterprise_courier') && (
+            <ul className="mb-6 flex flex-col">
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/hlo/tasks' || pathname.includes('hlo/tasks')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-3 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
                       >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                          fill=""
-                        />
-                      </svg>
-                    </NavLink>
-                    {/* <!-- Dropdown Menu Start --> */}
-                    <div
-                      className={`translate transform overflow-hidden ${!open && 'hidden'
-                        }`}
-                    >
-                      <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                        {!auth && (
-                          <>
-                            <li>
-                              <NavLink
-                                to="/auth/signin"
-                                className={({ isActive }) =>
-                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                  (isActive && '!text-white')
-                                }
-                              >
-                                Sign In
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to="/auth/signup"
-                                className={({ isActive }) =>
-                                  'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                  (isActive && '!text-white')
-                                }
-                              >
-                                Sign Up
-                              </NavLink>
-                            </li>
-                          </>
-                        )}
-                        {auth && (
+                        {/* SVG here */}
+                        Courier Pages
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'}`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'}`}
+                      >
+                        <ul className='ml-4'>
                           <li>
-                            <button
-                              onClick={handleLogout}
-                              className="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                            <NavLink
+                              to="/hlo/tasks"
+                              className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes('tasks') && 'bg-graydark dark:bg-meta-4'
+                                }`}
                             >
-                              Logout
-                            </button>
+                              <img src={tasksImg} height={25} width={25} />
+                              Tasks
+                            </NavLink>
                           </li>
-                        )}
-                      </ul>
-                    </div>
-                    {/* <!-- Dropdown Menu End --> */}
-                  </React.Fragment>
-                );
-              }}
-            </SidebarLinkGroup>
-            {/* <!-- Menu Item Auth Pages --> */}
-          </ul>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+            </ul>
+          )}
+          {/* <!-- Menu Item Auth Pages --> */}
+
 
           {/* <ul>
             <li>

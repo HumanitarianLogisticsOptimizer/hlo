@@ -17,6 +17,7 @@ class EMA(models.Model):
 class ACC(models.Model):
     name = models.CharField("Name", max_length=100)
     address = models.CharField("Address", max_length=100)
+    city = models.CharField("City", max_length=100)
     location = models.CharField("Location", max_length=100)
     ema = models.ForeignKey(
         EMA,
@@ -35,6 +36,7 @@ class ACC(models.Model):
 class ADC(models.Model):
     name = models.CharField("Name", max_length=100)
     address = models.CharField("Address", max_length=100)
+    city = models.CharField("City", max_length=100)
     location = models.CharField("Location", max_length=100)
     ema = models.ForeignKey(
         EMA,
@@ -50,9 +52,33 @@ class ADC(models.Model):
         return f"{self.name} - Managed by {self.ema}"
 
 
+class AidType(models.Model):
+    name = models.CharField("Name", max_length=100)
+    volume = models.IntegerField("Volume")
+
+    class Meta:
+        verbose_name = "Aid Type"
+
+    def __str__(self):
+        return self.name
+
+
+class AidTypeRequest(models.Model):
+    name = models.CharField("Name", max_length=100)
+
+    class Meta:
+        verbose_name = "Aid Type Request"
+
+    def __str__(self):
+        return self.name
+
+
 class ACCAid(models.Model):
-    type = models.CharField("Type", max_length=50)
+    type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="acc_aids",
+                             null=True)
     quantity = models.IntegerField("Quantity")
+    standard_stock = models.IntegerField("Standard Stock", default=0)
+    status = models.CharField("Status")
     center = models.ForeignKey(
         ACC,
         verbose_name="Collection Center",
@@ -63,12 +89,23 @@ class ACCAid(models.Model):
     class Meta:
         verbose_name = "ACC Aid"
 
+    def save(self, *args, **kwargs):
+        if self.quantity < self.standard_stock / 4:
+            self.status = "High"
+        elif self.quantity > self.standard_stock * 1.5:
+            self.status = "Low"
+        else:
+            self.status = "Medium"
+
+        super(ACCAid, self).save(*args, **kwargs)  # Call the "real" save() method
+
     def __str__(self):
         return f"{self.type} - {self.quantity} units at {self.center}"
 
 
 class ADCAid(models.Model):
-    type = models.CharField("Type", max_length=50)
+    type = models.ForeignKey(AidType, verbose_name="Aid Type", on_delete=models.SET_NULL, related_name="adc_aids",
+                             null=True)
     quantity = models.IntegerField("Quantity")
     standard_stock = models.IntegerField("Standard Stock")
     demanded_stock = models.IntegerField("Demanded Stock")

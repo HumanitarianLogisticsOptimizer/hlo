@@ -15,6 +15,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def save(self, *args, **kwargs):
+        self.full_clean(exclude=["password"])
+        self.set_password(self.password)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.email
 
@@ -24,10 +29,9 @@ class VolunteerCourier(User):
     phone_number = models.CharField(max_length=20)
     car_plate_number = models.CharField(max_length=20)
     national_id_number = models.CharField(max_length=50)
-    city = models.TextField()
+    city = models.CharField("City", max_length=100)
     country = models.TextField()
     vehicle_size = models.TextField()
-    availability = models.TextField()
 
     class Meta:
         verbose_name = "Volunteer Courier"
@@ -37,6 +41,7 @@ class EnterpriseCourier(User):
     company_name = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
     company_address = models.TextField()
+    city = models.CharField("City", max_length=100)
     date_of_establishment = models.DateField()
     number_of_light_duty = models.IntegerField()
     number_of_medium_duty = models.IntegerField()

@@ -68,7 +68,7 @@ const Header = (props: {
             {/* <!-- Dark Mode Toggler --> */}
           </ul>
 
-          {/* If the user is not logged in, render the Login and Register buttons */}
+          {/* If the user is not logged in, render the Login button */}
           {!auth && (
             <>
               <Link
@@ -77,23 +77,11 @@ const Header = (props: {
               >
                 Login
               </Link>
-              <Link
-                to='/auth/signup'
-                className='hidden sm:block rounded-lg p-3 font-medium'
-              >
-                Register
-              </Link>
             </>
           )}
 
           {/* If the user is logged in, render the DropdownUser component */}
           {auth && <DropdownUser />}
-          <Link
-            to='http://0.0.0.0:8000/admin'
-            className='hidden sm:block font-medium'
-          >
-            HLO Admin
-          </Link>
         </div>
       </div>
     </header>
