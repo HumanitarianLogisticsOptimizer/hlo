@@ -7,15 +7,18 @@ import axios from 'axios';
 import { AuthContext } from '../AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import ModalCode from '../Components/ModalCode';
+import ModalTaskCompletion from '../Components/ModalTaskCompletion';
 
 const Tasks: React.FC = () => {
   const { auth, user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [tasks, setTasks] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const allowedUserTypes = ['volunteer_courier', 'enterprise_courier', 'acc_admin', 'adc_admin'];
   const [code, setCode] = useState('');
+  const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
+  const [isTaskCompletionModalOpen, setIsTaskCompletionModalOpen] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
   useEffect(() => {
     if (auth) {
@@ -27,55 +30,70 @@ const Tasks: React.FC = () => {
     }
   }, [user, navigate, auth]);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const [accResponse, adcResponse] = await Promise.all([
-          axios.get('http://24.133.52.46:8000/api/acc/'),
-          axios.get('http://24.133.52.46:8000/api/adc/'),
-        ]);
+  const fetchTasks = async () => {
+    try {
+      const [accResponse, adcResponse] = await Promise.all([
+        axios.get('http://24.133.52.46:8000/api/acc/'),
+        axios.get('http://24.133.52.46:8000/api/adc/'),
+      ]);
 
-        const accs = accResponse.data;
-        const adcs = adcResponse.data;
+      const accs = accResponse.data;
+      const adcs = adcResponse.data;
 
-        let response;
-        switch (user?.user_type) {
-          case 'volunteer_courier':
-            response = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?owner=${user?.id}`);
-            break;
-          case 'enterprise_courier':
-            response = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?owner=${user?.id}`);
-            break;
-          case 'acc_admin':
-            const volunteerResponseAcc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?source=${user?.center}`);
-            const enterpriseResponseAcc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?source=${user?.center}`);
-            response = { data: [...volunteerResponseAcc.data, ...enterpriseResponseAcc.data] };
-            break;
-          case 'adc_admin':
-            const volunteerResponseAdc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?target=${user?.center}`);
-            const enterpriseResponseAdc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?target=${user?.center}`);
-            response = { data: [...volunteerResponseAdc.data, ...enterpriseResponseAdc.data] };
-            break;
-          default:
-            break;
-        }
-
-        let tasks = response?.data.map(task => ({
-          ...task,
-          source: accs.find(acc => acc.id === task.source)?.name,
-          target: adcs.find(adc => adc.id === task.target)?.name,
-        })) || [];
-
-        setTasks(tasks);
-      } catch (error) {
-        console.error('Error fetching tasks: ', error);
+      let response;
+      switch (user?.user_type) {
+        case 'volunteer_courier':
+          response = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?owner=${user?.id}`);
+          break;
+        case 'enterprise_courier':
+          response = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?owner=${user?.id}`);
+          break;
+        case 'acc_admin':
+          const volunteerResponseAcc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?source=${user?.center}`);
+          const enterpriseResponseAcc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?source=${user?.center}`);
+          response = { data: [...volunteerResponseAcc.data, ...enterpriseResponseAcc.data] };
+          break;
+        case 'adc_admin':
+          const volunteerResponseAdc = await axios.get(`http://24.133.52.46:8000/api/volunteer_tasks?target=${user?.center}`);
+          const enterpriseResponseAdc = await axios.get(`http://24.133.52.46:8000/api/enterprise_tasks?target=${user?.center}`);
+          response = { data: [...volunteerResponseAdc.data, ...enterpriseResponseAdc.data] };
+          break;
+        default:
+          break;
       }
-    };
+
+      let tasks = response?.data.map(task => ({
+        ...task,
+        source: accs.find(acc => acc.id === task.source)?.name,
+        target: adcs.find(adc => adc.id === task.target)?.name,
+      })) || [];
+
+      setTasks(tasks);
+    } catch (error) {
+      console.error('Error fetching tasks: ', error);
+    }
+  };
+
+  useEffect(() => {
 
     fetchTasks();
   }, [user]);
 
   const data = useMemo(() => tasks, [tasks]);
+
+  const handleRowClick = (row, user) => {
+    if (user?.user_type === 'volunteer_courier') {
+      setIsCodeModalOpen(true);
+      if (row.original.status === 'Pending') {
+        setCode(row.original.source_code);
+      } else if (row.original.status === 'On the road') {
+        setCode(row.original.target_code);
+      }
+    } else if (user?.user_type === 'enterprise_courier' && ['Pending', 'On the road'].includes(row.original.status)) {
+      setSelectedTaskId(row.original.id);
+      setIsTaskCompletionModalOpen(true);
+    }
+  };
 
 
   const columns = useMemo(
@@ -171,6 +189,9 @@ const Tasks: React.FC = () => {
           </button>
         </div>
       )}
+      {user?.user_type === 'enterprise_courier' && (
+        <p className=' text-rose-500 text-lg'>Click on a row to change its status.</p>
+      )}
       <section className="data-table-common data-table-two p-5 rounded-lg-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex justify-between border-b border-stroke pb-4 dark:border-strokedark">
           <div className="w-100">
@@ -250,40 +271,36 @@ const Tasks: React.FC = () => {
           <tbody {...getTableBodyProps()}>
             {page.map((row, key) => {
               prepareRow(row);
-              return (<tr {...row.getRowProps()} key={key} onClick={() => {
-                if (user?.user_type === 'volunteer_courier') {
-                  setIsModalOpen(true);
-                  if (row.original.status === 'Pending') {
-                    setCode(row.original.source_code);
-                  } else if (row.original.status === 'On the road') {
-                    setCode(row.original.target_code);
+              return (
+                <tr
+                  {...row.getRowProps()}
+                  key={key}
+                  onClick={() => row.original.status !== 'Done' && handleRowClick(row, user)}
+                  className={
+                    ['volunteer_courier', 'enterprise_courier'].includes(user?.user_type) && row.original.status !== 'Done' ? 'cursor-pointer' : ''
                   }
-                } else if (user?.user_type === 'enterprise_courier' && ['Pending', 'On the road'].includes(row.original.status)) {
-                  setIsModalOpen(true);
-                  setCode(row.original.target_code);
-                }
-              }} className={['volunteer_courier', 'enterprise_courier'].includes(user?.user_type) ? 'cursor-pointer' : ''}>
-                <td className='text-lg' {...row.cells[0].getCellProps()}>
-                  {row.cells[0].render('Cell')}
-                </td>
-                <td {...row.cells[1].getCellProps()}>
-                  {row.cells[1].render('Cell')}
-                </td>
-                <td {...row.cells[2].getCellProps()}>
-                  {row.cells[2].render('Cell')}
-                </td>
-                <td {...row.cells[3].getCellProps()}>
-                  {row.cells[3].render('Cell')}
-                </td>
-                <td {...row.cells[4].getCellProps()}>
-                  {row.cells[4].render('Cell')}
-                </td>
-                <td className={`${row.original.status === 'Pending' ? 'text-yellow-500' :
-                  row.original.status === 'On the road' ? 'text-blue-500' : 'text-green-500'}`}
-                  {...row.cells[5].getCellProps()}>
-                  {row.cells[5].render('Cell')}
-                </td>
-              </tr>
+                >
+                  <td className='text-lg' {...row.cells[0].getCellProps()}>
+                    {row.cells[0].render('Cell')}
+                  </td>
+                  <td {...row.cells[1].getCellProps()}>
+                    {row.cells[1].render('Cell')}
+                  </td>
+                  <td {...row.cells[2].getCellProps()}>
+                    {row.cells[2].render('Cell')}
+                  </td>
+                  <td {...row.cells[3].getCellProps()}>
+                    {row.cells[3].render('Cell')}
+                  </td>
+                  <td {...row.cells[4].getCellProps()}>
+                    {row.cells[4].render('Cell')}
+                  </td>
+                  <td className={`${row.original.status === 'Pending' ? 'text-yellow-500' :
+                    row.original.status === 'On the road' ? 'text-blue-500' : 'text-green-500'}`}
+                    {...row.cells[5].getCellProps()}>
+                    {row.cells[5].render('Cell')}
+                  </td>
+                </tr>
               );
             })}
           </tbody>
@@ -350,7 +367,13 @@ const Tasks: React.FC = () => {
         </div>
       </section>
       {/* Table component goes here */}
-      <ModalCode isOpen={isModalOpen} setIsOpen={setIsModalOpen} code={code} />
+      <ModalCode isOpen={isCodeModalOpen} setIsOpen={setIsCodeModalOpen} code={code} />
+      <ModalTaskCompletion
+        isOpen={isTaskCompletionModalOpen}
+        setIsOpen={setIsTaskCompletionModalOpen}
+        taskId={selectedTaskId}
+        onTaskCompletion={fetchTasks} // pass reloadData as a prop
+      />
     </DefaultLayout>
   );
 };
