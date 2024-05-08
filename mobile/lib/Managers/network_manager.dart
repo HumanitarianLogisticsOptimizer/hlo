@@ -75,6 +75,35 @@ class InventoryItem {
   }
 }
 
+class AdcInventoryItem {
+  final int id;
+  final int quantity;
+  final int standardStock;
+  final int demandedStock;
+  final int type;
+  final int center;
+
+  AdcInventoryItem({
+    required this.id,
+    required this.quantity,
+    required this.standardStock,
+    required this.demandedStock,
+    required this.type,
+    required this.center,
+  });
+
+  factory AdcInventoryItem.fromJson(Map<String, dynamic> json) {
+    return AdcInventoryItem(
+      id: json['id'] as int,
+      quantity: json['quantity'] as int,
+      standardStock: json['standard_stock'] as int,
+      demandedStock: json['demanded_stock'] as int,
+      type: json['type'] as int,
+      center: json['center'] as int,
+    );
+  }
+}
+
 class AidType {
   final int id;
   final String name;
@@ -128,13 +157,13 @@ class NetworkManager {
     }
   }
 
-  Future<List<InventoryItem>> getAdcInventory(int centerId) async {
+  Future<List<AdcInventoryItem>> getAdcInventory(int centerId) async {
     try {
       final response =
           await http.get(Uri.parse('${baseUrl}adcaids/?center=$centerId'));
       if (response.statusCode == 200) {
         return (json.decode(response.body) as List)
-            .map((i) => InventoryItem.fromJson(i))
+            .map((i) => AdcInventoryItem.fromJson(i))
             .toList();
       } else {
         throw HttpException('Failed to load ADC inventory');
@@ -304,17 +333,16 @@ class NetworkManager {
   }
 
   Future<List<Map<String, dynamic>>> getEnterpriseTasks() async {
-  try {
-    final response = await http.get(Uri.parse('${baseUrl}enterprise_tasks/'));
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.cast<Map<String, dynamic>>();
-    } else {
-      throw HttpException('Failed to fetch enterprise tasks');
+    try {
+      final response = await http.get(Uri.parse('${baseUrl}enterprise_tasks/'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.cast<Map<String, dynamic>>();
+      } else {
+        throw HttpException('Failed to fetch enterprise tasks');
+      }
+    } catch (e) {
+      throw HttpException('Failed to fetch enterprise tasks: $e');
     }
-  } catch (e) {
-    throw HttpException('Failed to fetch enterprise tasks: $e');
   }
-}
-
 }

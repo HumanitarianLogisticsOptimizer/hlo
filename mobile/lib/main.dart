@@ -196,89 +196,77 @@ class _MyAppState extends State<MyApp> {
             markers: combinedMarkers,
             myLocationButtonEnabled: false,
           ),
-          Positioned(
-            right: 16,
-            bottom:
-                16, // This positions the whole column of buttons at the bottom right
-            child: Column(
-              mainAxisSize: MainAxisSize
-                  .min, // Ensures the column only takes necessary space
+          SafeArea(
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.center, // Align buttons to the center
               children: [
-                FloatingActionButton(
-                  onPressed: _displayProfile,
-                  child: Icon(Icons.person),
-                  backgroundColor: Colors.black,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _showAccMarkers = true;
+                          _showAdcMarkers = false;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary:
+                            _showAccMarkers ? colors.accentColor : Colors.black,
+                        onPrimary: Colors.white,
+                      ),
+                      child: const Text("ACC"),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 16), // Space between buttons
-                FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      _showFavorites =
-                          !_showFavorites; // Toggle showing favorites
-                    });
-                  },
-                  child: Icon(_showFavorites ? Icons.star : Icons.star_border),
-                  backgroundColor: Colors.black,
-                ),
-                SizedBox(height: 16), // Space between buttons
-                FloatingActionButton(
-                  onPressed: _goToMyLocation,
-                  child: Icon(Icons.pin_drop),
-                  backgroundColor: Colors.black,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _showAccMarkers = false;
+                          _showAdcMarkers = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary:
+                            _showAdcMarkers ? colors.accentColor : Colors.black,
+                        onPrimary: Colors.white,
+                      ),
+                      child: const Text("ADC"),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          SafeArea(
-            child: Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 4.0, left: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _showAccMarkers = true;
-                            _showAdcMarkers = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: _showAccMarkers
-                              ? colors.accentColor
-                              : Colors.black,
-                          onPrimary: Colors.white,
-                        ),
-                        child: const Text("ACC"),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8.0, left: 4.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _showAccMarkers = false;
-                            _showAdcMarkers = true;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: _showAdcMarkers
-                              ? colors.accentColor
-                              : Colors.black,
-                          onPrimary: Colors.white,
-                        ),
-                        child: const Text("ADC"),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        ],
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _displayProfile,
+            child: Icon(Icons.person),
+            backgroundColor: Colors.black,
+          ),
+          SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _showFavorites = !_showFavorites;
+              });
+            },
+            child: Icon(_showFavorites ? Icons.star : Icons.star_border),
+            backgroundColor: Colors.black,
+          ),
+          SizedBox(height: 16),
+          FloatingActionButton(
+            onPressed: _goToMyLocation,
+            child: Icon(Icons.pin_drop),
+            backgroundColor: Colors.black,
           ),
         ],
       ),
@@ -298,7 +286,9 @@ class CenterDetailPage extends StatefulWidget {
 }
 
 class _CenterDetailPageState extends State<CenterDetailPage> {
-  List<InventoryItem> inventoryItems = [];
+  List<InventoryItem> accInventoryItems = [];
+  List<AdcInventoryItem> adcInventoryItems = [];
+
   bool isLoading = true;
 
   @override
@@ -311,10 +301,10 @@ class _CenterDetailPageState extends State<CenterDetailPage> {
     try {
       NetworkManager networkManager = NetworkManager();
       if (widget.type == 'adc') {
-        inventoryItems =
+        adcInventoryItems =
             await networkManager.getAdcInventory(widget.item['id']);
       } else {
-        inventoryItems =
+        accInventoryItems =
             await networkManager.getAccInventory(widget.item['id']);
       }
       setState(() {
@@ -370,36 +360,59 @@ class _CenterDetailPageState extends State<CenterDetailPage> {
 
   Widget buildInventoryTable() {
     return DataTable(
-      columns: const [
+      columns: [
         DataColumn(label: Text('Aid')),
-        DataColumn(label: Text('Urgency')),
+        DataColumn(
+          label: Text(widget.type == 'adc' ? 'Quantity' : 'Urgency'),
+        ),
       ],
-      rows: inventoryItems.map((item) {
-        return DataRow(
-          cells: [
-            DataCell(
-              FutureBuilder<String>(
-                future: NetworkManager()
-                    .getAidName(item.type), // Assuming `item.type` is the ID
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError) {
-                      return Text('Error');
-                    } else if (snapshot.hasData) {
-                      return Text(
-                          snapshot.data ?? 'Unknown'); // Display the name
-                    }
-                  }
-                  // Show a loading spinner while the data is fetching
-                  return CircularProgressIndicator();
-                },
-              ),
-            ),
-            DataCell(Text(item.status)),
-          ],
-        );
-      }).toList(),
+      rows: widget.type == 'adc'
+          ? adcInventoryItems.map((item) {
+              return DataRow(
+                cells: [
+                  DataCell(
+                    FutureBuilder<String>(
+                      future: NetworkManager().getAidName(item.type),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error');
+                          } else if (snapshot.hasData) {
+                            return Text(snapshot.data ?? 'Unknown');
+                          }
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+                  DataCell(Text(item.standardStock.toString())),
+                ],
+              );
+            }).toList()
+          : accInventoryItems.map((item) {
+              return DataRow(
+                cells: [
+                  DataCell(
+                    FutureBuilder<String>(
+                      future: NetworkManager().getAidName(item.type),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          if (snapshot.hasError) {
+                            return Text('Error');
+                          } else if (snapshot.hasData) {
+                            return Text(snapshot.data ?? 'Unknown');
+                          }
+                        }
+                        return CircularProgressIndicator();
+                      },
+                    ),
+                  ),
+                  DataCell(Text(item.status)),
+                ],
+              );
+            }).toList(),
     );
   }
 }
