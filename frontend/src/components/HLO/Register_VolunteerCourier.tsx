@@ -23,7 +23,6 @@ const Register_VolunteerCourier: React.FC = () => {
   const [carPlate, setCarPlate] = useState("");
   const [nationalId, setNationalId] = useState("");
   const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
 
   const [fullNameError, setFullNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -33,7 +32,6 @@ const Register_VolunteerCourier: React.FC = () => {
   const [carPlateError, setCarPlateError] = useState("");
   const [nationalIdError, setNationalIdError] = useState("");
   const [cityError, setCityError] = useState("");
-  const [countryError, setCountryError] = useState("");
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const formSubmitRef = useRef(setFormSubmitted);
@@ -57,7 +55,6 @@ const Register_VolunteerCourier: React.FC = () => {
     setCarPlateError("");
     setNationalIdError("");
     setCityError("");
-    setCountryError("");
 
     // Validate the input fields
     if (!fullName) {
@@ -76,12 +73,10 @@ const Register_VolunteerCourier: React.FC = () => {
       setNationalIdError('National ID number must not be empty');
     } if (!city) {
       setCityError('City must not be empty');
-    } if (!country) {
-      setCountryError('Country must not be empty');
     }
 
     // Check if any errors were found
-    if (fullNameError || emailError || passwordError || phoneNumberError || vehicleTypeError || carPlateError || nationalIdError || cityError || countryError) {
+    if (fullNameError || emailError || passwordError || phoneNumberError || vehicleTypeError || carPlateError || nationalIdError || cityError) {
       return;
     }
 
@@ -95,7 +90,7 @@ const Register_VolunteerCourier: React.FC = () => {
       car_plate_number: carPlate,
       national_id_number: nationalId,
       city,
-      country,
+      country: 'Turkey',
       vehicle_size: vehicleType,
     })
       .then(response => {
@@ -110,7 +105,6 @@ const Register_VolunteerCourier: React.FC = () => {
         setCarPlate("");
         setNationalId("");
         setCity("");
-        setCountry("");
       })
       .catch(error => {
         console.error('Error:', error);
