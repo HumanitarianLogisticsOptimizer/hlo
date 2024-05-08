@@ -68,7 +68,7 @@ const StockManagementTable: React.FC = () => {
     try {
       const response = await axios.get("http://24.133.52.46:8000/api/" + centerType + "aids/?center=" + centerId);
       const aidData = await Promise.all(response.data.map(async aid => {
-        const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.id}`);
+        const typeResponse = await axios.get(`http://24.133.52.46:8000/api/aid_type/${aid.type}`);
         return {
           ...aid,
           type: {
