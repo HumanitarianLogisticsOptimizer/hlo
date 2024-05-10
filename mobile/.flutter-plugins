@@ -1,0 +1,20 @@
+# This is a generated file; do not edit or check into version control.
+flutter_plugin_android_lifecycle=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.17/
+fluttertoast=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/fluttertoast-8.2.5/
+geolocator=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/geolocator-10.1.0/
+geolocator_android=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/geolocator_android-4.4.0/
+geolocator_apple=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/geolocator_apple-2.3.3/
+geolocator_web=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/geolocator_web-2.2.0/
+geolocator_windows=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/geolocator_windows-0.2.2/
+google_maps_flutter=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/google_maps_flutter-2.5.1/
+google_maps_flutter_android=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/google_maps_flutter_android-2.6.1/
+google_maps_flutter_ios=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.3.4/
+google_maps_flutter_web=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/google_maps_flutter_web-0.5.4+3/
+path_provider_linux=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+path_provider_windows=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/path_provider_windows-2.2.1/
+shared_preferences=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences-2.2.3/
+shared_preferences_android=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_android-2.2.1/
+shared_preferences_foundation=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.3.5/
+shared_preferences_linux=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.3.2/
+shared_preferences_web=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_web-2.2.1/
+shared_preferences_windows=/Users/asimaltinisik/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.2/
