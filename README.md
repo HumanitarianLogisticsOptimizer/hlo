@@ -15,5 +15,6 @@ HLO is a mobile and web-based software platform designed to revolutionize emerge
 ### Used Technologies
 - Front-end: Typescript, React.js, Tailwindcss
 - Back-end: Python, Django, Postgresql, Docker
+- Mobile: Flutter
 - Testing: Swagger, Postman
 - Optimization: Python-based Gurobi
